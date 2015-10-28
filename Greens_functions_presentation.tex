@@ -1,0 +1,231 @@
+% rubber: set program xelatex
+
+% The theme used for this presentation is matze's mtheme, which can be
+% found at https://github.com/matze/mtheme
+
+\newif\ifhandout
+
+\handouttrue
+
+\ifhandout
+    \documentclass[12 pt, compress, handout, intlimits]{beamer}
+
+    \setbeamertemplate{note page}[plain]
+    \setbeameroption{show notes}% on second screen=bottom}
+\else
+
+    \documentclass[12 pt, compress, intlimits]{beamer}
+
+\fi
+
+\usetheme{m}
+
+\usepackage{mymacros}
+\usepackage[retainorgcmds]{IEEEtrantools}
+\setlength{\IEEEnormaljot}{9pt}
+
+\renewcommand{\d}[1]{\ensuremath{\operatorname{d}}\!{#1}}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{array}
+
+%\usepgfplotslibrary{dateplot}
+
+\renewcommand{\vect}[1]{\vec{#1}}
+\renewcommand{\L}{\mathcal{L}}
+
+\setbeamercovered{transparent}
+
+\title{Green's functions}
+\subtitle{A short introduction}
+\date{\today}
+\author{Chris Deimert}
+\institute{Department of Electrical and Computer Engineering, University of Calgary}
+
+
+\begin{document}
+
+\maketitle
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Outline}
+    \tableofcontents
+\end{frame}
+
+\note{}
+
+%\begin{frame}[fragile]
+%    \frametitle{Vectors and pseudo-vectors}
+%
+%    \begin{center}
+%        $ \vect{E} $ is a \alert{vector} under reflection
+%    \end{center}
+%    \begin{figure}
+%        \centering
+%        \includegraphics[width=0.8\textwidth]{Reflection_e_field.pdf}
+%    \end{figure}
+%    \note{
+%        If we mirror space, $ \vect{E} $ mirrors as expected. 
+%        This is because $ \vect{E} $ is a true vector.
+%    }
+%\end{frame}
+
+\section{Basic idea}
+\label{sec:basic_idea}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{What is a Green's function?}
+    
+    Linear equation to solve:
+    \begin{align*}
+        \L u(x) &= f(x)
+    \end{align*}
+    
+    \pause
+
+    Green's function is impulse response:
+    \begin{align*}
+        \L G(x,x') &= \delta(x - x')
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Most EM problems are described by linear (differential) equations with some source function $ f(x) $.
+\item
+    The Green's function is the solution when $ f(x) $ is an impulse located at $ x' $.
+\item
+    Generalization of impulse response from signal processing.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Why is it useful?}
+
+    Can find the solution directly for any $ f(x) $:
+    \begin{align*}
+        u(x) &= \int G(x,x') f(x') \d x
+    \end{align*}
+    because
+    \begin{align*}
+        \L u(x) &= \int \L G(x,x') f(x') \d x = \int \delta(x - x') f(x) \d x = f(x)
+    \end{align*}
+    
+
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Once we know the Green's function for a problem, we can find the solution for any source.
+\item
+    Kind of like splitting the source $ f(x) $ into little impulses and then adding up (integrating) the response to each impulse.
+\item
+    Generalization of convolution from signal processing.
+\item
+    Can be quicker than adding up infinite series of orthogonal functions.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Summary}
+    \begin{center}
+    Some important thing.
+    \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{Introductory resources}
+    Balanis (2012), \emph{Advanced engineering electromagnetics}. 
+    Less rigorous, but good for getting the key ideas. Good place to start.
+
+    Folland (1992), \emph{Fourier analysis and its applications}. 
+    Fairly rigorous.
+    Chapter on generalized functions is particularly nice.
+
+    Dudley (1994), \emph{Mathematical foundations for electromagnetic theory}.
+    Fairly rigorous. 
+    Great introduction to 1D Green's functions: deals with subtleties other books leave out.
+    
+\end{frame}    
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Advanced resources}
+    Collin (1990), \emph{Field theory of guided waves}. 
+    Huge chapter on Green's functions. Emphasis on dyadics.
+
+    Morse and Feshback, \emph{Methods of theoretical physics}.
+    Another big, detailed reference. Emphasis on theory and insights.
+
+    Warnick (1996), ``Electromagnetic Green functions using differential forms.''
+    For the differential forms inclined.
+
+\end{frame}    
+
+\note{}
+
+\section{Solution methods}
+\label{sec:solution_methods}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Solution methods}
+    Boundary condition approaches:
+    \begin{enumerate}
+    \item
+        Green's function gives particular solution; add homogeneous solution to find boundary conditions.
+        Easier to set up, but requires extra work to deal with BC's.
+    \item
+        Green's function includes BC's.
+        Harder to set up, but gives full solution including BC's.
+    \end{enumerate}
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Solution methods}
+     Solving Green's function approaches:
+    \begin{enumerate}
+    \item
+        Direct solution. (Great if it's possible.)
+    \item
+        Eigenvalue expansion. (Works every time.)
+    \end{enumerate}
+\end{frame}
+
+\note{}
+
+\section{Applications}
+\label{sec:applications}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Applications}
+    \begin{itemize}
+    \item
+        Born approximation for scattering?
+    \item
+        Perturbation theory?
+    \item
+        Propagator/Huygen's principle?
+    \end{itemize}
+\end{frame}
+
+\note{}
+
+\end{document}
