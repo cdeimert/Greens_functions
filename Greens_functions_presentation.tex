@@ -5,12 +5,14 @@
 
 \newif\ifhandout
 
+\handoutfalse
 \handouttrue
 
 \ifhandout
     \documentclass[12 pt, compress, handout, intlimits]{beamer}
 
     \setbeamertemplate{note page}[plain]
+
     \setbeameroption{show notes}% on second screen=bottom}
 \else
 
@@ -24,16 +26,26 @@
 \usepackage[retainorgcmds]{IEEEtrantools}
 \setlength{\IEEEnormaljot}{9pt}
 
-\renewcommand{\d}[1]{\ensuremath{\operatorname{d}}\!{#1}}
+\renewcommand{\d}{\ensuremath{\operatorname{d}}}
 
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage[scale=2]{ccicons}
 \usepackage{array}
 
+\usepackage{xcolor}
+\usepackage{mathtools}
+\usepackage{empheq}
+
+\newcommand{\highlight}[1]{\colorbox{mLightBrown!75}{$\displaystyle{#1}$}}
+\newcommand{\mygreenbox}[1]{\colorbox{mLightBrown!75}{\hspace{1em}#1\hspace{1em}}}
+
+%\usepackage{sourcesanspro}
+
 %\usepgfplotslibrary{dateplot}
 
-\renewcommand{\vect}[1]{\vec{#1}}
+%\usefonttheme[onlymath]{serif}
+%\renewcommand{\vect}[1]{\vec{#1}}
 \renewcommand{\L}{\mathcal{L}}
 
 \setbeamercovered{transparent}
@@ -49,7 +61,18 @@
 
 \maketitle
 
-\note{}
+\note{
+    \begin{itemize}
+    \item
+        This is intended as a quick overview of Green's functions for electrical engineers.
+    \item
+        Green's functions are a huge subject: it's easy to get overwhelmed by calculation techniques. 
+    \item
+        Focus here will be on intuition/understanding and awareness of some key techniques.
+    \item
+        Lots of further reading provided at the end.
+    \end{itemize}
+}
 
 \begin{frame}[fragile]
     \frametitle{Outline}
@@ -58,26 +81,17 @@
 
 \note{}
 
-%\begin{frame}[fragile]
-%    \frametitle{Vectors and pseudo-vectors}
-%
-%    \begin{center}
-%        $ \vect{E} $ is a \alert{vector} under reflection
-%    \end{center}
-%    \begin{figure}
-%        \centering
-%        \includegraphics[width=0.8\textwidth]{Reflection_e_field.pdf}
-%    \end{figure}
-%    \note{
-%        If we mirror space, $ \vect{E} $ mirrors as expected. 
-%        This is because $ \vect{E} $ is a true vector.
-%    }
-%\end{frame}
+\section{Introduction}
+\label{sec:introduction}
 
-\section{Basic idea}
-\label{sec:basic_idea}
-
-\note{}
+\note{
+\begin{itemize}
+\item
+    Fortunately, the basic idea of Green's functions is really simple.
+\item
+    You've actually used them before!
+\end{itemize}
+}
 
 \begin{frame}[fragile]
     \frametitle{What is a Green's function?}
@@ -89,7 +103,7 @@
     
     \pause
 
-    Green's function is impulse response:
+    Green's function is the \textbf{impulse response}:
     \begin{align*}
         \L G(x,x') &= \delta(x - x')
     \end{align*}
@@ -99,65 +113,301 @@
 \note{
 \begin{itemize}
 \item
-    Most EM problems are described by linear (differential) equations with some source function $ f(x) $.
+    Most EM problems are described by linear (differential) equations with some source/driving function $ f(x) $.
 \item
-    The Green's function is the solution when $ f(x) $ is an impulse located at $ x' $.
+    The Green's function is the solution when the source $ f(x) $ is an impulse located at $ x' $.
 \item
-    Generalization of impulse response from signal processing.
+    Can think of it as a generalization of the impulse response from signal processing.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
     \frametitle{Why is it useful?}
-
-    Can find the solution directly for any $ f(x) $:
-    \begin{align*}
-        u(x) &= \int G(x,x') f(x') \d x
-    \end{align*}
-    because
-    \begin{align*}
-        \L u(x) &= \int \L G(x,x') f(x') \d x = \int \delta(x - x') f(x) \d x = f(x)
-    \end{align*}
     
+    \begin{align*}
+        \delta(x - x') &\xrightarrow{\quad \L^{-1} \quad} G(x,x')
+    \end{align*}
+ 
+    \pause
 
+    \begin{align*}
+        f(x) = \int \delta(x - x') f(x') \d x \xrightarrow{\quad \L^{-1} \quad} \int G(x,x') f(x') \d x
+    \end{align*}
+  
+    %Can find the solution directly for any $ f(x) $:
+    %\begin{align*}
+    %    u(x) &= \int G(x,x') f(x') \d x
+    %\end{align*}
+    %\begin{align*}
+    %    \L u(x) &= \int \L G(x,x') f(x') \d x = \int \delta(x - x') f(x) \d x = f(x)
+    %\end{align*}
     
 \end{frame}
 
 \note{
 \begin{itemize}
 \item
-    Once we know the Green's function for a problem, we can find the solution for any source.
+    Once we know the Green's function for a problem, we can find the solution for any source $ f(x) $.
 \item
-    Kind of like splitting the source $ f(x) $ into little impulses and then adding up (integrating) the response to each impulse.
+    Impulses $ \delta(x - x') $ produce a response $ G(x,x') $.
 \item
-    Generalization of convolution from signal processing.
+    We can split the source $ f(x) $ up into a sum (integral) of impulses $ \delta(x - x') $.
 \item
-    Can be quicker than adding up infinite series of orthogonal functions.
+    Then the response to $ f(x) $ is just a weighted sum (integral) of impulse responses.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
-    \frametitle{Summary}
-    \begin{center}
-    Some important thing.
-    \end{center}
+    \frametitle{Why is it useful?}
+
+    \begin{align*}
+        \L u(x) &= f(x)
+    \end{align*}
+    \begin{align*}
+        \L G(x,x') &= \delta(x - x')
+    \end{align*}
+    \begin{empheq}[box=\mygreenbox]{align*}
+        u(x) = \int G(x,x') f(x') \d x
+    \end{empheq}
+
 \end{frame}
 
+\note{
+\begin{itemize}
+\item
+    Once we know the Green's function, we have an explicit formula for the solution $ u(x) $ for any source function $ f(x) $.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Familiar Green's functions}
+
+    Impulse response of a LTI system:
+    \begin{align*}
+        y(t) &= \int_{-\infty}^{\infty} x(t') \alert{h(t - t')} \d t'
+    \end{align*}
+
+    \pause
+    E.g., for an RL-circuit:
+    \begin{align*}
+        G(t,t') &= h(t - t') = u(t - t') e^{-\alpha (t - t')}
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    In electrical engineering, we've seen Green's functions before.
+\item
+    Impulse response $ h(t - t') $ from linear system theory is an example of a Green's function.
+    \begin{align}
+        G(t,t') & = h(t - t')
+    \end{align}
+\item
+    Usually find $ h(t - t') $ using Fourier transform of the transfer function.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Familiar Green's functions}
+
+    Poisson's equation:
+    \begin{align*}
+        \nabla^2 V(\vect{r}) &= - \frac{\rho(\vect{r})}{\epsilon_0}
+    \end{align*}
+    \begin{align*}
+        V(\vect{r}) &= \iiint \alert{\frac{1}{4 \pi \epsilon_0 \left| \vect{r} - \vect{r}' \right|^2}} \rho(\vect{r}') \d^3 \vect{r}'
+    \end{align*}
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Green's function for Poisson's equation is
+        \begin{align*}
+            G(\vect{r}, \vect{r}') &= \frac{1}{4 \pi \epsilon_0 \left| \vect{r} - \vect{r}' \right|^2}
+        \end{align*}
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Familiar Green's functions}
+    
+    Helmholtz equation:
+    \begin{align*}
+        \left( \nabla^2 + k^2 \right) A_z(\vect{r}) &= -J_z(\vect{r})
+    \end{align*}
+    \begin{align*}
+        A_z(\vect{r}) &= \iiint \alert{\frac{e^{-jk \left| \vect{r} - \vect{r}' \right|}}{4 \pi \left| \vect{r} - \vect{r}' \right|}} J_z\left( \vect{r}' \right) \d^3 \vect{r}'
+    \end{align*}
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Green's function for the Helmholtz equation is
+        \begin{align*}
+            G(\vect{r}, \vect{r}') &= \frac{e^{-jk \left| \vect{r} - \vect{r}' \right|}}{4 \pi \left| \vect{r} - \vect{r}' \right|}
+        \end{align*}
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Familiar Green's functions}
+    
+    Our goal:
+    \begin{itemize}
+    \item
+        Derive these expressions.
+    \item
+        Generalize to other problems and boundary conditions.
+    \end{itemize}
+    
+\end{frame}
+
+\note{
+}
+
+\section{Generalized functions}
+\label{sec:generalized_functions}
+
+\note{
+    \begin{itemize}
+    \item
+        Delta functions play a key role in Green's functions (and electrical engineering in general).
+    \item
+        Worth seeing how they are rigorously defined before moving on.
+    \item
+        See Folland (1992), \emph{Fourier analysis and its applications}, Chapter 9 for more.
+    \end{itemize}
+    
+}
+
+\begin{frame}[fragile]
+    \frametitle{Poor definition}
+    
+    Common ``definition'':
+    \begin{align*}
+        \int_{-\infty}^{\infty} \delta(x-x_0) &= 1
+    \end{align*}
+    \begin{align*}
+        \delta(x-x_0) &= \begin{cases} 0 & \text{for } x \neq x_0 \\ \infty & \text{for } x = x_0 \end{cases}
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Often see definitions like ``$ \delta(x-x_0) $ is zero for $ x \neq x_0 $, but the area under it is 1.''
+\item
+    Might be okay intuitively, but very imprecise mathematically.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Better definition}
+
+    \begin{itemize}
+    \item
+    $ \delta(x-x_0) $ is an operator, \textbf{not} a function!
+    \pause
+    \item
+    Define it by the sifting property:
+    \begin{align*}
+        \delta_{x_0}[f] &= f(x_0)
+    \end{align*}
+    \pause\vspace*{-\baselineskip}
+    \item
+    \textbf{Symbolically}, write
+    \begin{align*}
+        \int_{-\infty}^{\infty} \delta(x - x_0) f(x) \d x &= f(x_0)
+    \end{align*}
+    \end{itemize}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Delta function is rigorously defined using Schwartz distribution theory.
+    \item
+        Basically, the delta function is not a function at all, it is a linear operator which takes a function and returns a number: the value of the function at $ x_0 $.
+    \item
+    I.e., \emph{the sifting property is the definition of the delta function.}
+    \item
+        Symbolically, we often write it as a function, but it's good to remember the proper definition in case anything fishy shows up.
+    \item
+        Remember, $ \delta(x - x') $ has no meaning as a stand-alone function.
+        It only has meaning when it operates on a function.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Delta function limits}
+    
+    \begin{align*}
+        \lim_{n \to \infty} \phi_n(x) &= \delta(x)
+    \end{align*}
+    if and only if
+    \begin{align*}
+        \lim_{n \to \infty} \int_{-\infty}^{\infty} \phi_n(x) f(x) \d x &= f(0)
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Often, we want to show that regular functions are equivalent to the delta function.
+\item
+    To do this in a reasonable way, we need to show that the sifting property is obeyed, usually in a limit.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Delta function limits}
+    Example:
+    \begin{align*}
+        \frac{1}{2 \pi} \int_{-\infty}^{\infty} e^{j x t} \d t &= \delta(x)
+    \end{align*}
+    because
+    \begin{align*}
+        \frac{1}{2 \pi} \int_{-\infty}^{\infty} e^{-\epsilon^2 t^2} e^{j x t} \d t
+    \end{align*}
+    is a delta-function limit as $ \epsilon \to 0 $.
+
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Example of a common, but perplexing expression for the Delta function.
+    \item
+        Can show that it's true by expressing it as a delta function limit.
+        (Multiply by a Gaussian distribution and take the limit as standard deviation goes to $ \infty $.)
+    \item
+        Doing this proof is not a bad exercise if you're interested. Theorem 9.2 from Folland will make it manageable.
+    \end{itemize}
+    
+}
 
 \begin{frame}[fragile]
     \frametitle{Introductory resources}
     Balanis (2012), \emph{Advanced engineering electromagnetics}. 
-    Less rigorous, but good for getting the key ideas. Good place to start.
+    Less rigorous, but good for getting the key ideas.
 
     Folland (1992), \emph{Fourier analysis and its applications}. 
-    Fairly rigorous.
     Chapter on generalized functions is particularly nice.
 
     Dudley (1994), \emph{Mathematical foundations for electromagnetic theory}.
-    Fairly rigorous. 
-    Great introduction to 1D Green's functions: deals with subtleties other books leave out.
+    Great introduction to 1D Green's functions: deals with subtleties that others ignore.
+
+    Byron and Fuller (1992), \emph{Mathematics of classical and quantum physics}.
+    Interesting alternative approach.
     
-\end{frame}    
+\end{frame}
 
 \note{}
 
@@ -205,6 +455,20 @@
     \item
         Eigenvalue expansion. (Works every time.)
     \end{enumerate}
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Causality}
+    \begin{itemize}
+    \item
+        Time-domain wave equation has a unique solution in the lossless case.
+    \item
+        Frequency-domain wave equation does not.
+    \item
+        Taking infinitesimally small loss is equivalent to assuming $ u(x) $ and $ u'(x) $ are zero at some initial time.
+    \end{itemize}
 \end{frame}
 
 \note{}
