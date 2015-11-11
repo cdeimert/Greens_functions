@@ -3,10 +3,45 @@
 % The theme used for this presentation is matze's mtheme, which can be
 % found at https://github.com/matze/mtheme
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THINGS TO TALK ABOUT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Direct solution
+%   - Discontinuity condition
+%
+% Eigenvalue solution
+%
+% Boundary conditions
+%   - Green's function not arbitrary! Depends on BC/IC's.
+%   - Idea of replacing BC/IC's with equivalent sources (Morse and Feshback)
+%   - Can also just find any Green's and add homogeneous solutions
+%   - Can also solve adjoint Green's function problem
+%
+% Interpreting the Green's function
+%   - Space-time invariance
+%   - Self-adjointness (IC problems are not self-adjoint!)
+%   - Reciprocity (weird combination of invariance/self-adjointness?)
+%   - Poles are eigenvalues
+%
+% Wave equation causality
+%   - Causal Green's functions comes from initial conditions in time domain
+%   - Equivalent to assuming small loss (a la Harrington)
+%   - Can replace initial conditions with equivalent sources
+% 
+% Scattering
+%   - Interesting approximation technique (Born): the field itself is the source
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \newif\ifhandout
+\newif\ifextended
 
 \handoutfalse
 \handouttrue
+
+\extendedfalse
+\extendedtrue
 
 \ifhandout
     \documentclass[12 pt, compress, handout, intlimits]{beamer}
@@ -71,6 +106,8 @@
         Focus here will be on intuition/understanding and awareness of some key techniques.
     \item
         Lots of further reading provided at the end.
+    \item
+        Tip: read a lot of different references. Different authors take totally different approaches and it's interesting to see them all.
     \end{itemize}
 }
 
@@ -90,6 +127,8 @@
     Fortunately, the basic idea of Green's functions is really simple.
 \item
     You've actually used them before!
+\item
+    What's far more interesting is how to calculate/interpret them.
 \end{itemize}
 }
 
@@ -201,9 +240,9 @@
     In electrical engineering, we've seen Green's functions before.
 \item
     Impulse response $ h(t - t') $ from linear system theory is an example of a Green's function.
-    \begin{align}
+    \begin{align*}
         G(t,t') & = h(t - t')
-    \end{align}
+    \end{align*}
 \item
     Usually find $ h(t - t') $ using Fourier transform of the transfer function.
 \end{itemize}
@@ -275,9 +314,11 @@
 \note{
     \begin{itemize}
     \item
-        Delta functions play a key role in Green's functions (and electrical engineering in general).
+        Delta functions play a key role in Green's functions (and electrical engineering in general), but tend to lead to hand-waving.
     \item
-        Worth seeing how they are rigorously defined before moving on.
+        Worth seeing how they can be rigorously defined before moving on.
+    \item
+        Machinery for this is Schwartz's theory of distributions (generalized functions).
     \item
         See Folland (1992), \emph{Fourier analysis and its applications}, Chapter 9 for more.
     \end{itemize}
@@ -285,14 +326,37 @@
 }
 
 \begin{frame}[fragile]
-    \frametitle{Poor definition}
+    \frametitle{Typical delta function definition}
     
-    Common ``definition'':
+    Typical ``definition'' of $ \delta(x - x_0) $:
+    \begin{align*}
+        \delta(x-x_0) &= 0 \quad \text{for} \quad x \neq x_0
+    \end{align*}
     \begin{align*}
         \int_{-\infty}^{\infty} \delta(x-x_0) &= 1
     \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Often see definitions like this one.
+\item
+    Often said to imply that $ \delta(x - x_0) = \infty $ at $ x = x_0 $.
+\item
+    Might be okay intuitively, but very imprecise mathematically.
+\item
+    There is no true function which satisfies both of these requirements!
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Generalized functions}
+    
+    $ f(x) $ defines a linear operator $ \phi(x) $ via
     \begin{align*}
-        \delta(x-x_0) &= \begin{cases} 0 & \text{for } x \neq x_0 \\ \infty & \text{for } x = x_0 \end{cases}
+        f[\phi] &= \int_{-\infty}^{\infty} f(x) \phi(x) \d x
     \end{align*}
     
 \end{frame}
@@ -300,59 +364,99 @@
 \note{
 \begin{itemize}
 \item
-    Often see definitions like ``$ \delta(x-x_0) $ is zero for $ x \neq x_0 $, but the area under it is 1.''
+    Let's see if we can generalize the idea of a ``function'' so that it includes delta functions.
 \item
-    Might be okay intuitively, but very imprecise mathematically.
+    Given a function $ f(x) $, we can use it to define a linear operator (a functional, to be exact) on other functions $ \phi(x) $.
+\item
+    $ f[\cdot] $ is a linear operator. It takes a function $ \phi(x) $ and returns the number
+    \begin{align*}
+        f[\phi] &= \int_{-\infty}^{\infty} f(x) \phi(x) \d x
+    \end{align*}
+\item
+    If we ensure that $ \phi(x) $ is very well-behaved, then every function $ f(x) $ defines an operator in this way.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
-    \frametitle{Better definition}
+    \frametitle{Generalized functions}
 
-    \begin{itemize}
-    \item
-    $ \delta(x-x_0) $ is an operator, \textbf{not} a function!
-    \pause
-    \item
-    Define it by the sifting property:
+    If we have $ f[\phi] $, but no $ f(x) $, then $ f $ is a generalized function.
+    
+    \textbf{Symbolically}, we write
     \begin{align*}
-        \delta_{x_0}[f] &= f(x_0)
+        f[\phi] &\stackrel{s}{=} \int_{-\infty}^{\infty} f(x) \phi(x) \d x
     \end{align*}
-    \pause\vspace*{-\baselineskip}
-    \item
-    \textbf{Symbolically}, write
-    \begin{align*}
-        \int_{-\infty}^{\infty} \delta(x - x_0) f(x) \d x &= f(x_0)
-    \end{align*}
-    \end{itemize}
     
 \end{frame}
 
 \note{
     \begin{itemize}
     \item
-        Delta function is rigorously defined using Schwartz distribution theory.
+        It's possible to have an operator $ f[\phi] $, but we can't find an $ f(x) $ to implement it via an integral.
     \item
-        Basically, the delta function is not a function at all, it is a linear operator which takes a function and returns a number: the value of the function at $ x_0 $.
+        Then $ f(x) $ is a generalized function. It is not a function in its own right, but it is defined purely by its action on other functions $ f[\phi] $.
     \item
-    I.e., \emph{the sifting property is the definition of the delta function.}
-    \item
-        Symbolically, we often write it as a function, but it's good to remember the proper definition in case anything fishy shows up.
-    \item
-        Remember, $ \delta(x - x') $ has no meaning as a stand-alone function.
-        It only has meaning when it operates on a function.
+        We still symbolically write
+        \begin{align*}
+            f[\phi] &\stackrel{s}{=} \int_{-\infty}^{\infty} f(x) \phi(x) \d x
+        \end{align*}
+        but this just suggestive notation. 
+        It is not actually an integral unless $ f(x) $ is a ``proper'' function!
     \end{itemize}
 }
 
 \begin{frame}[fragile]
+    \frametitle{Defining the delta function}
+
+    $ \delta(x-x_0) $ is a generalized function defined by the sifting property
+    \begin{align*}
+        \delta_{x_0}[\phi] &= \phi(x_0) \stackrel{s}{=} \int_{-\infty}^{\infty} \delta(x - x_0) \phi(x) \d x
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    We can define a simple linear operator via the sifting property $ \delta_{x_0}[\phi] = \phi(x_0) $.
+\item
+    There is no actual function $ \delta(x - x_0) $ which gives
+    \begin{align*}
+        \int_{-\infty}^{\infty} \delta(x - x_0) \phi(x) \d x &= \phi(x_0)
+    \end{align*}
+    so $ \delta(x - x_0) $ is a generalized function and the above integral is purely symbolic.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Delta function derivatives}
+    
+    We can define derivatives too:
+    \begin{align*}
+        \delta^{(n)}_{x_0}[\phi] &= (-1)^n \phi^{(n)}(x_0) \stackrel{s}{=} \int_{-\infty}^{\infty} \delta^{(n)}(x - x_0) \phi(x) \d x
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Generalized function theory lets us make sense of the derivatives of the delta function too.
+\item
+    $ \delta_{x_0}^{(n)} $ is just an operator that picks out the value of the $ n $th derivative of $ \phi(x) $ at the point $ x_0 $.
+\end{itemize}
+}
+
+\ifextended
+\begin{frame}[fragile]
     \frametitle{Delta function limits}
     
     \begin{align*}
-        \lim_{n \to \infty} \phi_n(x) &= \delta(x)
+        \lim_{\epsilon \to 0} f_\epsilon(x) &= \delta(x)
     \end{align*}
     if and only if
     \begin{align*}
-        \lim_{n \to \infty} \int_{-\infty}^{\infty} \phi_n(x) f(x) \d x &= f(0)
+        \lim_{\epsilon \to 0} f_\epsilon[\phi] = \lim_{\epsilon \to 0} \int_{-\infty}^{\infty} f_\epsilon(x) \phi(x) \d x &= \phi(0)
     \end{align*}
     
 \end{frame}
@@ -360,36 +464,96 @@
 \note{
 \begin{itemize}
 \item
-    Often, we want to show that regular functions are equivalent to the delta function.
+    Often useful to show that some set of actual functions $ f_\epsilon(x) $ ``approach'' the delta function in a limit.
 \item
-    To do this in a reasonable way, we need to show that the sifting property is obeyed, usually in a limit.
+    To do this, we need to show that the sifting property is obeyed in the limit.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
     \frametitle{Delta function limits}
-    Example:
+    Limit of Gaussian functions:
+    \begin{align*}
+        \delta(x) &= \lim_{\epsilon \to 0} \frac{1}{\sqrt{2 \pi} \epsilon} e^{- x^2/ 2 \epsilon^2}
+    \end{align*}
+    Limit of Lorentzian functions:
+    \begin{align*}
+        \delta(x) &= \lim_{\epsilon \to 0} \frac{1}{\pi} \frac{\epsilon}{t^2 + \epsilon^2}
+    \end{align*}
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Two examples of delta function limits.
+\item
+    Confirms our intuition of the delta function as a limit of sharply-peaked functions.
+\item
+    In fact, basically any limit of sharply-peaked functions of area 1 will work: see Folland (Theorem 9.2).
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Delta function limits}
+    A more interesting example:
     \begin{align*}
         \frac{1}{2 \pi} \int_{-\infty}^{\infty} e^{j x t} \d t &= \delta(x)
     \end{align*}
     because
     \begin{align*}
-        \frac{1}{2 \pi} \int_{-\infty}^{\infty} e^{-\epsilon^2 t^2} e^{j x t} \d t
+        \lim_{\epsilon \to 0} \frac{1}{2 \pi} \int_{-\infty}^{\infty} e^{-\epsilon^2 t^2} e^{j x t} \d t = \delta(x)
     \end{align*}
-    is a delta-function limit as $ \epsilon \to 0 $.
 
 \end{frame}
 
 \note{
     \begin{itemize}
     \item
-        Example of a common, but perplexing expression for the Delta function.
+        Example of a common, but unintuitive expression for the Delta function.
     \item
-        Can show that it's true by expressing it as a delta function limit.
-        (Multiply by a Gaussian distribution and take the limit as standard deviation goes to $ \infty $.)
-    \item
-        Doing this proof is not a bad exercise if you're interested. Theorem 9.2 from Folland will make it manageable.
+        Can show that it's true by expressing it as a delta function limit. (If you want to go through it, use Theorem 9.2 from Folland.)
     \end{itemize}
+    
+}
+\fi
+
+\begin{frame}[fragile]
+    \frametitle{What does this mean for Green's functions?}
+    
+    \begin{align*}
+        \L G(x, x') &= \delta(x - x')
+    \end{align*}
+    actually means
+    \begin{align*}
+        \left( \L G \right)[\phi]  &= \phi(x') \stackrel{s}{=} \int_{-\infty}^\infty \left( \L G(x, x')\right) \phi(x) \d x
+    \end{align*}
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Technically, the Green's function is a generalized function which 
+\end{itemize}
+
+}
+
+\begin{frame}[fragile]
+    \frametitle{Takeaway}
+    
+    \begin{center}
+        If in doubt, think of $ \delta(x - x_0) $ as an operator, not a function!
+    \end{center}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    In practise, thinking of $ \delta(x - x_0) $ as a function is usually fine.
+    (We'll even do that for the rest of this presentation.)
+\item
+    But if anything starts to seem fishy, it's good to remember that $ \delta(x - x_0) $ is actually an operator, and not a function.
+\end{itemize}
     
 }
 
