@@ -788,7 +788,7 @@
     Properties of $ G(x,x') $:
     \begin{itemize}
     \item
-        Looks like the sourceless solution except at $ x = x' $.
+        Behaves like source-free solution except at $ x = x' $.
     \item
         Function is continuous at $ x = x' $.
     \item
@@ -810,6 +810,105 @@
 \label{sec:boundary_conditions}
 
 \note{
+    \begin{itemize}
+    \item
+        We didn't worry about boundary conditions in the last example.
+    \item
+        As it turns out, Green's functions allow us to deal with boundary conditions in an elegant way.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Simple harmonic oscillator}
+    
+    Original problem:
+    \begin{align*}
+        \frac{\d^2 u(x)}{\d x^2} + \omega_0^2 u(x) &= f(x)
+    \end{align*}
+    \begin{align*}
+        u(a) &= \alpha
+        \\
+        u(b) &= \beta
+    \end{align*}
+
+    Green's function problem:
+    \begin{align*}
+        \frac{\d^2 G(x,x')}{\d x^2} + \omega_0^2 G(x,x') &= \delta(x - x')
+    \end{align*}
+    
+
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Now let's look at an example with boundary conditions: a simple harmonic oscillator.
+    \item
+        Question: what should the boundary conditions be for $ G(x,x') $?
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Simple harmonic oscillator}
+
+    \begin{align*}
+        G(x,x') \left[ \frac{\d^2 u(x)}{\d x^2} + \omega_0^2 u(x) \right] &= G(x,x') f(x)
+    \end{align*}
+
+    \begin{align*}
+        u(x) \left[ \frac{\d^2 G(x,x')}{\d x^2} + \omega_0^2 G(x,x') \right] &= u(x) \delta(x - x')
+    \end{align*}
+
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        To figure out the best boundary conditions, we use a little bit of trickery.
+    \item
+        First, we multiply the original equation by $ G(x,x') $ and the Green's functions equation with by $ u(x) $.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Simple harmonic oscillator}
+  
+    \begin{align*}
+        \int_a^b \Big[ u(x) \frac{\d^2 G(x,x')}{\d x^2} &- G(x,x') \frac{\d^2 u(x)}{\d x^2} \Big] \d x 
+        \\&= \int_a^b \left[ u(x) \delta(x - x') - G(x,x') f(x) \right] \d x
+    \end{align*}
+   
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Next, we subtract and integrate over $ [a,b] $.
+\item
+    The integral over $ u(x) \delta(x - x') $ becomes just $ u(x') $.
+\item
+    The left hand side can be dealt with using integration by parts.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Simple harmonic oscillator}
+
+    \begin{align*}
+        u(x') &= \int_a^b G(x,x') f(x) \d x +
+        \\
+        &\quad + \Big[ u(x) \frac{\d G(x,x')}{\d x} - G(x,x') \frac{\d u(x)}{\d x} \Big]_{x=a}^b
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    We now have a more informative expression for $ u(x') $.
+\item
+    We have the original integral over $ G(x,x') f(x) $, but now we also have a boundary term.
+\end{itemize}
 }
 
 \section{Spectral methods}
@@ -820,7 +919,13 @@
 \section{3D problems}
 \label{sec:3d_problems}
 
-\note{}
+\note{
+    \begin{itemize}
+    \item
+
+    \end{itemize}
+    
+}
 
 \section{Properties of the Green's function}
 \label{sec:properties_of_the_green_s_function}
