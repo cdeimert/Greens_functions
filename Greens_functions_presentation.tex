@@ -7,6 +7,16 @@
 % THINGS TO TALK ABOUT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+%
+% Question: Green's function is NOT unique, so can we really treat it as
+%           THE response to a source?
+%           - Green's function is unique, given specified BC/IC's
+%           - So we could say it's the response to the source, under the
+%             the imposed BC/IC's
+%           - But does this weaken the interpretation of BC/IC's as sources?
+%           - Not really: It's the homogeneous BC's that make the Green's function unique
+%
+%
 % Direct solution
 %   - Discontinuity condition
 %
@@ -15,6 +25,7 @@
 % Boundary conditions
 %   - Green's function not arbitrary! Depends on BC/IC's.
 %   - Idea of replacing BC/IC's with equivalent sources (Morse and Feshback)
+%   - Relation to equivalence principle?
 %   - Can also just find any Green's and add homogeneous solutions
 %   - Can also solve adjoint Green's function problem
 %
@@ -28,9 +39,12 @@
 %   - Causal Green's functions comes from initial conditions in time domain
 %   - Equivalent to assuming small loss (a la Harrington)
 %   - Can replace initial conditions with equivalent sources
+%   - Fourier transform actually fails here!
 % 
 % Scattering
 %   - Interesting approximation technique (Born): the field itself is the source
+% Perturbation theory?
+% Huygens principle and the propagator?
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -38,7 +52,7 @@
 \newif\ifextended
 
 \handoutfalse
-\handouttrue
+%\handouttrue
 
 \extendedfalse
 \extendedtrue
@@ -61,7 +75,7 @@
 \usepackage[retainorgcmds]{IEEEtrantools}
 \setlength{\IEEEnormaljot}{9pt}
 
-\renewcommand{\d}{\ensuremath{\operatorname{d}}}
+\renewcommand{\d}{\operatorname{d}}
 
 \usepackage{graphicx}
 \usepackage{booktabs}
@@ -72,16 +86,21 @@
 \usepackage{mathtools}
 \usepackage{empheq}
 
-\newcommand{\highlight}[1]{\colorbox{mLightBrown!75}{$\displaystyle{#1}$}}
-\newcommand{\mygreenbox}[1]{\colorbox{mLightBrown!75}{\hspace{1em}#1\hspace{1em}}}
+\newcommand{\highlight}[1]{\colorbox{mLightBrown!65}{$\displaystyle{#1}$}}
+\newcommand{\mygreenbox}[1]{\colorbox{mLightBrown!65}{\hspace{1em}#1\hspace{1em}}}
+\newcommand*\widefbox[1]{\fbox{\hspace{1em}#1\hspace{1em}}}
 
 %\usepackage{sourcesanspro}
 
-%\usepgfplotslibrary{dateplot}
+\usepgfplotslibrary{dateplot}
 
 %\usefonttheme[onlymath]{serif}
+%\usepackage{eulervm}
+%\usepackage{arevmath}
 %\renewcommand{\vect}[1]{\vec{#1}}
 \renewcommand{\L}{\mathcal{L}}
+
+\useinnertheme{circles}
 
 \setbeamercovered{transparent}
 
@@ -205,7 +224,7 @@
     \begin{align*}
         \L G(x,x') &= \delta(x - x')
     \end{align*}
-    \begin{empheq}[box=\mygreenbox]{align*}
+    \begin{empheq}[box=\widefbox]{align*}
         u(x) = \int G(x,x') f(x') \d x
     \end{empheq}
 
@@ -559,6 +578,261 @@
     
 }
 
+\section{Direct solution}
+\label{sec:direct_solution}
+
+\note{
+    \begin{itemize}
+    \item
+        Back to Green's functions!
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{A simple example}
+
+    Original problem:
+    \begin{align*}
+        \frac{\d^2 u(x)}{\d x^2} - k^2 u(x) &= f(x)
+    \end{align*}
+    
+    Green's function problem:
+    \begin{align*}
+        \frac{\d^2 G(x, x')}{\d x^2} - k^2 G(x,x') &= \delta(x - x')
+    \end{align*}
+    
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Let's look at a simple example now.
+\item
+    This problem is similar to a simple harmonic oscillator, but the negative sign means we expect lossy behaviour rather than oscillation.
+\item
+    We won't worry much about boundary conditions yet, we'll just look for solutions that don't blow up at $ x = \pm \infty $.
+\item
+    If we can find the Green's function, then we can find the solution to the original problem.
+\item
+    But the Green's function problem looks pretty hard. The point of this example is to demonstrate that we can actually solve it.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{A simple example}
+
+    For $ x \neq x' $
+    \begin{align*}
+        \frac{\d^2 G(x, x')}{\d x^2} - k^2 G(x,x') &= 0
+    \end{align*}
+    
+    \pause
+    So we have
+    \begin{align*}
+        G(x,x') &= 
+        \begin{cases} 
+            A e^{+k (x - x')} & \text{for } x < x'
+            \\
+            B e^{-k (x - x')} & \text{for } x > x'
+        \end{cases}
+    \end{align*}
+    
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Key thing to notice is that the source is concentrated at $ x = x' $.
+    \item
+        So for $ x > x' $ and $ x < x' $, we expect the solutions to look like those of the source-free equation.
+    \item
+        To keep the solutions finite, we expect exponential growth before $ x = x' $ and exponential decay afterward.
+    \item
+        Now, how do we find the constants $ A $ and $ B $?
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{A simple example}
+
+    \begin{align*}
+        \frac{\d^2 G(x,x')}{\d x^2} - k^2 G(x,x') &= \delta(x - x')
+    \end{align*}
+
+    Continuity of the Green's function:
+    \begin{align*}
+        \lim_{\epsilon \to 0} \left[ G(x'+\epsilon, x') - G(x' - \epsilon, x') \right] = 0
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    How continuous do we expect our Green's function to be?
+\item
+    If $ G(x,x') $ is discontinuous (like a step function), then $ \d G / \d x $ will behave like a delta function and $ \d^2 G / \d x^2 $ will behave like a delta function derivative. No good!
+\item
+    So we expect $ G(x,x') $ to be continuous.
+\item
+    That gives us one condition we can use to find $ A $ and $ B $. (In fact, it tells us that $ A = B $.)
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{A simple example}
+ 
+    \begin{align*}
+        \alt<2->{\int_{x'-\epsilon}^{x'+\epsilon} \left[ \frac{\d^2 G(x, x')}{\d x^2} - k^2 G(x,x') \right] \d x &= \int_{x'-\epsilon}^{x'+\epsilon} \delta(x - x') \d x}{\frac{\d^2 G(x, x')}{\d x^2} - k^2 G(x,x') = \delta(x - x')}
+    \end{align*}
+
+    Discontinuity condition:
+    \begin{align*}
+        \lim_{\epsilon \to 0} \left[ \left. \frac{\d G}{\d x}\right|_{x = x' + \epsilon} - \left. \frac{\d G}{\d x} \right|_{x = x' - \epsilon} \right] &= 1
+    \end{align*}
+    
+
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        But what if the derivative $ \d G / \d x $ is discontinuous?
+    \item
+        Then $ \d^2 G / \d x^2 $ is like a delta function.
+        But that's fine, because we have a delta function on the right hand side too.
+    \item
+        We can find exactly how discontinuous the derivative is by integrating over a small interval around $ x' $.
+    \item
+        In the limit of $ \epsilon \to 0 $, the second integral vanishes because $ G(x,x') $ is continuous.
+    \item
+        But, we expect $ \d G / \d x $ to be discontinous. 
+    \item
+        Using fundamental theorem of calculus, we get at a \emph{discontinuity condition for the derivative.} (Key idea for the direct solution method!)
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{A simple example}
+
+    \begin{align*}
+        G(x,x') &= 
+        \begin{cases} 
+            A e^{+k (x - x')} & \text{for } x < x'
+            \\
+            B e^{-k (x - x')} & \text{for } x > x'
+        \end{cases}
+    \end{align*}
+    
+    Continuity of $ G $:
+    \begin{align*}
+        A &= B
+    \end{align*}
+
+    Discontinuity of $ \frac{\d G}{\d x} $:
+    \begin{align*}
+        k A + k B &= 1
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Applying our two conditions, we can solve for $ A $ and $ B $.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{A simple example}
+    At last, our Green's function is
+    \begin{align*}
+        G(x,x') &= 
+        \begin{dcases} 
+            \dfrac{e^{+k (x - x')}}{2k} & \text{for } x < x'
+            \\
+            \dfrac{e^{-k (x - x')}}{2k} & \text{for } x > x'
+        \end{dcases}
+    \end{align*}
+    or, more compactly
+    \begin{empheq}[box=\widefbox]{align*}
+        G(x, x') = \frac{e^{k |x - x'|}}{2 k}
+    \end{empheq}
+    
+
+\end{frame}
+
+\note{
+}
+
+\begin{frame}[fragile]
+    \frametitle{A simple example}
+    Solution:
+    \begin{align*}
+        u(x) &= \int_{-\infty}^{\infty} f(x') \frac{e^{k|x - x'|}}{2k} \d x'
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Now that we have the Green's function, we can construct the solution to our original problem for any forcing function $ f(t) $.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{General approach}
+    Properties of $ G(x,x') $:
+    \begin{itemize}
+    \item
+        Looks like the sourceless solution except at $ x = x' $.
+    \item
+        Function is continuous at $ x = x' $.
+    \item
+        Derivative is discontinuous at $ x = x' $.
+    \end{itemize}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Listed are the key things to note from that example.
+    \item
+        This approach works quite well for solving 1D Green's function problems.
+    \end{itemize}
+}
+
+\section{Boundary conditions}
+\label{sec:boundary_conditions}
+
+\note{
+}
+
+\section{Spectral methods}
+\label{sec:spectral_methods}
+
+\note{}
+
+\section{3D problems}
+\label{sec:3d_problems}
+
+\note{}
+
+\section{Properties of the Green's function}
+\label{sec:properties_of_the_green_s_function}
+
+\note{}
+
+\section{Advanced topics}
+\label{sec:advanced_topics}
+
+\note{}
+
+
 \begin{frame}[fragile]
     \frametitle{Introductory resources}
     Balanis (2012), \emph{Advanced engineering electromagnetics}. 
@@ -589,72 +863,6 @@
     For the differential forms inclined.
 
 \end{frame}    
-
-\note{}
-
-\section{Solution methods}
-\label{sec:solution_methods}
-
-\note{}
-
-\begin{frame}[fragile]
-    \frametitle{Solution methods}
-    Boundary condition approaches:
-    \begin{enumerate}
-    \item
-        Green's function gives particular solution; add homogeneous solution to find boundary conditions.
-        Easier to set up, but requires extra work to deal with BC's.
-    \item
-        Green's function includes BC's.
-        Harder to set up, but gives full solution including BC's.
-    \end{enumerate}
-\end{frame}
-
-\note{}
-
-\begin{frame}[fragile]
-    \frametitle{Solution methods}
-     Solving Green's function approaches:
-    \begin{enumerate}
-    \item
-        Direct solution. (Great if it's possible.)
-    \item
-        Eigenvalue expansion. (Works every time.)
-    \end{enumerate}
-\end{frame}
-
-\note{}
-
-\begin{frame}[fragile]
-    \frametitle{Causality}
-    \begin{itemize}
-    \item
-        Time-domain wave equation has a unique solution in the lossless case.
-    \item
-        Frequency-domain wave equation does not.
-    \item
-        Taking infinitesimally small loss is equivalent to assuming $ u(x) $ and $ u'(x) $ are zero at some initial time.
-    \end{itemize}
-\end{frame}
-
-\note{}
-
-\section{Applications}
-\label{sec:applications}
-
-\note{}
-
-\begin{frame}[fragile]
-    \frametitle{Applications}
-    \begin{itemize}
-    \item
-        Born approximation for scattering?
-    \item
-        Perturbation theory?
-    \item
-        Propagator/Huygen's principle?
-    \end{itemize}
-\end{frame}
 
 \note{}
 
