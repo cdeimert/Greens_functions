@@ -76,6 +76,9 @@
 \setlength{\IEEEnormaljot}{9pt}
 
 \renewcommand{\d}{\operatorname{d}}
+\renewcommand{\L}{\mathcal{L}}
+\renewcommand{\B}{\mathcal{B}}
+\newcommand{\inprod}[2]{\left\langle {#1}, {#2} \right\rangle}
 
 \usepackage{graphicx}
 \usepackage{booktabs}
@@ -126,7 +129,8 @@
     \item
         Lots of further reading provided at the end.
     \item
-        Tip: read a lot of different references. Different authors take totally different approaches and it's interesting to see them all.
+        Tip: read a lot of different references. 
+        Different authors take totally different approaches and it's interesting to see them all.
     \end{itemize}
 }
 
@@ -815,89 +819,508 @@
         We didn't worry about boundary conditions in the last example.
     \item
         As it turns out, Green's functions allow us to deal with boundary conditions in an elegant way.
+    \item
+        Unfortunately, to derive it, we either have to do a lot of hand-waving or a lot of math. 
+        We're going to do a lot of math.
+    \item
+        See Dudley's \textit{Mathematical foundations for electromagnetic theory} for a more thorough discussion.
+    \end{itemize}
+}
+
+%\begin{frame}[fragile]
+%    \frametitle{Sturm Liouville Problems}
+%    
+%    Differential equation:
+%    \begin{align*}
+%        \underbrace{\left( - \frac{1}{w(x)} \frac{\d}{\d x} \left[ p(x) \frac{\d}{\d x} \right] + q(x) - \lambda \right)}_{\displaystyle \L_\lambda} u(x) &= f(x)
+%    \end{align*}
+%    Boundary conditions:
+%    \begin{align*}
+%        B_1(u) &= \alpha_{11} u(a) + \alpha_{12} u'(a) + \alpha_{13} u(b) + \alpha_{14} u'(b) =  \alpha
+%        \\
+%        B_2(u) &= \alpha_{21} u(a) + \alpha_{22} u'(a) + \alpha_{23} u(b) + \alpha_{24} u'(b) =  \beta
+%    \end{align*}
+%    
+%\end{frame}
+%
+%\note{
+%    \begin{itemize}
+%    \item
+%        This is a general Sturm-Liouville problem.
+%    \end{itemize}
+%    
+%}
+
+\begin{frame}[fragile]
+    \frametitle{Adjoint operators}
+
+    \begin{IEEEeqnarray*}{rCrClCrCl}
+        \text{Original:} & \qquad & \L [u(x)] &=& f(x); &\qquad& \B [u(x)] &=& 0
+        \\
+        \text{Adjoint:} & \qquad & \L^* [v(x)] &=& f(x); &\qquad& \B^* [v(x)] &=& 0
+    \end{IEEEeqnarray*}
+    
+    Defining property:
+    \begin{align*}
+        \inprod{\L u}{v} = \inprod{u}{\L^* v} \qquad \text{where } \inprod{u}{v} = \int_{a}^{b} u(x) v^*(x) \d x
+    \end{align*}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        To really make sense of boundary conditions, we need the concept of the adjoint problem.
+    \item
+        Suppose we have an original problem defined by operator $ \L $ and boundary conditions $ \B $.
+    \item
+        Then, $ \L^* $ is the adjoint operator and $ \B^* $ are the adjoint boundary conditions if $ \inprod{\L u}{v} = \inprod{u}{\L^* v} $ for all $ u, v $.
+    \item
+        Here $ \inprod{u}{v} $ is the inner product as defined on the slide. ($ v^*(x) $ is the complex conjugate of $ v(x) $.)
+    \item
+        (Side note: technically, we should call $ \L^* $ the \emph{formal} adjoint. 
+        A boundary condition like $ \B[u] = 0 $ restricts $ u $ to a subspace of its original Hilbert space. 
+        Thus, if $ \B \neq \B^* $, the domains of $ \L $ and $ \L^* $ are not the same, and they are not true adjoints.)
     \end{itemize}
 }
 
 \begin{frame}[fragile]
-    \frametitle{Simple harmonic oscillator}
+    \frametitle{Adjoint operators: example}
+    \begin{align*}
+        \L[u(x)] &= \left[ \frac{\d^2}{\d x^2} + k^2 \right] u(x)
+        \\
+        \B[u(x)] &= \mat{u(a) \\ u(b)} = \mat{0 \\ 0}
+    \end{align*}
+
+    Want $ \L^* $ and $ \B^* $ so that
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v}
+    \end{align*}
+
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Let's look at an example: the 1D simple harmonic oscillator.
+    \item
+        We'll use boundary conditions so that $ u(a) = u(b) = 0 $.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Adjoint operators: example}
     
+    \vspace{-36pt}
+    \begin{align*}
+        \inprod{\L u}{v} &= \int_a^b \left[ u''(x) + k^2 u(x) \right] v^*(x) \d x
+        %\pause
+        %\\
+        %&= \int_a^b \left[ - u'(x) v^{*\prime}(x) + k^2 u(x) v^*(x) \right] \d x + \left[ u'(x) v^*(x) \right]_{a}^{b}
+        \pause
+        \\
+        &= \int_a^b \left[ v^{\prime\prime *}(x) + k^2 v^*(x) \right] u(x) \d x + 
+        \\& \quad + \left[ u'(x) v^*(x)  - u(x) v^{\prime *}(x) \right]_{a}^{b}
+    \end{align*}
+    By inspection:
+    \begin{align*}
+        \L^* v(x) &= \left[ \frac{\d^2}{\d x^2} + (k^2)^* \right] v(x)
+    \end{align*}
+    
+
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Integrate by parts twice. 
+    \item
+        The remaining integral term looks like
+        \begin{align*}
+            \int_a^b u(x) \left[ \L^* v(x) \right]^* \d x 
+        \end{align*}
+        so we can read off $ \L^* $.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Adjoint operators: example}
+    
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + \left[ u'(x) v^*(x)  - u(x) v^{*\prime}(x) \right]_{a}^{b}
+    \end{align*}
+
+    Since $ u(a) = u(b) = 0 $,
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + u'(a) v^*(a) - u'(b) v^*(b)
+    \end{align*}
+
+    So, pick
+    \begin{align*}
+        v(a) = v(b) = 0
+    \end{align*}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        We almost have the required $ \inprod{\L u}{v} = \inprod{u}{\L^* v} $, but we need the part on the right (called the conjunct) to be zero.
+    \item
+        From the original problem, we have
+        \begin{align*}
+            \B[u] &= \mat{u(a) \\ u(b)} = \mat{0 \\ 0}
+        \end{align*}
+    \item
+        To make the conjunct zero, we need the adjoint boundary conditions to be
+        \begin{align*}
+            \B^*[v] &= \mat{v(a) \\ v(b)} = \mat{0 \\ 0}
+        \end{align*}
+    \item
+        So in this case, $ \B = \B^* $.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Adjoint operators: example}
+     
+    What if $ u(a) = u'(a) = 0 $ (initial conditions)?
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + \left[ u'(x) v^*(x)  - u(x) v^{*\prime}(x) \right]_{a}^{b}
+        \\
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + u'(b) v^*(b)  - u(b) v^{\prime *}(b)
+    \end{align*}
+    We must have \emph{final} conditions for $ v $:
+    \begin{align*}
+        v(b) = v'(b) = 0
+    \end{align*}
+
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        What if we use the same operator $ \L $, but we switch from a boundary value problem to an initial condition problem?
+        That is,
+        \begin{align*}
+            \B[u] &= \mat{u(a) \\ u'(a)} = \mat{0 \\ 0}
+        \end{align*}
+    \item
+        Then, to make the conjunct zero, we need the adjoint boundary conditions to be
+        \begin{align*}
+            \B[v] &= \mat{v(b) \\ v'(b)} = \mat{0 \\ 0}
+        \end{align*}
+    \item
+        For an initial condition problem, the adjoint problem is a \emph{final} condition problem!
+        $ \B \neq \B^* $. 
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Adjoint operators}
+
+    In general:
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u,v)
+    \end{align*}
+    where $ J(u,v) $ depends on $ u, v, u', v', \ldots $ at the boundaries.
+
+    \begin{align*}
+        \B[u] = \B^*[v] = 0 \Longleftrightarrow J(u,v) = 0
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    In that example, we saw that we always had $ \inprod{\L u}{v} $ equal to $ \inprod{u}{\L^* v} $ plus a ``leftover'' term called the conjunct.
+\item
+    This is true in general: we always have a leftover term $ J(u,v) $ which depends only on the boundary values of $ u $ and $ v $.
+\item
+    We say $ \B[u] = 0 $ and $ \B^*[v] = 0 $ are adjoint boundary conditions if and only if they make $ J(u,v) $.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Adjoint Green's functions}
+ 
+    Original problem:
+    \begin{IEEEeqnarray*}{rClCrCl}
+        \L [u(x)] &=& f(x); &\qquad& \B [u(x)] &=& \alpha 
+    \end{IEEEeqnarray*}
+    Green's problem:
+    \begin{IEEEeqnarray*}{rClCrCl}
+        \L [G(x,x')] &=& \delta(x - x'); &\qquad& \B [G(x,x')] &=& 0
+    \end{IEEEeqnarray*}
+    Adjoint Green's problem:
+    \begin{IEEEeqnarray*}{rClCrCl}
+        \L^* [H(x,x')] &=& \delta(x - x'); &\qquad& \B^* [H(x,x')] &=& 0
+    \end{IEEEeqnarray*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Now we'll be able to deal with boundary conditions properly.
+\item
+    We define $ G(x,x') $ to obey the same equation as $ u(x) $, but with $ f(x) \to \delta(x - x') $ and $ \alpha \to 0 $.
+    As before, $ G(x,x') $ is the impulse response.
+\item
+    In addition, we define a new function $ H(x,x') $ which is called the adjoint Green's function.
+    It obeys the adjoint version of the $ G(x,x') $ equation.
+\item
+    Warning: a lot of textbooks don't distinguish between $ H(x,x') $ and $ G(x,x') $.
+    Quite often, the ``Green's function'' is really the adjoint Green's function.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Example with boundary conditions}
+
     Original problem:
     \begin{align*}
-        \frac{\d^2 u(x)}{\d x^2} + \omega_0^2 u(x) &= f(x)
-    \end{align*}
-    \begin{align*}
-        u(a) &= \alpha
-        \\
-        u(b) &= \beta
+        \L[u] = \frac{\d^2 u(x)}{\d x^2} + k^2 u(x) &= f(x); \qquad \mat{u(a) \\ u'(a)} = \mat{\alpha \\ \beta}
     \end{align*}
 
-    Green's function problem:
+    Adjoint Green's problem:
     \begin{align*}
-        \frac{\d^2 G(x,x')}{\d x^2} + \omega_0^2 G(x,x') &= \delta(x - x')
+        \frac{\d^2 H(x,x')}{\d x^2} + k^2 H(x,x') &= \delta(x - x'); \quad \mat{H(b,x') \\ H'(b,x')} = \mat{0 \\ 0}
     \end{align*}
     
+\end{frame}
 
+\note{
+\begin{itemize}
+\item
+    We'll show how $ H(x,x') $ is useful with an example.
+\item
+    Here we have a driven simple harmonic oscillator with initial conditions.
+    (We'll take $ k $ real for simplicity.)
+\item
+    From before, we know that the adjoint problem will be the same differential equation, but with final conditions instead of initial conditions.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Example with boundary conditions}
+
+    \begin{align*}
+        H(x,x') &= 
+            \begin{cases} 
+                A \cos(k(x - x')) + B \sin(k(x - x')) & \text{for } x < x'
+                \\
+                C \cos(k(x - x')) + D \sin(k(x - x')) & \text{for } x > x'
+            \end{cases}
+    \end{align*}
+    \begin{align*}
+        \text{Final conditions } & \Longrightarrow C = D = 0
+        \\
+        \text{Continuity of function } & \Longrightarrow A = 0
+        \\
+        \text{Discontinuity of derivative } & \Longrightarrow B = \frac{-1}{k}
+    \end{align*}
+    
 \end{frame}
 
 \note{
     \begin{itemize}
     \item
-        Now let's look at an example with boundary conditions: a simple harmonic oscillator.
+        We can solve for $ H(x,x') $ using a similar approach to before.
     \item
-        Question: what should the boundary conditions be for $ G(x,x') $?
+        Except at $ x = x' $, we write $ H(x,x') $ as a solution to the source-free equation.
+    \item
+        Then we find the coefficients using the boundary conditions and continuity/discontinuity requirements.
     \end{itemize}
 }
 
 \begin{frame}[fragile]
-    \frametitle{Simple harmonic oscillator}
+    \frametitle{Example with boundary conditions}
 
     \begin{align*}
-        G(x,x') \left[ \frac{\d^2 u(x)}{\d x^2} + \omega_0^2 u(x) \right] &= G(x,x') f(x)
+        H(x,x') &= 
+            \begin{cases} 
+                - k^{-1} \sin(k (x - x')) & \text{for } x < x'
+                \\
+                0 & \text{for } x > x'
+            \end{cases} 
     \end{align*}
-
-    \begin{align*}
-        u(x) \left[ \frac{\d^2 G(x,x')}{\d x^2} + \omega_0^2 G(x,x') \right] &= u(x) \delta(x - x')
-    \end{align*}
-
+ 
 \end{frame}
 
 \note{
     \begin{itemize}
     \item
-        To figure out the best boundary conditions, we use a little bit of trickery.
+        So we have our adjoint Green's function.
     \item
-        First, we multiply the original equation by $ G(x,x') $ and the Green's functions equation with by $ u(x) $.
+        Now we just need to figure out how to construct $ u(x) $ from it.
     \end{itemize}
 }
 
 \begin{frame}[fragile]
-    \frametitle{Simple harmonic oscillator}
-  
+    \frametitle{Example with boundary conditions}
+
     \begin{align*}
-        \int_a^b \Big[ u(x) \frac{\d^2 G(x,x')}{\d x^2} &- G(x,x') \frac{\d^2 u(x)}{\d x^2} \Big] \d x 
-        \\&= \int_a^b \left[ u(x) \delta(x - x') - G(x,x') f(x) \right] \d x
+        \inprod{\L u(x)}{H(x,x')} &= \inprod{u(x)}{\L^* H(x,x')} + J(u, H)
+        \\
+        \inprod{f(x)}{H(x,x')} &= \inprod{u(x)}{\delta(x - x')} + J(u, H)
+        \\
+        \int_a^b f(x) H^*(x,x') \d x &= \int_a^b u(x) \delta(x - x') \d x + J(u, H)
+    \end{align*}
+    \begin{empheq}[box=\widefbox]{align*}
+        u(x') &= \int_a^b f(x) H^*(x,x') \d x - J(u, H)
+    \end{empheq}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        To construct the solution $ u(x) $, we take an inner product of $ \L u(x) $ with $ H(x,x') $, and apply our knowledge of adjoints and conjuncts.
+    \item
+        We arrive at a fairly general formula which looks close to what we expect a Green's function formula to look like, but with an extra conjunct term.
+    \item
+        We'll gain insight into the $ J(u,H) $ term by expanding it for this example.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Example with boundary conditions}
+    Expand $ J(u,H) $:
+    \begin{align*}
+        u(x') &= \int_a^b f(x) H^*(x,x') \d x - \left[ \frac{\d u(x)}{\d x} H^*(x,x') - u(x) \frac{\d H^*(x,x')}{\d x} \right]_a^b
+    \end{align*}
+
+    Recall:
+    \begin{align*}
+        \mat{u(a) \\ u'(a)} = \mat{\alpha \\ \beta}; \qquad \mat{H(b,x') \\ H'(b,x')} = \mat{0 \\ 0}
+    \end{align*}
+    
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Now let's expand $ J(u,v) $ for our particular example. (We can basically copy it from a previous part of the derivation.)
+    \item
+        We can simplify the conjunct by remembering our boundary conditions.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Example with boundary conditions}
+
+    \begin{align*}
+        u(x') &= \int_a^b f(x) H^*(x,x') \d x + \beta H^*(a,x') - \alpha \frac{\d H^*(a,x')}{\d x}
     \end{align*}
    
 \end{frame}
 
 \note{
-\begin{itemize}
-\item
-    Next, we subtract and integrate over $ [a,b] $.
-\item
-    The integral over $ u(x) \delta(x - x') $ becomes just $ u(x') $.
-\item
-    The left hand side can be dealt with using integration by parts.
-\end{itemize}
+    \begin{itemize}
+    \item
+        We're very close to our final goal. 
+    \item
+        The last thing will be to get rid of $ H(x,x') $ and replace it with $ G(x,x') $.
+    \end{itemize}
+    
 }
 
 \begin{frame}[fragile]
-    \frametitle{Simple harmonic oscillator}
+    \frametitle{Adjoint Green's functions}
+
+    How are $ G(x,x') $ and $ H(x,x') $ related?
+    \begin{align*}
+        \inprod{\L G(x,x')}{H(x,x'')} &= \inprod{G(x,x')}{\L^* H(x,x'')}
+        \pause
+        \\
+        \inprod{\delta(x - x')}{H(x,x'')} &= \inprod{G(x,x')}{\delta(x - x'')}
+        \pause
+        \\
+        H^*(x',x'') &= G(x'',x')
+    \end{align*}
+        \pause
+    \begin{empheq}[box=\widefbox]{align*}
+        G(x,x') &= H^*(x',x)
+    \end{empheq}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Using the definition of the adjoint problem, we find that there is a simple relationship between $ G(x,x') $ and $ H(x,x') $.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Example with boundary conditions}
+     
+    \begin{align*}
+        H(x,x') &= 
+            \begin{cases} 
+                - k^{-1} \sin(k (x - x')) & \text{for } x < x'
+                \\
+                0 & \text{for } x > x'
+            \end{cases} 
+    \end{align*}
 
     \begin{align*}
-        u(x') &= \int_a^b G(x,x') f(x) \d x +
+        G(x,x') &= 
+            \begin{cases} 
+                0 & \text{for } x < x'
+                \\
+                k^{-1} \sin(k (x - x')) & \text{for } x > x'
+            \end{cases} 
+    \end{align*}
+
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Since we already know the adjoint Green's function $ H(x,x') $, we can use find the Green's function via $ G(x,x') = H^*(x,x') $.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Example with boundary conditions}
+ 
+    \begin{align*}
+        u(x') &= \int_a^b f(x) H^*(x,x') \d x + \beta H^*(a,x') - \alpha \left. \frac{\d H^*(x,x')}{\d x} \right|_{x=a}
+        \pause
         \\
-        &\quad + \Big[ u(x) \frac{\d G(x,x')}{\d x} - G(x,x') \frac{\d u(x)}{\d x} \Big]_{x=a}^b
+        u(x') &= \int_a^b f(x) G(x',x) \d x + \beta G(x',a) - \alpha \left. \frac{\d G(x',x)}{\d x} \right|_{x=a}
+        \pause
+        \\
+        u(x) &= \int_a^b f(x') G(x,x') \d x' + \beta G(x,a) - \alpha \left.\frac{\d G(x,x')}{\d x'}\right|_{x'=a}
+    \end{align*}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        With our new knowledge that $ G(x,x') = H^*(x',x) $, we can rewrite the solution $ u(x) $ in terms of $ G(x,x') $.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Final solution}
+
+    \begin{empheq}[box=\widefbox]{align*}
+        u(x) &= \int_a^b f(x') G(x,x') \d x' + \beta G(x,a) - \alpha \left.\frac{\d G(x,x')}{\d x'}\right|_{x'=a}
+    \end{empheq}
+    where
+    \begin{align*}
+        G(x,x') &= 
+            \begin{cases} 
+                0 & \text{for } x < x'
+                \\
+                k^{-1} \sin(k (x - x')) & \text{for } x > x'
+            \end{cases} 
     \end{align*}
     
 \end{frame}
@@ -905,11 +1328,232 @@
 \note{
 \begin{itemize}
 \item
-    We now have a more informative expression for $ u(x') $.
+    Finally, we arrive at our solution.
 \item
-    We have the original integral over $ G(x,x') f(x) $, but now we also have a boundary term.
+    First, note that the final answer does \emph{not} depend on $ H(x,x') $. We didn't actually need to ever calculate $ H(x,x') $ from the adjoint Green's equation, we could have just found $ G(x,x') $ from the (non-adjoint) Green's equation.
+\item
+    However, it would have been very difficult to derive this expression without using $ H(x,x') $ (I couldn't see an easy way).
+    Because of this, a lot of authors stop at the expression for $ u(x') $ in terms of $ H^*(x,x') $, and they just call $ H^*(x,x') $ the ``Green's function.''
+\item
+    By doing the extra work, though, we gain a very nice interpretation for the boundary conditions term.
 \end{itemize}
 }
+
+\begin{frame}[fragile]
+    \frametitle{Interpretation of boundary conditions}
+    
+    \begin{align*}
+        u(x) &= \int_a^b f(x') G(x,x') \d x' + \beta G(x,a) - \alpha \left.\frac{\d G(x,x')}{\d x'}\right|_{x'=a}
+        \\
+        u(x) &= \int_a^b \Big[ f(x') + \beta \delta(x' - a) - \alpha \delta'(x' - a) \Big] G(x,x') \d x'
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    We note that our expression for $ u(x) $ looks like it did before (integral over $ f(x') G(x,x') $), but now there are extra terms which depend on the boundary conditions.
+\item
+    We come to a key idea: boundary conditions have the same effect on $ u(x) $ as adding little impulse sources at the boundary.
+    The Green's function can deal with both sources $ f(x) $ and non-zero boundary conditions.
+\item
+    Be careful, though: $ G(x,x') $ still depends on the \emph{type} of boundary condition.
+    E.g., we use the same $ G(x,x') $ for all initial value problems ($ u(a), u'(a) $ specified), but we'll need a different $ G(x,x') $ for boundary value problems ($ u(a), u(b) $ specified).
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Summary}
+    \vspace{-36pt}
+    \begin{IEEEeqnarray*}{rClCrCl}
+        \L[u(x)] &=& f(x); &\qquad& \B[u(x)] &=& \alpha
+        \\
+        \L[G(x,x')] &=& \delta(x - x'); &\qquad& \B[G(x,x')] &=& 0
+        \\
+        \L^*[H(x,x')] &=& \delta(x - x'); &\qquad& \B^*[H(x,x')] &=& 0
+    \end{IEEEeqnarray*}
+
+    \begin{enumerate}
+    \item
+        Find $ G(x,x') $.
+    \item
+        Find $ u(x') $ in terms of $ H(x,x') $:
+        \begin{align*}
+            u(x') &= \int_a^b f(x) H^*(x,x') \d x - J(u(x), H(x,x'))
+        \end{align*}
+    \item
+        Express $ u(x) $ in terms of $ G(x,x')= H^*(x',x) $.
+    \end{enumerate}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        That was a long process, so let's summarize what we did.
+    \item
+        First, we wrote out the original equation, the Green's function equation, and the adjoint Green's function equation. (Take note of the boundary conditions in particular.)
+    \item
+        Next, we solve the Green's function equation for $ G(x,x') $.
+    \item
+        Next, we found that it's much easier to express $ u(x) $ in terms of $ H(x,x') $, because we can use inner products.
+        The only tricky part is finding the adjoint (usually, just use integration by parts).
+        See Dudley for a general formula for Sturm-Liouville problems.
+    \item
+        Finally, we replace $ H(x,x') $ with $ G^*(x',x) $ (which we solved for previously), and we have our final expression for $ u(x) $.
+    \end{itemize}
+}
+
+%
+%\begin{frame}[fragile]
+%    \frametitle{Simple harmonic oscillator}
+%    
+%    Original problem:
+%    \begin{align*}
+%        \frac{\d^2 u(x)}{\d x^2} + \omega_0^2 u(x) &= f(x)
+%    \end{align*}
+%    $ u(a) $ and $ u(b) $ are known.
+%
+%    ``Adjoint'' Green's function problem:
+%    \begin{align*}
+%        \frac{\d^2 H(x,x')}{\d x^2} + \omega_0^2 H(x,x') &= \delta(x - x')
+%    \end{align*}
+%    
+%
+%\end{frame}
+%
+%\note{
+%    \begin{itemize}
+%    \item
+%        Now let's look at an example with boundary conditions: a simple harmonic oscillator.
+%    \item
+%        To deal with this, we have to introduce the adjoint Green's function equation.
+%    \item
+%        In this case, the adjoint Green's function $ H(x,x') $ follows the same equation as the Green's function $ G(x,x') $, but it will have different boundary conditions.
+%    \item
+%        We want to find a good set of boundary conditions for $ H(x,x') $.
+%    \end{itemize}
+%}
+%
+%\begin{frame}[fragile]
+%    \frametitle{Simple harmonic oscillator}
+%
+%    \begin{align*}
+%        \alt<2>{G(x,x') \left[ \frac{\d^2 u(x')}{\d x^{\prime 2}} + \omega_0^2 u(x') \right] &= G(x,x') f(x')}{\frac{\d^2 u(x')}{\d x^{\prime 2}} + \omega_0^2 u(x') &= f(x')}
+%    \end{align*}
+%
+%    \begin{align*}
+%        \alt<2>{u(x') \left[ \frac{\d^2 G(x',x)}{\d x^{\prime 2}} + \omega_0^2 G(x',x) \right] &= u(x') \delta(x' - x)}{\frac{\d^2 G(x',x)}{\d x^{\prime 2}} + \omega_0^2 G(x',x) &= \delta(x' - x)}
+%    \end{align*}
+%
+%\end{frame}
+%
+%\note{
+%    \begin{itemize}
+%    \item
+%        To figure out the best boundary conditions, we use a little bit of trickery.
+%    \item
+%        First, we replace $ x \longleftrightarrow x' $ because it will make the final answer work out more nicely.
+%    \item
+%        Then we multiply the original equation by $ G(x,x') $ and the Green's functions equation with by $ u(x) $.
+%    \end{itemize}
+%}
+%
+%\begin{frame}[fragile]
+%    \frametitle{Simple harmonic oscillator}
+%  
+%    \begin{align*}
+%        \alt<2>{ \int_a^b \big[ u(x') \delta(x' - x) &- G(x,x') f(x') \big] \d x' }{  u(x') \delta(x' - x) - G(x,x') f(x') = u(x') \frac{\d^2 G(x',x)}{\d x^{\prime 2}} - G(x,x') \frac{\d^2 u(x')}{\d x^{\prime 2}}}
+%        \alt<2>{\\&= \int_a^b \left[ u(x') \frac{\d^2 G(x',x)}{\d x^{\prime 2}} - G(x,x') \frac{\d^2 u(x')}{\d x^{\prime 2}} \right] \d x' }{}
+%    \end{align*}
+%   
+%\end{frame}
+%
+%\note{
+%\begin{itemize}
+%\item
+%    Next, we subtract the two equations and integrate $ x' $ over $ [a,b] $.
+%\item
+%    The integral over $ u(x') \delta(x' - x) $ becomes just $ u(x) $.
+%\item
+%    The right hand side can be dealt with using integration by parts.
+%\end{itemize}
+%}
+%
+%\begin{frame}[fragile]
+%    \frametitle{Simple harmonic oscillator}
+%
+%    \begin{align*}
+%        u(x) &= \int_a^b G(x,x') f(x') \d x' + \left[ u(x') \frac{\d G(x',x)}{\d x'} - G(x,x') \frac{\d u(x')}{\d x'} \right]_{x'=a}^b
+%    \end{align*}
+%
+%    \pause
+%    If we set $ G(a,x) = G(b,x) = 0 $, then
+%    \begin{align*}
+%        u(x) &= \int_a^b G(x,x') f(x') \d x' + 
+%        \\
+%        & \quad + u(b) \left. \frac{\d G(x',x)}{\d x'} \right|_{x' = b} - u(a) \left. \frac{\d G(x',x)}{\d x'} \right|_{x' = a}
+%    \end{align*}
+%
+%\end{frame}
+%
+%\note{
+%\begin{itemize}
+%\item
+%    We now have a more informative expression for $ u(x) $.
+%\item
+%    We have the original integral over $ G(x,x') f(x') $, but now we also have a boundary term.
+%    (Be careful! $ x $ and $ x' $ are switched in one place.)
+%\item
+%    Problem: the last term requires us to know $ u $ and $ \d u/\d x $ at both $ x = a $ and $ x = b $.
+%    But we only know $ u $ at those points, not $ \d u / \d x $.
+%\item
+%    Tricky solution: we haven't picked the boundary conditions for $ G(x,x') $ yet, so why not set them to
+%    \begin{align*}
+%        G(a,x') = G(b,x') = 0
+%    \end{align*}
+%    Then we don't need to know $ \d u/\d x $ on the boundary anymore.
+%\end{itemize}
+%}
+%
+%\begin{frame}[fragile]
+%    \frametitle{Simple harmonic oscillator}
+% 
+%    What if we knew $ u(a) $ and $ \frac{\d u(a)}{\d x} $?
+%    \begin{align*}
+%        u(x') &= \int_a^b G(x,x') f(x) \d x + \left[ u(x) \frac{\d G(x,x')}{\d x} - G(x,x') \frac{\d u(x)}{\d x} \right]_{x=a}^b
+%    \end{align*}
+% 
+%    \pause
+%    Then set $ G(b,x') = \frac{\d G(b,x')}{\d x} = 0 $, so that
+%    \begin{align*}
+%        u(x') &= \int_a^b G(x,x') f(x) \d x + u(a) \frac{\d G(a, x')}{\d x} + G(a,x') \frac{\d u(a)}{\d x}
+%    \end{align*}
+%   
+%\end{frame}
+%
+%\note{
+%\begin{itemize}
+%\item
+%    What if we had an initial condition problem instead of a boundary value problem?
+%\item
+%    This time, we don't know $ u(b) $ or $ \frac{\d u(b)}{\d x} $, so we set $ G(b,x') = \frac{\d G(b,x')}{\d x} = 0 $ to eliminate them.
+%\item
+%    Note: the \emph{initial} value problem for $ u(x) $ corresponds to a \emph{final} value problem for $ G(x,x') $.
+%\item
+%    In general, the boundary conditions of $ G(x,x') $ are \emph{not} the same as those of $ u(x)  $: we pick them to eliminate the unknowns on the right hand side of the $ u(x') $ equation.
+%\item
+%    Boundary conditions for $ G(x,x') $ are called the ``adjoint'' boundary conditions.
+%\end{itemize}
+%}
+%
+%\begin{frame}[fragile]
+%    \frametitle{The adjoint problem}
+%
+%\end{frame}
+%
+%\note{}
 
 \section{Spectral methods}
 \label{sec:spectral_methods}
@@ -919,13 +1563,7 @@
 \section{3D problems}
 \label{sec:3d_problems}
 
-\note{
-    \begin{itemize}
-    \item
-
-    \end{itemize}
-    
-}
+\note{}
 
 \section{Properties of the Green's function}
 \label{sec:properties_of_the_green_s_function}
