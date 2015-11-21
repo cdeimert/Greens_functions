@@ -84,10 +84,13 @@
 \usepackage{booktabs}
 \usepackage[scale=2]{ccicons}
 \usepackage{array}
+\usepackage{tabularx}
 
 \usepackage{xcolor}
 \usepackage{mathtools}
 \usepackage{empheq}
+
+\renewcommand{\tabularxcolumn}[1]{>{\normalsize}m{#1}}
 
 \newcommand{\highlight}[1]{\colorbox{mLightBrown!65}{$\displaystyle{#1}$}}
 \newcommand{\mygreenbox}[1]{\colorbox{mLightBrown!65}{\hspace{1em}#1\hspace{1em}}}
@@ -102,6 +105,7 @@
 %\usepackage{arevmath}
 %\renewcommand{\vect}[1]{\vec{#1}}
 \renewcommand{\L}{\mathcal{L}}
+\newcommand{\ft}[1]{\tilde{#1}}
 
 \useinnertheme{circles}
 
@@ -113,7 +117,6 @@
 \author{Chris Deimert}
 \institute{Department of Electrical and Computer Engineering, University of Calgary}
 
-
 \begin{document}
 
 \maketitle
@@ -121,9 +124,9 @@
 \note{
     \begin{itemize}
     \item
-        This is intended as a short overview of Green's functions for electrical engineers.
+        This is intended as a small (dense) overview of Green's functions for electrical engineers.
     \item
-        Green's functions are a huge subject: we will try to demonstrate the most important techniques and ideas.
+        Basic idea of Green's functions is simple, but there is a huge amount of theory for actually calculating and using them.
     \item
         Tip: read a lot of different references. 
         Different authors take totally different approaches and it's interesting to see them all.
@@ -874,11 +877,24 @@
         Then, $ \L^* $ is the adjoint operator and $ \B^* $ are the adjoint boundary conditions if $ \inprod{\L u}{v} = \inprod{u}{\L^* v} $ for all $ u, v $.
     \item
         Here $ \inprod{u}{v} $ is the inner product as defined on the slide. ($ v^*(x) $ is the complex conjugate of $ v(x) $.)
-    \item
-        (Side note: technically, we should call $ \L^* $ the \emph{formal} adjoint. 
-        A boundary condition like $ \B[u] = 0 $ restricts $ u $ to a subspace of its original Hilbert space. 
-        Thus, if $ \B \neq \B^* $, the domains of $ \L $ and $ \L^* $ are not the same, and they are not true adjoints.)
     \end{itemize}
+}
+
+\note{
+    Linear algebra notes:
+    \begin{itemize}
+    \item
+        The boundary conditions are important because they specify the domains of $ \L $ and $ \L^* $. (I.e., $ \L $ operates on the Hilbert space of functions $ u(x) $ which satisfy $ \B[u] = 0 $.)
+    \item
+        So if $ \B \neq \B^* $, then $ \L $ and $ \L^* $ are operators on different Hilbert spaces.
+    \item
+        If both $ \L = \L^* $ and $ \B = \B^* $, we say that $ \L $ is self-adjoint.
+    \item
+        If $ \L = \L^* $ but $ \B \neq \B^* $, we say that $ \L $ is \emph{formally} self-adjoint.
+    \end{itemize}
+}
+
+\note{
 }
 
 \begin{frame}[fragile]
@@ -916,7 +932,7 @@
         %&= \int_a^b \left[ - u'(x) v^{*\prime}(x) + k^2 u(x) v^*(x) \right] \d x + \left[ u'(x) v^*(x) \right]_{a}^{b}
         \pause
         \\
-        &= \int_a^b \left[ v^{\prime\prime *}(x) + k^2 v^*(x) \right] u(x) \d x + 
+        \inprod{\L u}{v} &= \int_a^b u(x) \left[ v^{\prime\prime}(x) + (k^2)^* v(x) \right]^* \d x + 
         \\& \quad + \left[ u'(x) v^*(x)  - u(x) v^{\prime *}(x) \right]_{a}^{b}
     \end{align*}
     By inspection:
@@ -936,7 +952,7 @@
         \begin{align*}
             \int_a^b u(x) \left[ \L^* v(x) \right]^* \d x 
         \end{align*}
-        so we can read off $ \L^* $.
+        so let's define $ \L^* $ this way, and hope it will work out (it will).
     \end{itemize}
 }
 
@@ -1018,12 +1034,11 @@
 
     In general:
     \begin{align*}
-        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u,v)
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u,v) \Big|_a^b
     \end{align*}
-    where $ J(u,v) $ depends on $ u, v, u', v', \ldots $ at the boundaries.
-
+    Definition of adjoint boundary conditions:
     \begin{align*}
-        \B[u] = \B^*[v] = 0 \Longleftrightarrow J(u,v) = 0
+        \B[u] = \B^*[v] = 0 \Longleftrightarrow J(u,v) \Big|_a^b = 0
     \end{align*}
     
 \end{frame}
@@ -1031,11 +1046,11 @@
 \note{
 \begin{itemize}
 \item
-    In that example, we saw that we always had $ \inprod{\L u}{v} $ equal to $ \inprod{u}{\L^* v} $ plus a ``leftover'' term called the conjunct.
+    In that example, we saw that we always had $ \inprod{\L u}{v} $ equal to $ \inprod{u}{\L^* v} $ plus a leftover term which depended on the boundaries.
 \item
-    This is true in general: we always have a leftover term $ J(u,v) $ which depends only on the boundary values of $ u $ and $ v $.
+    This is true more generally: if we don't specify the boundary conditions of $ u $ and $ v $, then we can still \emph{almost} get the adjoint operator equation. We just have a leftover ``conjunct'' term $ J(u,v) |_a^b $, which depends only on the boundary condtions.
 \item
-    We say $ \B[u] = 0 $ and $ \B^*[v] = 0 $ are adjoint boundary conditions if and only if they make $ J(u,v) $.
+    We define adjoint boundary conditions as those boundary conditions which make the conjunct equal to zero.
 \end{itemize}
 }
 
@@ -1076,14 +1091,20 @@
 \begin{frame}[fragile]
     \frametitle{Example with boundary conditions}
 
+    \vspace{-12pt}
     Original problem:
     \begin{align*}
-        \L[u] = \frac{\d^2 u(x)}{\d x^2} + k^2 u(x) &= f(x); \qquad \mat{u(a) \\ u'(a)} = \mat{\alpha \\ \beta}
+        \left( \frac{\d^2}{\d x^2} + k^2 \right) u(x) &= f(x); \quad \mat{u(a) \\ u'(a)} = \mat{\alpha \\ \beta}
+    \end{align*}
+
+    Green's problem:
+    \begin{align*}
+        \left( \frac{\d^2}{\d x^2} + k^2 \right) G(x,x') &= \delta(x - x'); \quad \mat{G(a,x') \\ G'(a,x')} = \mat{0 \\ 0}
     \end{align*}
 
     Adjoint Green's problem:
     \begin{align*}
-        \frac{\d^2 H(x,x')}{\d x^2} + k^2 H(x,x') &= \delta(x - x'); \quad \mat{H(b,x') \\ H'(b,x')} = \mat{0 \\ 0}
+        \left( \frac{\d^2}{\d x^2} + k^2 \right) H(x,x') &= \delta(x - x'); \quad \mat{H(b,x') \\ H'(b,x')} = \mat{0 \\ 0}
     \end{align*}
     
 \end{frame}
@@ -1159,14 +1180,14 @@
     \frametitle{Example with boundary conditions}
 
     \begin{align*}
-        \inprod{\L u(x)}{H(x,x')} &= \inprod{u(x)}{\L^* H(x,x')} + J(u, H)
+        \inprod{\L u(x)}{H(x,x')} &= \inprod{u(x)}{\L^* H(x,x')} + J(u, H) \Big|_a^b
         \\
-        \inprod{f(x)}{H(x,x')} &= \inprod{u(x)}{\delta(x - x')} + J(u, H)
+        \inprod{f(x)}{H(x,x')} &= \inprod{u(x)}{\delta(x - x')} + J(u, H) \Big|_a^b
         \\
-        \int_a^b f(x) H^*(x,x') \d x &= \int_a^b u(x) \delta(x - x') \d x + J(u, H)
+        \int_a^b f(x) H^*(x,x') \d x &= \int_a^b u(x) \delta(x - x') \d x + J(u, H) \Big|_a^b
     \end{align*}
     \begin{empheq}[box=\widefbox]{align*}
-        u(x') &= \int_a^b f(x) H^*(x,x') \d x - J(u, H)
+        u(x') &= \int_a^b f(x) H^*(x,x') \d x - J(u, H) \Big|_a^b
     \end{empheq}
     
 \end{frame}
@@ -1191,7 +1212,7 @@
 
     Recall:
     \begin{align*}
-        \mat{u(a) \\ u'(a)} = \mat{\alpha \\ \beta}; \qquad \mat{H(b,x') \\ H'(b,x')} = \mat{0 \\ 0}
+        \B[u] = \mat{u(a) \\ u'(a)} = \mat{\alpha \\ \beta}; \qquad \B^*[H] = \mat{H(b,x') \\ H'(b,x')} = \mat{0 \\ 0}
     \end{align*}
     
     
@@ -1235,6 +1256,8 @@
         \\
         \inprod{\delta(x - x')}{H(x,x'')} &= \inprod{G(x,x')}{\delta(x - x'')}
         \pause
+        \\
+        \int_a^b \delta(x - x') H^*(x,x'') \d x  &= \int_a^b G(x,x') \delta(x - x'') \d x
         \\
         H^*(x',x'') &= G(x'',x')
     \end{align*}
@@ -1403,10 +1426,153 @@
     \end{itemize}
 }
 
+\section{Properties of Green's functions}
+\label{sec:properties_of_green_s_functions}
+
+\note{
+    \begin{itemize}
+    \item
+        The Green's function gives us a lot of information about the system we're dealing with.
+    \item
+        Here we'll look at a few of the properties Green's functions can have and what those tell us about our system.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Reciprocity}
+
+    If $ \L $ is self-adjoint
+    \begin{align*}
+        \L = \L^* \qquad \text{and} \qquad \B = \B^*
+    \end{align*}
+    then
+    \begin{align*}
+        G(x,x') &= G^*(x',x)
+    \end{align*}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        For self-adjoint problems, $ G = H $. 
+    \item
+        Using our relationship between $ G $ and $ H $, we quickly see that the Green's function is complex symmetric (Hermitian) for self-adjoint problems.
+    \item
+        Roughly, putting a source at $ x $ and measuring at $ x' $ is the same as putting a source at $ x' $ and measuring at $ x $.
+        This is often called reciprocity (though it's not quite the same as reciprocity from time-harmonic E\&M, because we're using a true inner product rather than the so-called ``reaction inner product'').
+    \item
+        Note that we require \emph{both} $ \L = \L^* $ and $ \B = \B^* $. So this would likely not hold for initial condition problems.
+    \end{itemize}
+}
+
+
+\begin{frame}[fragile]
+    \frametitle{Invariance}
+
+
+    $ \L $ is invariant if 
+    \begin{align*}
+        \L[u(x - \xi)] &= \L[u(x)] \Big|_{x = x - \xi}
+    \end{align*}
+    
+    For example,
+    \begin{IEEEeqnarray*}{rClCl}
+        \L &=& a \frac{\d^2}{\d x^2} + b \frac{\d}{\d x} + c
+    \end{IEEEeqnarray*}
+    is invariant only if $ a $, $ b $, and $ c $ are constants.
+    
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    An operator is invariant if shifting the input just results in a shifted output.
+\item
+    Probably familiar from signal processing: linear \emph{time-invariant} systems.
+    Delaying the input signal leads to the same output signal, just delayed by the same amount.
+\item
+    Invariance is really important in modern physics.
+\item
+    Maxwell's equations in free space are invariant with respect to $ x, y, z, \phi, \theta $.
+    That is, at a fundamental level, the laws of electromagnetism do not change if we move to a different location or look in a different direction.
+\end{itemize}
+
+}
+
+\begin{frame}[fragile]
+    \frametitle{Invariance}
+
+    If $ \L $ is invariant in $ x $, then
+    \begin{align*}
+        \L[G(x,x')] &= \delta(x - x')
+        \\
+        \L[G(x - \xi,x' - \xi)] &= \delta(x - x')
+    \end{align*}
+    \begin{align*}
+        \Longrightarrow G(x,x') = G(x - \xi, x' - \xi)
+    \end{align*}
+    \begin{empheq}[box=\widefbox]{align*}
+        G(x, x') &= G(x - x')
+    \end{empheq}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    For invariant problems, we can see that shifting both $ x $ and $ x' $ by the same amount $ \xi $ does not affect the Green's function.
+\item
+    Taking $ \xi  = x' $, we see that $ G(x,x') $ is actually only a function of the difference $ (x - x') $.
+\item
+    That is, the response only depends on the \emph{relative} locations of the source and measurement.
+    This fits nicely with our intuitive understanding of invariance.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Invariance}
+    
+    Convolution:
+    \begin{align*}
+        u(x) &= \int_a^b G(x - x') f(x') \d x' = G(x) * f(x)
+    \end{align*}
+    Frequency domain:
+    \begin{align*}
+        \ft{u}(k) &= \ft{G}(k) \ft{f}(k)
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    For invariant systems (with boundary conditions zero), the solution $ u(x) $ is just given as a convolution of the source function $ f(x) $ with the impulse response $ G(x) $.
+\item
+    Taking Fourier transforms, the convolution turns into multiplication. 
+\item
+    Looks familiar from signal processing!
+\end{itemize}
+}
+
+
 \section{Spectral methods}
 \label{sec:spectral_methods}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    In this section, we'll look at the strong relationship between Green's functions and spectral theory.
+\item
+    Essentially, eigenfunction expansion allows us to calculate the Green's function when direct methods don't work.
+\item
+    A basic background in spectral theory can be found in most books covering Green's functions. 
+\item
+    Unfortunately, these are rarely rigorous when dealing with continuous sets of eigenvalues.
+    For fully rigorous spectral theory (not for the faint of heart!), see Naylor and Sell's \emph{Linear operator theory in engineering and science} or Kreyszig's \emph{Introductory functional analysis with applications.}
+\end{itemize}
+}
 
 \begin{frame}[fragile]
     \frametitle{Eigenfunction expansion}
@@ -1422,7 +1588,19 @@
     
 \end{frame}
 
-\note{}
+\note{
+    \begin{itemize}
+    \item
+        First we'll review a bit of eigenfunction theory, but we'll quickly see how it relates to Green's functions.
+    \item
+        Set up a similar problem as before, but we've added a complex parameter $ \lambda $ for later convenience.
+    \item
+        Also, for this section we'll insist that $ \L $ be fully self-adjoint so that we can take full advantage of spectral theory.
+    \item
+        A brief discussion of the non-self-adjoint case can be found in Morse and Feshbach under ``Non-Hermitian operators: biorthogonal functions''.
+    \end{itemize}
+    
+}
 
 \begin{frame}[fragile]
     \frametitle{Eigenfunction expansion}
@@ -1432,25 +1610,216 @@
         \L \phi_n(x) &= \lambda_n \phi_n(x)
     \end{align*}
     
-    Because $ \L $ is self-adjoint:
+    With $ \L $ self-adjoint, $ \lambda_n \in \mathbb{R} $ and
     \begin{align*}
         u(x) &= \sum_n \inprod{u}{\phi_n} \phi_n(x)
         \\
         f(x) &= \sum_n \inprod{f}{\phi_n} \phi_n(x)
     \end{align*}
-    
 
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Because $ \L $ is self-adjoint, we know that its eigenvalues $ \lambda_n $ are real.
+\item
+    We also know that it has a complete orthonormal set of eigenfunctions $ \phi_n $.
+\item
+    That is, we can expand any function (in this case $ u(x) $ and $ f(x) $) in terms of $ \phi_n(x) $. (Generalized Fourier series.)
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Eigenfunction expansion}
+
+    \begin{align*}
+        (\L - \lambda)u(x) &= f(x)
+        \\
+        \pause
+        (\L - \lambda) \left[ \sum_n \inprod{u}{\phi_n} \phi_n(x) \right] &= \sum_n \inprod{f}{\phi_n} \phi_n(x)
+        \\
+        \pause
+        \sum_n \inprod{u}{\phi_n} (\lambda_n - \lambda) \phi_n(x) &= \sum_n \inprod{f}{\phi_n} \phi_n(x)
+        \\
+        \pause
+        (\lambda_n - \lambda) \inprod{u}{\phi_n} &= \inprod{f}{\phi_n}
+    \end{align*}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Going back to our original equation, let's expand $ u(x) $ and $ f(x) $ in terms of eigenfunctions of $ \L $.
+    \item
+        Using the fact that $ \L $ is linear and $ \L \phi_n = \lambda_n \phi_n $, we can get rid of $ \L $ (third line).
+    \item
+        Finally, since the $ \phi_n(x) $ are linearly independent, each term in the sums on the RHS and LHS must be equal.
+        So we get an expression for the generalized Fourier coefficients $ \inprod{u}{\phi_n} $.
+    \end{itemize}
+    
+}
+
+\begin{frame}[fragile]
+    \frametitle{Eigenfunction expansion}
+
+    \begin{align*}
+        \inprod{u}{\phi_n} &= \frac{\inprod{f}{\phi_n}}{\lambda_n - \lambda}
+    \end{align*}
+
+    So
+    \begin{align*}
+        u(x) &= \sum_n \inprod{u}{\phi_n} \phi_n(x)
+        \\
+        \Aboxed{u(x) &= \sum_n \frac{\inprod{f}{\phi_n}}{\lambda_n - \lambda} \phi_n(x)}
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Plugging in our new expression for the Fourier coefficients, we obtain a formula for $ u(x) $ in terms of the eigenfunctions and eigenvalues of $ \L $.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Eigenfunction expansion}
+
+    \vspace{-16pt}
+    \begin{align*}
+        u(x) &= \sum_n \frac{\inprod{f}{\phi_n}}{\lambda_n - \lambda} \phi_n(x)
+        \\
+        u(x) &= \sum_n \left( \int_a^b \frac{f(x') \phi^*_n(x')}{\lambda_n - \lambda} \d x' \right) \phi_n(x)
+        \\
+        u(x) &= \int_a^b \left( \sum_n \frac{f(x) \phi^*_n(x')}{\lambda_n - \lambda} \phi_n(x) \right) \d x'
+        \\
+        u(x) &= \int_a^b \left( \alert{\sum_n \frac{\phi_n(x) \phi^*_n(x')}{\lambda_n - \lambda} } \right) f(x') \d x'
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Usually, the inner product is defined by an integral.
+\item
+    If we write this out and do some manipulation, we get something that looks a lot like the Green's function expression.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Spectral form of the Green's function}
+    
+    \begin{align*}
+        u(x) &= \int_a^b \left( \sum_n \frac{\phi_n(x) \phi^*_n(x')}{\lambda_n - \lambda} \right) f(x') \d x'
+    \end{align*}
+
+    \begin{empheq}[box=\widefbox]{align*}
+        G(x,x') &= \sum_n \frac{\phi_n(x) \phi^*_n(x')}{\lambda_n - \lambda}
+    \end{empheq}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        It turns out that we actually can read off this weird sum as the Green's function.
+    \item
+        So, if we know the eigenvalues and eigenfunctions of $ \L $, we can immediately construct the Green's function as an infinite series.
+    \item
+        Note also that $ G(x,x') = G^*(x,x') $, as we expect because this is a self-adjoint problem.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Spectral form of the Green's function}
+
+    Green's function of $ (\L - \lambda) $:
+    \begin{align*}
+        G(x,x',\lambda) &= \sum_n \frac{\phi_n(x) \phi^*_n(x')}{\lambda_n - \lambda}
+    \end{align*}
+
+    $ \lambda_n $ are poles of $ G(x,x',\lambda) $.
+
+    $ \phi_n(x) $ can be found by residue integration.
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    It also goes the other way. If we know the Green's function of $ (\L - \lambda) $ for any complex $ \lambda $, then the eigenvalues of $ \L $ are just the poles of the Green's function with respect to lambda.
+\item
+    Eigenfunctions are a little trickier to read off, but it's possible to find them from the Green's function using residue integration.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Spectral form of the delta function}
+
+    \begin{align*}
+        \delta(x - x') &= (\L - \lambda) G(x,x') 
+        \pause
+        \\
+        \delta(x - x') &= (\L - \lambda) \sum_n \frac{\phi_n(x) \phi^*_n(x')}{\lambda_n - \lambda}
+        \pause
+        \\
+        \delta(x - x') &= \sum_n \frac{(\lambda_n - \lambda) \phi_n(x) \phi^*_n(x')}{\lambda_n - \lambda}
+        \pause
+        \\
+        \Aboxed{\delta(x - x') &= \sum_n \phi_n(x) \phi^*_n(x')}
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Using our Green's function equation, we can also derive an expression for the delta function as a sum of eigenfunctions.
+\item
+    This expression is useful when solving three-dimensional problems with separation of variables.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Example}
+
+    \begin{align*}
+        \underbrace{\left( \frac{\d^2}{\d x^2} - \lambda \right)}_{\displaystyle \L - \lambda} u(x) = f(x); \quad u(0) = u(a) = 0
+    \end{align*}
+
+    Eigenfunctions of $ \L $:
+    \begin{align*}
+        \phi_n(x) &= \sqrt{\frac{2}{a}} \sin\left( \frac{\pi n x}{a} \right); \quad \lambda_n = \frac{\pi n}{a}
+    \end{align*}
+    
 \end{frame}
 
 \note{}
 
+\begin{frame}[fragile]
+    \frametitle{Example}
+    
+    \begin{align*}
+        G(x,x') &= \sum_n \frac{\phi_n(x) \phi_n^*(x')}{\lambda_n - \lambda}
+        \\
+        G(x,x') &= \sum_{n=0}^{\infty} \frac{2 \sin\Big( \dfrac{\pi n x}{a} \Big)\sin\Big( \dfrac{\pi n x'}{a} \Big)}{\pi n - \lambda a}
+    \end{align*}
+    
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Not as good as the direct method (have to add up an infinite sum to calculate numerical values), but this may be necessary for 3D problems.
+\end{itemize}
+}
+
 \section{3D problems}
 \label{sec:3d_problems}
-
-\note{}
-
-\section{Properties of the Green's function}
-\label{sec:properties_of_the_green_s_function}
 
 \note{}
 
