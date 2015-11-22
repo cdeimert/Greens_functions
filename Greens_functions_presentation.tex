@@ -106,6 +106,7 @@
 %\renewcommand{\vect}[1]{\vec{#1}}
 \renewcommand{\L}{\mathcal{L}}
 \newcommand{\ft}[1]{\tilde{#1}}
+\newcommand{\rinprod}[2]{\left\langle {#1}, {#2} \right\rangle_r}
 
 \useinnertheme{circles}
 
@@ -1784,7 +1785,7 @@
 }
 
 \begin{frame}[fragile]
-    \frametitle{Example}
+    \frametitle{Example: simple harmonic oscillator}
 
     \begin{align*}
         \underbrace{\left( \frac{\d^2}{\d x^2} - \lambda \right)}_{\displaystyle \L - \lambda} u(x) = f(x); \quad u(0) = u(a) = 0
@@ -1797,15 +1798,89 @@
     
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Let's do a simple example to illustrate the idea.
+\item
+    For $ \L = \d^2/\d x^2 $ we know that the eigenfunctions are sines and cosines.
+    The boundary conditions restrict us to just sines with $ \lambda_n = \pi n / a $.
+\item
+    $ \sqrt{2/a} $ ensures that the eigenfunctions are normalized.
+\end{itemize}
+}
 
 \begin{frame}[fragile]
-    \frametitle{Example}
+    \frametitle{Example: simple harmonic oscillator}
     
     \begin{align*}
         G(x,x') &= \sum_n \frac{\phi_n(x) \phi_n^*(x')}{\lambda_n - \lambda}
         \\
         G(x,x') &= \sum_{n=0}^{\infty} \frac{2 \sin\Big( \dfrac{\pi n x}{a} \Big)\sin\Big( \dfrac{\pi n x'}{a} \Big)}{\pi n - \lambda a}
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Using the formula we derived earlier, we can very quickly write out the Green's function as an infinite series.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Example: simple harmonic oscillator}
+
+    \begin{align*}
+        G(x,x') &= \sum_{n=0}^{\infty} \frac{2 \sin\Big( \dfrac{\pi n x}{a} \Big)\sin\Big( \dfrac{\pi n x'}{a} \Big)}{\pi n - \lambda a}
+    \end{align*}
+ 
+    Compare with direct method:
+    \begin{align*}
+    G(x,x') &= \begin{cases} \frac{\sin\left(\sqrt{\lambda}(a - x')\right) \sin\left(\sqrt{\lambda} x\right)}{\sqrt{\lambda} \sin\left(\sqrt{\lambda} a\right)} & \text{for } x < x' \\ \frac{\sin\left(\sqrt{\lambda} x'\right) \sin\left(\sqrt{\lambda}(a - x)\right)}{\sqrt{\lambda} \sin\left(\sqrt{\lambda} a\right)} & \text{for } x > x' \end{cases}
+    \end{align*}
+       
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    We could have also solved this problem directly (Assume $ G(x,x') $ behaves like the source-free solution except at $ x = x' $. Apply the boundary conditions, continuity and discontinuity requirements to find the coefficient.) The result is shown.
+\item
+    The direct solution is a little uglier, but it's much easier to evaluate numerically because it doesn't involve an infinite series.
+    For that reason, direct solution is usually more desireable if it actually works. 
+    However, series solutions tend to be needed for solving multi-dimensional problems.
+\item
+    Note: there's a trick for evaluating infinite series using residue calculus, and (I think) you could use this to derive the second expression from the first. You can also use residue integration to derive the first from the second.
+\end{itemize}
+
+}
+
+\section{3D problems}
+\label{sec:3d_problems}
+
+\note{
+\begin{itemize}
+\item
+    Don't have time to do much here, but we'll sketch out the basic foundations and look at the simple example of the wave equation.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Green's second identity}
+
+    \begin{align*}
+        \int_{V} \left( \psi \nabla^2 \phi - \phi \nabla^2 \psi \right) \d v &= \oint_{\partial V} \left( \phi \vect{\nabla} \psi - \psi \vect{\nabla} \phi \right) \cdot \d \vect{s}
+    \end{align*}
+
+    \pause
+    Looks kind of like
+    \begin{align*}
+        \rinprod{\L \psi}{\phi} - \rinprod{\psi}{\L \phi} &= \int_{\partial V} \vect{J}(\phi, \psi) \cdot \d \vect{s}
+    \end{align*}
+    with the ``reaction'' (pseudo) inner product
+    \begin{align*}
+        \rinprod{\psi}{\phi} &= \int_V \psi \phi \d v
     \end{align*}
     
 
@@ -1814,14 +1889,66 @@
 \note{
 \begin{itemize}
 \item
-    Not as good as the direct method (have to add up an infinite sum to calculate numerical values), but this may be necessary for 3D problems.
+    A key theorem for 3D Green's functions is an integral theorem known as Green's second identity.
+\item
+    We won't do it here, but it's not too difficult to derive using the vector product rule
+    \begin{align*}
+        \vect{\nabla} \cdot (f \vect{\nabla} g) &= (\vect{\nabla} f) \cdot (\vect{\nabla} g) + f \nabla^2 g
+    \end{align*}
+    and the divergence theorem.
+\item
+    If we treat the volume integral as an inner product and $ \nabla^2 $ as our operator $ \L $, this looks a lot like an expression we had from 1 dimension.
+    We have a term with the operator, a term with the adjoint operator (in this case $ \L^* = \L $), and a leftover conjunct term which depends only on the boundaries.
 \end{itemize}
 }
 
-\section{3D problems}
-\label{sec:3d_problems}
+\note{
+\begin{itemize}
+\item
+    Note: the reaction inner product is a pseudo inner product and not a true inner product.
+    A true inner product would be, e.g.,
+    \begin{align*}
+        \inprod{\psi}{\phi} = \int_V \psi \phi^* \d v
+    \end{align*}
+    Without the complex conjugate, we have some weird properties.
+    For example, the ``length'' of a vector $ \left\| \phi \right\|^2 = \rinprod{\phi}{\phi} $ can be negative or complex.
+\item
+    However, the reaction (pseudo) inner product still plays an important role in electromagnetism, particularly with regards to reciprocity.
+    See, e.g., Chew's paper ``A New Look at Reciprocity and Energy Conservation Theorems in Electromagnetics.''
+\end{itemize}
+}
 
 \note{}
+
+\begin{frame}[fragile]
+    \frametitle{Wave equation}
+
+    Original problem:
+    \begin{align*}
+        \left( \nabla^2 + \frac{\partial^2}{\partial t^2} \right) u(\vect{r}, t) &= f(\vect{r}, t); \quad \B[u] = \alpha
+    \end{align*}
+
+    Green's problem:
+    \begin{align*}
+        \left( \nabla^2 + \frac{\partial^2}{\partial t^2} \right) G(\vect{r}, t; \vect{r}', t') &= \delta^3(\vect{r} - \vect{r}') \delta(t - t'); \quad \B[G] = 0
+    \end{align*}
+
+    Adjoint Green's problem:
+    \begin{align*}
+        \left( \nabla^2 + \frac{\partial^2}{\partial t^2} \right) H(\vect{r}, t; \vect{r}', t') &= \delta^3(\vect{r} - \vect{r}') \delta(t - t'); \quad \B^*[H] = 0
+    \end{align*}
+    
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Can follow a similar derivation as the 1D case, but with the reaction inner product. I should probably just state the key results: expression for $ u $ in terms of $ H $, expression for $ G $ in terms of $ H $, and final expression for $ u $.
+\item
+    Note: I'm doing the wave equation because it's interesting (and explains the causality requirement on the Helmholtz Green's function!) but a lot of the EM books only do the Helmholtz equation.
+\end{itemize}
+}
 
 \section{Advanced topics}
 \label{sec:advanced_topics}
