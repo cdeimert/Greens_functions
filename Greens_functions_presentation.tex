@@ -52,7 +52,7 @@
 \newif\ifextended
 
 \handoutfalse
-\handouttrue
+%\handouttrue
 
 \extendedfalse
 \extendedtrue
@@ -69,7 +69,7 @@
 
 \fi
 
-\usetheme{m}
+\usetheme{metropolis}
 
 \usepackage{mymacros}
 \usepackage[retainorgcmds]{IEEEtrantools}
@@ -98,7 +98,7 @@
 
 %\usepackage{sourcesanspro}
 
-\usepgfplotslibrary{dateplot}
+%\usepgfplotslibrary{dateplot}
 
 %\usefonttheme[onlymath]{serif}
 %\usepackage{eulervm}
@@ -125,7 +125,7 @@
 \note{
     \begin{itemize}
     \item
-        This is intended as a small (dense) overview of Green's functions for electrical engineers.
+        This is intended as a small (dense) introduction to Green's functions for electrical engineers.
     \item
         Basic idea of Green's functions is simple, but there is a huge amount of theory for actually calculating and using them.
     \item
@@ -196,14 +196,6 @@
     \begin{align*}
         f(x) = \int \delta(x - x') f(x') \d x \xrightarrow{\quad \L^{-1} \quad} \int G(x,x') f(x') \d x
     \end{align*}
-  
-    %Can find the solution directly for any $ f(x) $:
-    %\begin{align*}
-    %    u(x) &= \int G(x,x') f(x') \d x
-    %\end{align*}
-    %\begin{align*}
-    %    \L u(x) &= \int \L G(x,x') f(x') \d x = \int \delta(x - x') f(x) \d x = f(x)
-    %\end{align*}
     
 \end{frame}
 
@@ -1251,20 +1243,29 @@
     \frametitle{Adjoint Green's functions}
 
     How are $ G(x,x') $ and $ H(x,x') $ related?
+    %\begin{align*}
+    %    \inprod{\L G(x,x')}{H(x,x'')} &= \inprod{G(x,x')}{\L^* H(x,x'')}
+    %    \\
+    %    \uncover<2->{\inprod{\delta(x - x')}{H(x,x'')}}
+    %    &\uncover<2->{= \inprod{G(x,x')}{\delta(x - x'')}}
+    %    \\
+    %    \uncover<3->{\int_a^b \delta(x - x') H^*(x,x'') \d x}
+    %    &\uncover<3->{= \int_a^b G(x,x') \delta(x - x'') \d x}
+    %    \\
+    %    \uncover<4->{H^*(x',x'')} 
+    %    &\uncover<4->{= G(x'',x')}
+    %\end{align*}
     \begin{align*}
         \inprod{\L G(x,x')}{H(x,x'')} &= \inprod{G(x,x')}{\L^* H(x,x'')}
-        \pause
         \\
         \inprod{\delta(x - x')}{H(x,x'')} &= \inprod{G(x,x')}{\delta(x - x'')}
-        \pause
         \\
-        \int_a^b \delta(x - x') H^*(x,x'') \d x  &= \int_a^b G(x,x') \delta(x - x'') \d x
+        \int_a^b \delta(x - x') H^*(x,x'') \d x &= \int_a^b G(x,x') \delta(x - x'') \d x
         \\
         H^*(x',x'') &= G(x'',x')
     \end{align*}
-        \pause
     \begin{empheq}[box=\widefbox]{align*}
-        G(x,x') &= H^*(x',x)
+        G(x,x') = H^*(x',x)
     \end{empheq}
     
 \end{frame}
@@ -1273,6 +1274,10 @@
     \begin{itemize}
     \item
         Using the definition of the adjoint problem, we find that there is a simple relationship between $ G(x,x') $ and $ H(x,x') $.
+    \item
+        This is somewhat surprising. 
+        For one thing, it means that if $ G(x,x') $ obeys the boundary conditions with respect to $ x $, then it automatically obeys the \emph{adjoint} boundary conditions with respect to $ x' $. 
+        This is a useful property.
     \end{itemize}
 }
 
@@ -1386,7 +1391,7 @@
 
 \begin{frame}[fragile]
     \frametitle{Summary}
-    \vspace{-36pt}
+    \vspace{-24pt}
     \begin{IEEEeqnarray*}{rClCrCl}
         \L[u(x)] &=& f(x); &\qquad& \B[u(x)] &=& \alpha
         \\
@@ -1401,7 +1406,7 @@
     \item
         Find $ u(x') $ in terms of $ H(x,x') $:
         \begin{align*}
-            u(x') &= \int_a^b f(x) H^*(x,x') \d x - J(u(x), H(x,x'))
+            u(x') &= \int_a^b f(x) H^*(x,x') \d x - J(u(x), H(x,x'))\Big|_a^b
         \end{align*}
     \item
         Express $ u(x) $ in terms of $ G(x,x')= H^*(x',x) $.
@@ -1425,6 +1430,38 @@
     \item
         Finally, we replace $ H(x,x') $ with $ G^*(x',x) $ (which we solved for previously), and we have our final expression for $ u(x) $.
     \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Summary}
+
+    \begin{IEEEeqnarray*}{rClCrCl}
+        \L[u(x)] &=& f(x); &\qquad& \B[u(x)] &=& \alpha
+        \\
+        \L[G(x,x')] &=& \delta(x - x'); &\qquad& \B[G(x,x')] &=& 0
+    \end{IEEEeqnarray*}
+
+    \begin{empheq}[box=\widefbox]{align*}
+        u(x) &= \int_{a}^{b} f(x') G(x,x') \d x' - J\big( u(x'), G(x,x') \big) \Big|_{x'=a}^b
+    \end{empheq}
+    Simplify with adjoint boundary conditions!
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    We can streamline this process a little bit by removing the intermediate steps involving $ H(x,x') $.
+\item
+    Then, we can simply write down our final solution in terms of the Green's function $ G(x,x') $.
+\item
+    However, there are still traces of the adjoint problem.
+\item
+    First, we cannot find the conjunct $ J(u,v) $ without considering the adjoint problem.
+\item
+    Second, we have to simplify the expression $ J(u,G)|_a^b $ using the adjoint boundary conditions.
+    In particular, use the fact that $ G(x,x') $ obeys the adjoint boundary conditions with respect to $ x' $.
+\end{itemize}
 }
 
 \section{Properties of Green's functions}
@@ -1637,13 +1674,10 @@
     \begin{align*}
         (\L - \lambda)u(x) &= f(x)
         \\
-        \pause
         (\L - \lambda) \left[ \sum_n \inprod{u}{\phi_n} \phi_n(x) \right] &= \sum_n \inprod{f}{\phi_n} \phi_n(x)
         \\
-        \pause
         \sum_n \inprod{u}{\phi_n} (\lambda_n - \lambda) \phi_n(x) &= \sum_n \inprod{f}{\phi_n} \phi_n(x)
         \\
-        \pause
         (\lambda_n - \lambda) \inprod{u}{\phi_n} &= \inprod{f}{\phi_n}
     \end{align*}
     
@@ -1856,31 +1890,29 @@
 
 }
 
-\section{3D problems}
-\label{sec:3d_problems}
+\section{The 3D wave equation}
+\label{sec:3d_wave_equation}
 
 \note{
 \begin{itemize}
 \item
-    Don't have time to do much here, but we'll sketch out the basic foundations and look at the simple example of the wave equation.
+    Unfortunately we don't have time to really get into 3D problems.
+\item
+    However, just to get a taste of it, we'll look at the 3D scalar wave equation in a vacuum.
 \end{itemize}
+
 }
 
 \begin{frame}[fragile]
-    \frametitle{Green's second identity}
+    \frametitle{The wave equation problem}
 
     \begin{align*}
-        \int_{V} \left( \psi \nabla^2 \phi - \phi \nabla^2 \psi \right) \d v &= \oint_{\partial V} \left( \phi \vect{\nabla} \psi - \psi \vect{\nabla} \phi \right) \cdot \d \vect{s}
+        \underbrace{\left( \nabla^2 - \frac{1}{c^2} \frac{\partial^2}{\partial t^2} \right)}_{\displaystyle \L} u(\vect{r}, t) &= f(\vect{r}, t); \qquad \B[u] = \alpha
     \end{align*}
 
-    \pause
-    Looks kind of like
+    In electromagnetism:
     \begin{align*}
-        \rinprod{\L \psi}{\phi} - \rinprod{\psi}{\L \phi} &= \int_{\partial V} \vect{J}(\phi, \psi) \cdot \d \vect{s}
-    \end{align*}
-    with the ``reaction'' (pseudo) inner product
-    \begin{align*}
-        \rinprod{\psi}{\phi} &= \int_V \psi \phi \d v
+        \left( \nabla^2 - \frac{1}{c^2} \frac{\partial^2}{\partial t^2} \right) \vect{A}(\vect{r}, t) &= - \vect{J}(\vect{r}, t)
     \end{align*}
     
 
@@ -1889,72 +1921,554 @@
 \note{
 \begin{itemize}
 \item
-    A key theorem for 3D Green's functions is an integral theorem known as Green's second identity.
+    The wave equation is a key component of electromagnetism.
 \item
-    We won't do it here, but it's not too difficult to derive using the vector product rule
-    \begin{align*}
-        \vect{\nabla} \cdot (f \vect{\nabla} g) &= (\vect{\nabla} f) \cdot (\vect{\nabla} g) + f \nabla^2 g
-    \end{align*}
-    and the divergence theorem.
+    We've spent this entire course learning different ways to solve the Helmholtz equation, which is just a Fourier-transformed version of the wave equation.
 \item
-    If we treat the volume integral as an inner product and $ \nabla^2 $ as our operator $ \L $, this looks a lot like an expression we had from 1 dimension.
-    We have a term with the operator, a term with the adjoint operator (in this case $ \L^* = \L $), and a leftover conjunct term which depends only on the boundaries.
+    In the time domain (in the Lorentz gauge), each component of the vector potential $ \vect{A} $ obeys the scalar wave equation, with a component of $ \vect{J} $ as its source.
+    So we would like to find a Green's functions approach to solving the scalar wave equation.
 \end{itemize}
 }
+
+\begin{frame}[fragile]
+    \frametitle{The adjoint wave equation}
+
+    Find $ \L $, $ \L^* $, $ \B $ and $ \B^* $ so that
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v}
+    \end{align*}
+    where
+    \begin{align*}
+        \inprod{u}{v} = \int_{t_i}^{t_f} \int_V u(\vect{r}, t) v^*(\vect{r}, t) \d^3 \vect{r} \d t
+    \end{align*}
+    
+\end{frame}
 
 \note{
 \begin{itemize}
 \item
-    Note: the reaction inner product is a pseudo inner product and not a true inner product.
-    A true inner product would be, e.g.,
-    \begin{align*}
-        \inprod{\psi}{\phi} = \int_V \psi \phi^* \d v
-    \end{align*}
-    Without the complex conjugate, we have some weird properties.
-    For example, the ``length'' of a vector $ \left\| \phi \right\|^2 = \rinprod{\phi}{\phi} $ can be negative or complex.
+    To construct $ u(\vect{r},t) $ in terms of the Green's function, we proceed similar to the 1D case.
 \item
-    However, the reaction (pseudo) inner product still plays an important role in electromagnetism, particularly with regards to reciprocity.
-    See, e.g., Chew's paper ``A New Look at Reciprocity and Energy Conservation Theorems in Electromagnetics.''
+    The first step is to find the adjoint operators and adjoint boundary conditions.
+\item
+    Before our inner product was an integral over the single variable $ x $.
+    Now, it's an integral over all four variables $ x, y, z, t $.
 \end{itemize}
 }
 
-\note{}
+\begin{frame}[fragile]
+    \frametitle{The adjoint wave equation}
+
+    \vspace{-24pt}
+    \begin{align*}
+        \inprod{\L u}{v} &= \int_{t_i}^{t_f} \int_V \left( \nabla^2 u - \frac{1}{c^2} \frac{\partial^2 u}{\partial t^2} \right) v^* \d^3 \vect{r} \d t
+    \end{align*}
+    
+    Use Green's identity
+    \begin{align*}
+        \int_V \left( v^* \nabla^2 u - u \nabla^2 v^* \right) &= \oint_{\partial V} \left( v^* \frac{\partial u}{\partial n} - u \frac{\partial v^*}{\partial n} \right) \d S
+    \end{align*}
+    and integration by parts
+    \begin{align*}
+        \int_{t_i}^{t_f} \left( \frac{\partial^2 u}{\partial t^2} v^* - u \frac{\partial^2 v^*}{\partial t^2} \right) \d t &= \left[ v^* \frac{\partial u}{\partial t} - u \frac{\partial v^*}{\partial t} \right]_{t_i}^{t_f}
+    \end{align*}
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    To find $ \L^* $ and $ \B^* $, we write out $ \inprod{\L u}{v} $ and then try to rewrite it in the form $ \inprod{u}{\L^* v} $ using theorems from calculus.
+\item
+    Green's identity is essentially a 3D version of the integration by parts that we used in the 1D case.
+    Note that $ V $ is a volume and $ \partial V $ is the boundary of that volume.
+\item
+    We use Green's identity to deal with the spatial derivative part $ v^* \nabla^2 u $.
+\item
+    We use 1D integration by parts to deal with the time derivative part.
+\end{itemize}
+
+}
 
 \begin{frame}[fragile]
-    \frametitle{Wave equation}
+    \frametitle{The adjoint wave equation}
+
+    Result:
+    \begin{IEEEeqnarray*}{rCl}
+        \int_{t_i}^{t_f} \int_V \left( \L u \right) v^* \d^3 \vect{r} \d t &=& \int_{t_i}^{t_f} \int_V u \left( \L v \right)^* \d^3 \vect{r} \d t + 
+        \\ && + \int_{t_i}^{t_f} \oint_{\partial V} \left( v^* \frac{\partial u}{\partial n} - u \frac{\partial v^*}{\partial n} \right) \d S \d t - 
+        \\ && - \frac{1}{c^2} \left[ \int_{V} \left( v^* \frac{\partial u}{\partial t} - u \frac{\partial v^*}{\partial t} \right) \d V \right]_{t_i}^{t_f}
+    \end{IEEEeqnarray*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Not pretty! Important thing is that it's similar to what we had in the 1D case.
+\item
+    The first term is $ \inprod{\L u}{v} $ and the second term is $ \inprod{u}{\L v} $.
+    So, for the wave equation $ \L = \L^* $.
+\item
+    The last two terms are just a big ugly conjunct.
+    The first one depends only on the spatial boundary conditions ($ \partial V $ is the boundary of the volume $ V $), while the second one depends only on the temporal boundary conditions.
+\item
+    Given boundary conditions on $ u $, the adjoint boundary conditions are the ones that make these last two terms go to zero.
+    E.g., if $ u(\vect{r}, t) = 0 $ over the whole boundary, then we would need $ v(\vect{r}, t) = 0 $ over the whole boundary as well to cancel out the second-last integral.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Green's problems}
 
     Original problem:
     \begin{align*}
-        \left( \nabla^2 + \frac{\partial^2}{\partial t^2} \right) u(\vect{r}, t) &= f(\vect{r}, t); \quad \B[u] = \alpha
+        \L u(\vect{r}, t) &= f(\vect{r}, t); \quad \B[u] = \alpha
     \end{align*}
-
     Green's problem:
     \begin{align*}
-        \left( \nabla^2 + \frac{\partial^2}{\partial t^2} \right) G(\vect{r}, t; \vect{r}', t') &= \delta^3(\vect{r} - \vect{r}') \delta(t - t'); \quad \B[G] = 0
+        \L G(\vect{r}, t; \vect{r}', t') &= \delta^3(\vect{r} - \vect{r}') \delta(t - t'); \quad \B[G] = 0
     \end{align*}
-
     Adjoint Green's problem:
     \begin{align*}
-        \left( \nabla^2 + \frac{\partial^2}{\partial t^2} \right) H(\vect{r}, t; \vect{r}', t') &= \delta^3(\vect{r} - \vect{r}') \delta(t - t'); \quad \B^*[H] = 0
+        \L H(\vect{r}, t; \vect{r}', t') &= \delta^3(\vect{r} - \vect{r}') \delta(t - t'); \quad \B^*[H] = 0
     \end{align*}
     
-
 \end{frame}
 
 \note{
 \begin{itemize}
 \item
-    Can follow a similar derivation as the 1D case, but with the reaction inner product. I should probably just state the key results: expression for $ u $ in terms of $ H $, expression for $ G $ in terms of $ H $, and final expression for $ u $.
+    As in the 1D case, we set up three problems.
 \item
-    Note: I'm doing the wave equation because it's interesting (and explains the causality requirement on the Helmholtz Green's function!) but a lot of the EM books only do the Helmholtz equation.
+    For the lossless wave equation $ \L = \L^* $, so the only difference between the $ G $ and $ H $ equations is the boundary conditions.
 \end{itemize}
 }
 
-\section{Advanced topics}
-\label{sec:advanced_topics}
+\begin{frame}[fragile]
+    \frametitle{Solution to the wave equation}
+
+    \vspace{-24pt}
+    \begin{IEEEeqnarray*}{rCl}
+        u(\vect{r}', t') &=& \int_{t_i}^{t_f} \int_V f(\vect{r}, t) H^*(\vect{r}, t; \vect{r}', t') \d^3 \vect{r} \d t + 
+        \\ && - \int_{t_i}^{t_f} \oint_{\partial V} \left( H^* \frac{\partial u}{\partial n} - u \frac{\partial H^*}{\partial n} \right) \d S \d t - 
+        \\ && + \frac{1}{c^2} \left[ \int_{V} \left( H^* \frac{\partial u}{\partial t} - u \frac{\partial H^*}{\partial t} \right) \d V \right]_{t_i}^{t_f}
+    \end{IEEEeqnarray*}
+    
+\end{frame}
 
 \note{}
 
+\begin{frame}[fragile]
+    \frametitle{Solution to the wave equation}
+
+    This time, $ G(\vect{r}, t; \vect{r}', t') = H^*(\vect{r}', t'; \vect{r}, t) $ so
+    \begin{IEEEeqnarray*}{rCl}
+        u(\vect{r}, t) &=& \int_{t_i}^{t_f} \int_{V'} f(\vect{r}', t') G(\vect{r}, t; \vect{r}', t') \d^3 \vect{r}' \d t' + 
+        \\ && - \int_{t_i}^{t_f} \oint_{\partial V'} \left( G \frac{\partial u}{\partial n'} - u \frac{\partial G}{\partial n'} \right) \d S' \d t' - 
+        \\ && + \frac{1}{c^2} \left[ \int_{V'} \left( G \frac{\partial u}{\partial t'} - u \frac{\partial G}{\partial t'} \right) \d V' \right]_{t_i}^{t_f}
+    \end{IEEEeqnarray*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Not very pretty, but we have a full solution for $ u(\vect{r}, t) $ in terms of the Green's function.
+\item
+    The first integral gives the effect of the source term $ f(\vect{r}, t) $.
+\item
+    The second integral gives the effect of the boundary conditions on $ u $.
+\item
+    The third integral gives the effect of the initial conditions on $ u $.
+\item
+    Note that $ G(\vect{r}, t; \vect{r}', t') $ obeys the boundary conditions with respect to $ \vect{r}, t $ and the \emph{adjoint} boundary conditions with respect to $ \vect{r}', t' $.
+    Use this for a given problem to simplify the last two terms.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Finding the Green's function}
+
+    \begin{align*}
+        \left( \nabla^2 - \frac{1}{c^2} \frac{\partial^2}{\partial t^2} \right) G(\vect{r}, t; \vect{r}', t') &= \delta^3(\vect{r} - \vect{r}') \delta(t - t')
+    \end{align*}
+
+    Initial conditions:
+    \begin{align*}
+        G(\vect{r}, 0; \vect{r}', t') &= \left. \frac{\partial G(\vect{r},t; \vect{r}', t')}{\partial t} \right|_{t = 0} = 0
+    \end{align*}
+    
+    Boundary conditions:
+    \begin{align*}
+        \lim_{|\vect{r}| \to \infty} G(\vect{r}, t; \vect{r}', t') &\to 0
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Now let's look at how we can actually solve the Green's function problem.
+\item
+    We'll assume that we have an initial condition problem, and that we are interested in all of space (boundaries are at infinity).
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Finding the Green's function}
+
+    Translation invariance:
+    \begin{align*}
+        G(\vect{r}, t; \vect{r}', t') &= G(\vect{r} - \vect{r}', t - t')
+    \end{align*}
+
+    Let $ \vect{R} = \vect{r} - \vect{r}' $ and $ \tau = c(t - t') $ so that 
+    \begin{align*}
+        \left( \nabla_R^2 - \frac{\partial^2}{\partial \tau^2} \right) G(\vect{R}, \tau) &= \delta^3(\vect{R}) \delta(\tau)
+    \end{align*}
+
+   
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Because the wave equation is translation invariant, we can simplify the Green's function to make the problem easier to solve.
+\item
+    We define new variables $ \vect{R} = \vect{r} - \vect{r}' $ and $ \tau = t - t' $.
+\item
+    Note that $ \nabla^2 $ is the laplacian with respect to $ \vect{R} $.
+\end{itemize}
+
+}
+
+\begin{frame}[fragile]
+    \frametitle{Finding the Green's function}
+    
+    \begin{align*}
+        \left( \nabla_R^2 - \frac{\partial^2}{\partial \tau^2} \right) G(\vect{R}, \tau) &= \delta^3(\vect{R}) \delta(\tau)
+    \end{align*}
+
+    Spatial Fourier transform:
+    \begin{align*}
+        \left( k^2 - \frac{\partial^2}{\partial \tau^2} \right) \ft{G}(\vect{k}, \tau) &= \delta(\tau)
+    \end{align*}
+    so
+    \begin{align*}
+        \ft{G}(\vect{k},\tau) &= 
+        \begin{cases}
+            A \cos(k \tau) + B\sin(k \tau) & \text{for } \tau < 0
+            \\
+            C \cos(k \tau) + D\sin(k \tau) & \text{for } \tau > 0
+        \end{cases}
+    \end{align*}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Finding the Green's function}
+
+    
+    \vspace{-16pt}
+    \begin{align*}
+        \ft{G}(\vect{k},\tau) &= 
+        \begin{cases}
+            A \cos(k \tau) + B\sin(k \tau) & \text{for } \tau < 0
+            \\
+            C \cos(k \tau) + D\sin(k \tau) & \text{for } \tau > 0
+        \end{cases}
+    \end{align*}
+    
+    \begin{itemize}
+    \item
+        Initial conditions give $ A = B = 0 $.
+    \item
+        Continuity at $ t = t' $ gives $ C = 0 $.
+    \item
+        Discontinuity at $ t = t' $ gives $ D = -1/k $.
+    \end{itemize}
+
+    \begin{align*}
+        \ft{G}(\vect{k},\tau) &= %- \frac{\sin(k \tau)}{k} U(\tau)
+        \begin{cases}
+            0 & \text{for } \tau < 0
+            \\
+            -\dfrac{\sin(k \tau)}{k} & \text{for } \tau > 0
+        \end{cases}
+    \end{align*}
+
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Finding the Green's function}
+
+    Inverse Fourier transform for $ \tau > 0 $:
+    \begin{align*}
+        G(\vect{R},\tau) &= \frac{1}{8 \pi^3} \int_{\mathbb{R}^3} \ft{G}(\vect{k},\tau) e^{j \vect{k} \cdot \vect{R}} \d^3 \vect{k}
+        \\
+        G(\vect{R},\tau) &= \frac{-1}{8 \pi^3} \int_{\mathbb{R}^3} \frac{\sin(k \tau)}{k} e^{j \vect{k} \cdot \vect{R}} \d^3 \vect{k}
+    \end{align*}
+
+    Use spherical coordinates in $ \vect{k} $: $ (k, \theta, \phi) $.
+    \begin{align*}
+        G(\vect{R},\tau) &= \frac{-1}{8 \pi^3} \int_0^{2 \pi} \int_0^\pi \int_0^\infty \frac{\sin(k \tau)}{k} e^{j k R \cos(\theta)} k^2 \sin(\theta) \d k \d \theta \d \phi
+    \end{align*}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Finding the Green's function}
+    
+    \begin{align*}
+        G(\vect{R},\tau) &= \frac{-1}{8 \pi^3} \int_0^{2 \pi} \int_0^\pi \int_0^\infty \frac{\sin(k \tau)}{k} e^{j k R \cos(\theta)} k^2 \sin(\theta) \d k \d \theta \d \phi
+        \\
+        G(\vect{R},\tau) &= \frac{-1}{4 \pi^2} \int_0^\infty k \sin(k \tau) \left[ \int_0^\pi \sin(\theta) e^{j k R \cos(\theta)} \d \theta \right] \d k
+        \\
+        G(\vect{R},\tau) &= \frac{-1}{4 \pi^2} \int_0^\infty k \sin(k \tau) \left[ \frac{2 \sin(k R)}{k R} \right] \d k
+        \\
+        G(\vect{R},\tau) &= \frac{-1}{2 \pi^2 R} \int_0^\infty \sin(k \tau) \sin(k R) \d k
+    \end{align*}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Finding the Green's function}
+
+    \begin{align*}
+        G(\vect{R},\tau) &= \frac{-1}{2 \pi^2 R} \int_0^\infty \sin(k \tau) \sin(k R) \d k
+        \\
+        G(\vect{R},\tau) &= \frac{-1}{4 \pi^2 R} \int_{-\infty}^\infty \sin(k \tau) \sin(k R) \d k
+        \\
+        G(\vect{R},\tau) &= \frac{-1}{4 \pi^2 R} \int_{-\infty}^\infty \left( \frac{e^{j k \tau} - e^{-j k \tau}}{2 j}\right) \left( \frac{e^{j k R} - e^{-j k R}}{2j}\right) \d k
+        \\
+        G(\vect{R},\tau) &= \frac{1}{16 \pi^2 R} \int_{-\infty}^\infty \left( e^{j k (\tau + R)} - e^{-j k (\tau - R)} - e^{j k (\tau - R)} + e^{-j k (\tau + R)} \right) \d k
+    \end{align*}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Finding the Green's function}
+    
+    \begin{align*}
+        G(\vect{R},\tau) &= \frac{1}{16 \pi^2 R} \int_{-\infty}^\infty \left( e^{j k (\tau + R)} - e^{-j k (\tau - R)} - e^{j k (\tau - R)} + e^{-j k (\tau + R)} \right) \d k
+        \\
+        G(\vect{R},\tau) &= \frac{1}{16 \pi^2 R} 2 \pi \left[ \delta(\tau + R) - \delta(\tau - R) - \delta(\tau - R) + \delta(\tau + R) \right]
+    \end{align*}
+    But $ \tau > 0 $ and $ R > 0 $ so $ \delta(\tau + R) = 0 $ and we have
+    \begin{align*}
+        G(\vect{R},\tau) &= \frac{- \delta(\tau - R)}{4 \pi R}
+    \end{align*}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Green's function for the wave equation}
+    
+    \begin{align*}
+    G(\vect{r}, t; \vect{r}', t') &= \begin{cases} - \frac{\delta\left( c(t - t') - \left| \vect{r} - \vect{r'} \right| \right)}{4 \pi \left| \vect{r} - \vect{r}' \right|} & \text{for } t > t' \\ 0 & \text{for } t < t' \end{cases}
+    \end{align*}
+
+    With zero boundary/initial conditions:
+    \begin{align*}
+        u(\vect{r}, t) &= \int_{t_i}^{t_f} \int_{\mathbb{R}^3} G(\vect{r}, t; \vect{r}', t') f(\vect{r}', t') \d^3 \vect{r}' \d t'
+        \\
+        u(\vect{r}, t) &= \int_{\mathbb{R}^3} \frac{-f\left(\vect{r}, t - \frac{|\vect{r} - \vect{r}'|}{c}\right)}{4 \pi |\vect{r} - \vect{r}'|} \d^3 \vect{r'}
+    \end{align*}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Vector potential: initial condition problem}
+    
+    \begin{align*}
+        \left( \nabla^2 - \frac{1}{c^2} \frac{\partial^2}{\partial t^2} \right) \vect{A}(\vect{r}, t) &= - \vect{J}(\vect{r}, t)
+    \end{align*}
+    
+    For initial conditions, we have the ``retarded potential'':
+    \begin{align*}
+        \vect{A}(\vect{r}, t) &= \int_{\mathbb{R}^3} \frac{\vect{J}\left(\vect{r}, t - \frac{|\vect{r} - \vect{r}'|}{c}\right)}{4 \pi |\vect{r} - \vect{r}'|} \d^3 \vect{r'}
+    \end{align*}
+
+    \begin{align*}
+        \ft{\vect{A}}(\vect{r}, \omega) &= \int_{\mathbb{R}^3} \ft{\vect{J}}\left(\vect{r}, \omega \right) \frac{e^{- j \frac{\omega}{c} | \vect{r} - \vect{r}' |}}{4 \pi |\vect{r} - \vect{r}'|} \d^3 \vect{r'}
+    \end{align*}
+    
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Vector potential: final value problem}
+    
+    \begin{align*}
+        \left( \nabla^2 - \frac{1}{c^2} \frac{\partial^2}{\partial t^2} \right) \vect{A}(\vect{r}, t) &= - \vect{J}(\vect{r}, t)
+    \end{align*}
+    
+    For final conditions, we have the ``advanced potential'':
+    \begin{align*}
+        \vect{A}(\vect{r}, t) &= \int_{\mathbb{R}^3} \frac{\vect{J}\left(\vect{r}, t + \frac{|\vect{r} - \vect{r}'|}{c}\right)}{4 \pi |\vect{r} - \vect{r}'|} \d^3 \vect{r'}
+    \end{align*}
+
+    Violation of causality?
+    
+\end{frame}
+
+\note{}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Takeaways}
+
+    Introduction:
+    \begin{itemize}
+    \item
+        The Green's function is the impulse response
+    \item
+        Use it to construct solutions. Ignoring boundary conditions:
+        \begin{align*}
+            u(x) &= \int f(x') G(x,x') \d x'
+        \end{align*}
+    \end{itemize}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Takeaways}
+
+    Generalized functions:
+    \begin{itemize}
+    \item
+        The delta function is an operator, not an actual function.
+    \end{itemize}
+   
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Takeaways}
+     
+    Direct solution:
+    \begin{itemize}
+    \item
+        $ G(x,x') $ obeys source-free equation for $ x \neq x' $.
+    \item
+        $ G(x,x') $ is continuous at $ x = x' $.
+    \item
+        $ \dfrac{\d G(x,x')}{\d x} $ is discontinuous at $ x = x' $.
+    \end{itemize}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Takeaways}
+
+    Boundary conditions:
+    \begin{itemize}
+    \item
+        Non-zero boundary conditions act like impulse sources.
+    \item
+        Best way to construct $ u(x) $ from $ G(x,x') $ is to use the adjoint problem.
+    \end{itemize}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Takeaways}
+    
+    Properties of Green's functions:
+    \begin{itemize}
+    \item
+        Self-adjoint problems: $ G(x,x') = G^*(x',x) $ (reciprocity).
+    \item
+        Invariant problems: $ G(x,x') = G(x - x') $.
+    \end{itemize}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Takeaways}
+    
+    Spectral methods:
+    \begin{itemize}
+    \item
+        Green's function can be found from eigenfunctions/eigenvalues:
+        \begin{align*}
+            G(x,x') &= \sum_n \frac{\phi_n(x) \phi_n^*(x')}{\lambda_n - \lambda}
+        \end{align*}
+    \item
+        Eigenfunctions/eigenvalues can be found from Green's function.
+    \item
+        Delta function can be written in terms of eigenfunctions:
+        \begin{align*}
+            \delta(x - x') &= \sum_n \phi_n(x) \phi_n^*(x')
+        \end{align*}
+    \end{itemize}
+    
+
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Takeaways}
+    
+    The 3D wave equation:
+    \begin{itemize}
+    \item
+        In general, use adjoint problem to write $ u(\vect{r}, t) $ in terms of $ G(\vect{r}, t; \vect{r}', t') $.
+    \item
+        For free space initial condition problem, solution is the so-called ``retarded potential.''
+    \end{itemize}
+    
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Further topics}
+
+    \begin{itemize}
+    \item
+        Sturm-Liouville problems
+    \item
+        Complex contour integration
+    \item
+        Separation of variables (3D problems)
+    \item
+        Dyadic Green's functions
+    \end{itemize}
+    
+\end{frame}
+
+\note{}
 
 \begin{frame}[fragile]
     \frametitle{Introductory resources}
@@ -1962,7 +2476,8 @@
     Less rigorous, but good for getting the key ideas.
 
     Folland (1992), \emph{Fourier analysis and its applications}. 
-    Rigorous. Chapter on generalized functions is particularly nice.
+    Fully rigorous. 
+    Chapter on generalized functions is particularly nice.
 
     Dudley (1994), \emph{Mathematical foundations for electromagnetic theory}.
     Great introduction to 1D Green's functions: deals with subtleties that others ignore.
