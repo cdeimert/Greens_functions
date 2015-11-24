@@ -52,10 +52,10 @@
 \newif\ifextended
 
 \handoutfalse
-%\handouttrue
+\handouttrue
 
 \extendedfalse
-\extendedtrue
+%\extendedtrue
 
 \ifhandout
     \documentclass[12 pt, compress, handout, intlimits]{beamer}
@@ -125,13 +125,15 @@
 \note{
     \begin{itemize}
     \item
-        This is intended as a small (dense) introduction to Green's functions for electrical engineers.
+        This is intended as a short introduction to Green's functions for electrical engineers.
     \item
         Basic idea of Green's functions is simple, but there is a huge amount of theory for actually calculating and using them.
+        Unfortunately means that this presentation will be missing a lot.
     \item
-        Tip: read a lot of different references. 
-        Different authors take totally different approaches and it's interesting to see them all.
-        Lots of references are provided at the end.
+        We'll only cover a few topics, but we'll try to cover them fairly rigorously.
+        Should give a solid foundation for reading books on the topic.
+    \item
+        Suggested further reading provided at the end.
     \end{itemize}
 }
 
@@ -140,7 +142,23 @@
     \tableofcontents
 \end{frame}
 
-\note{}
+\note{
+\begin{enumerate}
+\item
+    Basic idea of Green's functions.
+\item
+    Simplest method for solving the Green's function equation.
+\item
+    How to use the Green's function to solve a problem with boundary conditions. (Biggest section!)
+\item
+    Useful properties of Green's functions for special types of problems.
+\item
+    Relationship between Green's functions and eigenvalues/eigenfunctions.
+\item
+    Summary and suggested further reading.
+\end{enumerate}
+
+}
 
 \section{Introduction}
 \label{sec:introduction}
@@ -148,11 +166,8 @@
 \note{
 \begin{itemize}
 \item
-    Fortunately, the basic idea of Green's functions is really simple.
-\item
+    The basic idea of Green's functions is really simple.
     You've actually used them before!
-\item
-    What's far more interesting is how to calculate/interpret them.
 \end{itemize}
 }
 
@@ -224,6 +239,7 @@
     \begin{empheq}[box=\widefbox]{align*}
         u(x) = \int G(x,x') f(x') \d x
     \end{empheq}
+    \begin{flushright}\scriptsize{(Some conditions apply.)}\end{flushright}
 
 \end{frame}
 
@@ -231,22 +247,27 @@
 \begin{itemize}
 \item
     Once we know the Green's function, we have an explicit formula for the solution $ u(x) $ for any source function $ f(x) $.
+\item
+    Beware the fine print! 
+    This formula actually only works under certain assumptions about the boundary conditions.
+\item
+    We'll deal with the more general approach later.
+    For now, this gets the key idea across.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
     \frametitle{Familiar Green's functions}
 
-    Impulse response of a LTI system:
+    Impulse response of an LTI system:
     \begin{align*}
         y(t) &= \int_{-\infty}^{\infty} x(t') \alert{h(t - t')} \d t'
     \end{align*}
 
-    \pause
-    E.g., for an RL-circuit:
-    \begin{align*}
-        G(t,t') &= h(t - t') = u(t - t') e^{-\alpha (t - t')}
-    \end{align*}
+    %E.g., for an RL-circuit:
+    %\begin{align*}
+    %    G(t,t') &= h(t - t') = u(t - t') e^{-\alpha (t - t')}
+    %\end{align*}
     
 \end{frame}
 
@@ -272,7 +293,7 @@
         \nabla^2 V(\vect{r}) &= - \frac{\rho(\vect{r})}{\epsilon_0}
     \end{align*}
     \begin{align*}
-        V(\vect{r}) &= \iiint \alert{\frac{1}{4 \pi \epsilon_0 \left| \vect{r} - \vect{r}' \right|^2}} \rho(\vect{r}') \d^3 \vect{r}'
+        V(\vect{r}) &= \iiint \alert{\frac{1}{4 \pi \epsilon_0 \left| \vect{r} - \vect{r}' \right|}} \rho(\vect{r}') \d^3 \vect{r}'
     \end{align*}
 \end{frame}
 
@@ -281,7 +302,7 @@
     \item
         Green's function for Poisson's equation is
         \begin{align*}
-            G(\vect{r}, \vect{r}') &= \frac{1}{4 \pi \epsilon_0 \left| \vect{r} - \vect{r}' \right|^2}
+            G(\vect{r}, \vect{r}') &= \frac{1}{4 \pi \epsilon_0 \left| \vect{r} - \vect{r}' \right|}
         \end{align*}
     \end{itemize}
 }
@@ -311,7 +332,7 @@
 \begin{frame}[fragile]
     \frametitle{Familiar Green's functions}
     
-    Our goal:
+    Green's functions let us:
     \begin{itemize}
     \item
         Derive these expressions.
@@ -322,8 +343,17 @@
 \end{frame}
 
 \note{
+\begin{itemize}
+\item
+    With Green's function theory, we learn how to derive the above expressions. (Though we won't have time to do the 3D ones here.)
+\item
+    More importantly, Green's function theory allows us to deal with different boundary conditions.
+    The solutions to the Poisson and Helmholtz equations above assume free space (boundaries at infinity).
+    Green's functions would allow us to, e.g., find the response to a current source inside a specific waveguide.
+\end{itemize}
 }
 
+\ifextended
 \section{Generalized functions}
 \label{sec:generalized_functions}
 
@@ -463,7 +493,6 @@
 \end{itemize}
 }
 
-\ifextended
 \begin{frame}[fragile]
     \frametitle{Delta function limits}
     
@@ -531,7 +560,6 @@
     \end{itemize}
     
 }
-\fi
 
 \begin{frame}[fragile]
     \frametitle{What does this mean for Green's functions?}
@@ -574,15 +602,16 @@
 \end{itemize}
     
 }
+\fi
 
-\section{Direct solution}
-\label{sec:direct_solution}
-
+\section{Finding the Green's function}
+\label{sec:finding_the_green_s_function}
 \note{
-    \begin{itemize}
-    \item
-        Back to Green's functions!
-    \end{itemize}
+\begin{itemize}
+\item
+    In this section, we'll look at one of the simplest methods for actually solving the Green's function problem.
+\end{itemize}
+
 }
 
 \begin{frame}[fragile]
@@ -604,15 +633,16 @@
 \note{
 \begin{itemize}
 \item
-    Let's look at a simple example now.
+    Let's start off by looking at a simple example.
 \item
     This problem is similar to a simple harmonic oscillator, but the negative sign means we expect lossy behaviour rather than oscillation.
 \item
     We won't worry much about boundary conditions yet, we'll just look for solutions that don't blow up at $ x = \pm \infty $.
 \item
-    If we can find the Green's function, then we can find the solution to the original problem.
+    If we can find the Green's function, then we can find the solution to the original problem for any $ f(x) $.
 \item
-    But the Green's function problem looks pretty hard. The point of this example is to demonstrate that we can actually solve it.
+    But the Green's function problem looks hard! 
+    The point of this example is to demonstrate that we can actually solve it.
 \end{itemize}
 }
 
@@ -705,9 +735,8 @@
     \item
         In the limit of $ \epsilon \to 0 $, the second integral vanishes because $ G(x,x') $ is continuous.
     \item
-        But, we expect $ \d G / \d x $ to be discontinous. 
-    \item
-        Using fundamental theorem of calculus, we get at a \emph{discontinuity condition for the derivative.} (Key idea for the direct solution method!)
+        The first integral is an integral of a derivative, so we can use the fundamental theorem of calculus.
+        The result is a \emph{discontinuity condition for the derivative.}
     \end{itemize}
 }
 
@@ -723,14 +752,14 @@
         \end{cases}
     \end{align*}
     
-    Continuity of $ G $:
+    Continuity of $ G(x,x') $:
     \begin{align*}
         A &= B
     \end{align*}
 
-    Discontinuity of $ \frac{\d G}{\d x} $:
+    Discontinuity of $ \dfrac{\d G(x,x')}{\d x} $:
     \begin{align*}
-        k A + k B &= 1
+        k A + k B = 1
     \end{align*}
     
 \end{frame}
@@ -739,21 +768,26 @@
 \begin{itemize}
 \item
     Applying our two conditions, we can solve for $ A $ and $ B $.
+    We find
+    \begin{align*}
+        A = B = \frac{1}{2 k}
+    \end{align*}
+    
 \end{itemize}
 }
 
 \begin{frame}[fragile]
     \frametitle{A simple example}
-    At last, our Green's function is
+    Solving, our Green's function is
     \begin{align*}
-        G(x,x') &= 
+        G(x,x') &= \frac{1}{2k} 
         \begin{dcases} 
-            \dfrac{e^{+k (x - x')}}{2k} & \text{for } x < x'
+            e^{+k (x - x')} & \text{for } x < x'
             \\
-            \dfrac{e^{-k (x - x')}}{2k} & \text{for } x > x'
+            e^{-k (x - x')} & \text{for } x > x'
         \end{dcases}
     \end{align*}
-    or, more compactly
+    Or, more compactly:
     \begin{empheq}[box=\widefbox]{align*}
         G(x, x') = \frac{e^{k |x - x'|}}{2 k}
     \end{empheq}
@@ -766,6 +800,12 @@
 
 \begin{frame}[fragile]
     \frametitle{A simple example}
+
+    Original problem:
+    \begin{align*}
+        \frac{\d^2 u(x)}{\d x^2} - k^2 u(x) &= f(x)
+    \end{align*}
+
     Solution:
     \begin{align*}
         u(x) &= \int_{-\infty}^{\infty} f(x') \frac{e^{k|x - x'|}}{2k} \d x'
@@ -776,20 +816,24 @@
 \note{
 \begin{itemize}
 \item
-    Now that we have the Green's function, we can construct the solution to our original problem for any forcing function $ f(t) $.
+    Now that we have the Green's function, we can construct the solution to our original problem for any forcing function $ f(x) $.
+\item
+    Caution: remember the fine print from before. 
+    This solution only works with certain assumptions about boundary conditions.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
     \frametitle{General approach}
-    Properties of $ G(x,x') $:
+
+    Second-order problems:
     \begin{itemize}
     \item
-        Behaves like source-free solution except at $ x = x' $.
+        $ G(x,x') $ obeys source-free equation for $ x \neq x' $.
     \item
-        Function is continuous at $ x = x' $.
+        $ G(x,x') $ is continuous at $ x = x' $.
     \item
-        Derivative is discontinuous at $ x = x' $.
+        Derivative of $ G(x,x') $ is discontinuous at $ x = x' $.
     \end{itemize}
     
 \end{frame}
@@ -797,52 +841,30 @@
 \note{
     \begin{itemize}
     \item
-        Listed are the key things to note from that example.
-    \item
         This approach works quite well for solving 1D Green's function problems.
+    \item
+        For problems of other orders, will have a different combination of continuity/discontinuity requirements at $ x = x' $.
+        E.g., $ G(x,x') $ will be discontinuous for a first order problem.
     \end{itemize}
 }
 
-\section{Boundary conditions}
-\label{sec:boundary_conditions}
+\section{Constructing solutions}
+\label{sec:constructing_solutions}
 
 \note{
-    \begin{itemize}
-    \item
-        We didn't worry about boundary conditions in the last example.
-    \item
-        As it turns out, Green's functions allow us to deal with boundary conditions in an elegant way.
-    \item
-        Unfortunately, to derive it, we either have to do a lot of hand-waving or a lot of math. 
-        We're going to do a lot of math.
-    \item
-        See Dudley's \textit{Mathematical foundations for electromagnetic theory} for a more thorough discussion.
-    \end{itemize}
+\begin{itemize}
+\item
+    In the introduction, we showed non-rigorously how to construct a solution from the Green's function.
+    To keep things simpler, we ignored boundary conditions.
+\item
+    Here, we'll look at how to properly construct a solution from the Green's function when boundary conditions are involved.
+\item
+    Our approach is quite challenging compared to a lot of books on the subject. 
+    The advantage is that we'll deal with a lot of subtleties that can otherwise lead to confusion.
+\item
+    For approaches similar to the one in this section, see Dudley, Morse and Feshbach, or Gerlach.
+\end{itemize}
 }
-
-%\begin{frame}[fragile]
-%    \frametitle{Sturm Liouville Problems}
-%    
-%    Differential equation:
-%    \begin{align*}
-%        \underbrace{\left( - \frac{1}{w(x)} \frac{\d}{\d x} \left[ p(x) \frac{\d}{\d x} \right] + q(x) - \lambda \right)}_{\displaystyle \L_\lambda} u(x) &= f(x)
-%    \end{align*}
-%    Boundary conditions:
-%    \begin{align*}
-%        B_1(u) &= \alpha_{11} u(a) + \alpha_{12} u'(a) + \alpha_{13} u(b) + \alpha_{14} u'(b) =  \alpha
-%        \\
-%        B_2(u) &= \alpha_{21} u(a) + \alpha_{22} u'(a) + \alpha_{23} u(b) + \alpha_{24} u'(b) =  \beta
-%    \end{align*}
-%    
-%\end{frame}
-%
-%\note{
-%    \begin{itemize}
-%    \item
-%        This is a general Sturm-Liouville problem.
-%    \end{itemize}
-%    
-%}
 
 \begin{frame}[fragile]
     \frametitle{Adjoint operators}
@@ -863,7 +885,7 @@
 \note{
     \begin{itemize}
     \item
-        To really make sense of boundary conditions, we need the concept of the adjoint problem.
+        Underpinning our approach is the concept of an adjoint problem.
     \item
         Suppose we have an original problem defined by operator $ \L $ and boundary conditions $ \B $.
     \item
@@ -917,21 +939,16 @@
 \begin{frame}[fragile]
     \frametitle{Adjoint operators: example}
     
-    \vspace{-36pt}
     \begin{align*}
         \inprod{\L u}{v} &= \int_a^b \left[ u''(x) + k^2 u(x) \right] v^*(x) \d x
-        %\pause
-        %\\
-        %&= \int_a^b \left[ - u'(x) v^{*\prime}(x) + k^2 u(x) v^*(x) \right] \d x + \left[ u'(x) v^*(x) \right]_{a}^{b}
-        \pause
         \\
         \inprod{\L u}{v} &= \int_a^b u(x) \left[ v^{\prime\prime}(x) + (k^2)^* v(x) \right]^* \d x + 
         \\& \quad + \left[ u'(x) v^*(x)  - u(x) v^{\prime *}(x) \right]_{a}^{b}
     \end{align*}
-    By inspection:
-    \begin{align*}
-        \L^* v(x) &= \left[ \frac{\d^2}{\d x^2} + (k^2)^* \right] v(x)
-    \end{align*}
+%    We have $ \inprod{\L u}{v} = \inprod{u}{\L v} + [\text{stuff}] $
+%    \begin{align*}
+%        \L^* v(x) &= \left[ \frac{\d^2}{\d x^2} + (k^2)^* \right] v(x)
+%    \end{align*}
     
 
 \end{frame}
@@ -939,14 +956,42 @@
 \note{
     \begin{itemize}
     \item
-        Integrate by parts twice. 
+        To find the adjoint, let's expand $ \inprod{\L u}{v} $.
     \item
-        The remaining integral term looks like
-        \begin{align*}
-            \int_a^b u(x) \left[ \L^* v(x) \right]^* \d x 
-        \end{align*}
-        so let's define $ \L^* $ this way, and hope it will work out (it will).
+        Use integration by parts twice.
     \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Adjoint operators: example}
+
+    \begin{align*}
+        \inprod{\L u}{v} &= \int_a^b u(x) \left[ v^{\prime\prime}(x) + (k^2)^* v(x) \right]^* \d x + 
+        \\& \quad + \left[ u'(x) v^*(x)  - u(x) v^{\prime *}(x) \right]_{a}^{b}
+    \end{align*}
+
+    If we take
+    \begin{align*}
+        \L^* &= \frac{\d^2}{\d x^2} + (k^2)^*
+    \end{align*}
+    then we have
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + \left[ u'(x) v^*(x)  - u(x) v^{*\prime}(x) \right]_{a}^{b}
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    The remaining integral term looks like
+    \begin{align*}
+        \int_a^b u(x) \left[ \L^* v(x) \right]^* \d x 
+    \end{align*}
+\item
+    If we define $ \L^* $ this way, we get closer to our goal.
+    We just need to make the last part zero.
+\end{itemize}
 }
 
 \begin{frame}[fragile]
@@ -971,14 +1016,14 @@
 \note{
     \begin{itemize}
     \item
-        We almost have the required $ \inprod{\L u}{v} = \inprod{u}{\L^* v} $, but we need the part on the right (called the conjunct) to be zero.
+        We almost have the required $ \inprod{\L u}{v} = \inprod{u}{\L^* v} $, but we need the part on the right to be zero.
     \item
         From the original problem, we have
         \begin{align*}
             \B[u] &= \mat{u(a) \\ u(b)} = \mat{0 \\ 0}
         \end{align*}
     \item
-        To make the conjunct zero, we need the adjoint boundary conditions to be
+        To make the last part zero, we need the adjoint boundary conditions to be
         \begin{align*}
             \B^*[v] &= \mat{v(a) \\ v(b)} = \mat{0 \\ 0}
         \end{align*}
@@ -1039,9 +1084,10 @@
 \note{
 \begin{itemize}
 \item
-    In that example, we saw that we always had $ \inprod{\L u}{v} $ equal to $ \inprod{u}{\L^* v} $ plus a leftover term which depended on the boundaries.
+    In the last example, we saw that we had $ \inprod{\L u}{v} $ equal to $ \inprod{u}{\L^* v} $ plus a leftover term which depended on the boundaries.
 \item
-    This is true more generally: if we don't specify the boundary conditions of $ u $ and $ v $, then we can still \emph{almost} get the adjoint operator equation. We just have a leftover ``conjunct'' term $ J(u,v) |_a^b $, which depends only on the boundary condtions.
+    This is true more generally: if we don't specify the boundary conditions of $ u $ and $ v $, then we can still \emph{almost} get the adjoint operator equation. We just have a leftover term $ J(u,v) |_a^b $, which depends only on the boundary conditions.
+    This term is called the conjunct.
 \item
     We define adjoint boundary conditions as those boundary conditions which make the conjunct equal to zero.
 \end{itemize}
@@ -1084,7 +1130,6 @@
 \begin{frame}[fragile]
     \frametitle{Example with boundary conditions}
 
-    \vspace{-12pt}
     Original problem:
     \begin{align*}
         \left( \frac{\d^2}{\d x^2} + k^2 \right) u(x) &= f(x); \quad \mat{u(a) \\ u'(a)} = \mat{\alpha \\ \beta}
@@ -1243,18 +1288,6 @@
     \frametitle{Adjoint Green's functions}
 
     How are $ G(x,x') $ and $ H(x,x') $ related?
-    %\begin{align*}
-    %    \inprod{\L G(x,x')}{H(x,x'')} &= \inprod{G(x,x')}{\L^* H(x,x'')}
-    %    \\
-    %    \uncover<2->{\inprod{\delta(x - x')}{H(x,x'')}}
-    %    &\uncover<2->{= \inprod{G(x,x')}{\delta(x - x'')}}
-    %    \\
-    %    \uncover<3->{\int_a^b \delta(x - x') H^*(x,x'') \d x}
-    %    &\uncover<3->{= \int_a^b G(x,x') \delta(x - x'') \d x}
-    %    \\
-    %    \uncover<4->{H^*(x',x'')} 
-    %    &\uncover<4->{= G(x'',x')}
-    %\end{align*}
     \begin{align*}
         \inprod{\L G(x,x')}{H(x,x'')} &= \inprod{G(x,x')}{\L^* H(x,x'')}
         \\
@@ -1890,6 +1923,7 @@
 
 }
 
+\ifextended
 \section{The 3D wave equation}
 \label{sec:3d_wave_equation}
 
@@ -1899,6 +1933,10 @@
     Unfortunately we don't have time to really get into 3D problems.
 \item
     However, just to get a taste of it, we'll look at the 3D scalar wave equation in a vacuum.
+\item
+    I chose time-domain because it's something that's less-frequently covered in electrical engineering books.
+\item
+    The time domain also gives insight to some delicate issues in the frequency domain.
 \end{itemize}
 
 }
@@ -1921,12 +1959,12 @@
 \note{
 \begin{itemize}
 \item
-    The wave equation is a key component of electromagnetism.
-\item
-    We've spent this entire course learning different ways to solve the Helmholtz equation, which is just a Fourier-transformed version of the wave equation.
+    The wave equation is a key component of electromagnetism. 
+    Most of this course was spent learning different ways to solve the Helmholtz equation, which is just a Fourier transformed version of the wave equation.
 \item
     In the time domain (in the Lorentz gauge), each component of the vector potential $ \vect{A} $ obeys the scalar wave equation, with a component of $ \vect{J} $ as its source.
-    So we would like to find a Green's functions approach to solving the scalar wave equation.
+\item
+    We can solve a huge number of electromagnetics problems if we can solve the scalar wave equation (or the scalar Helmholtz equation).
 \end{itemize}
 }
 
@@ -1949,7 +1987,7 @@
 \item
     To construct $ u(\vect{r},t) $ in terms of the Green's function, we proceed similar to the 1D case.
 \item
-    The first step is to find the adjoint operators and adjoint boundary conditions.
+    The first step is to find the adjoint operators and adjoint boundary conditions for the wave equation.
 \item
     Before our inner product was an integral over the single variable $ x $.
     Now, it's an integral over all four variables $ x, y, z, t $.
@@ -2329,6 +2367,7 @@
 \end{frame}
 
 \note{}
+\fi
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -2353,6 +2392,7 @@
 
 \note{}
 
+\ifextended
 \begin{frame}[fragile]
     \frametitle{Takeaways}
 
@@ -2365,6 +2405,7 @@
 \end{frame}
 
 \note{}
+\fi
 
 \begin{frame}[fragile]
     \frametitle{Takeaways}
@@ -2437,6 +2478,7 @@
 
 \note{}
 
+\ifextended
 \begin{frame}[fragile]
     \frametitle{Takeaways}
     
@@ -2451,6 +2493,7 @@
 \end{frame}
 
 \note{}
+\fi
 
 \begin{frame}[fragile]
     \frametitle{Further topics}
@@ -2461,9 +2504,14 @@
     \item
         Complex contour integration
     \item
-        Separation of variables (3D problems)
+        3D problems: separation of variables
     \item
         Dyadic Green's functions
+    \ifextended
+    \else
+    \item
+        Generalized functions (delta function)
+    \fi
     \end{itemize}
     
 \end{frame}
