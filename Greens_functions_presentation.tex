@@ -128,10 +128,10 @@
         This is intended as a short introduction to Green's functions for electrical engineers.
     \item
         Basic idea of Green's functions is simple, but there is a huge amount of theory for actually calculating and using them.
-        Unfortunately means that this presentation will be missing a lot.
     \item
-        We'll only cover a few topics, but we'll try to cover them fairly rigorously.
-        Should give a solid foundation for reading books on the topic.
+        For a short presentation, we can either cover a lot of material incompletely, or a small amount of material thoroughly.
+        The second is chosen here, because I think it leads to a clearer understanding of Green's functions as a whole.
+        Of course, the downside is that we'll miss out on a lot of interesting topics and applications.
     \item
         Suggested further reading provided at the end.
     \end{itemize}
@@ -611,7 +611,6 @@
 \item
     In this section, we'll look at one of the simplest methods for actually solving the Green's function problem.
 \end{itemize}
-
 }
 
 \begin{frame}[fragile]
@@ -848,8 +847,8 @@
     \end{itemize}
 }
 
-\section{Constructing solutions}
-\label{sec:constructing_solutions}
+\section{Constructing the solution}
+\label{sec:constructing_the_solution}
 
 \note{
 \begin{itemize}
@@ -1057,7 +1056,7 @@
             \B[u] &= \mat{u(a) \\ u'(a)} = \mat{0 \\ 0}
         \end{align*}
     \item
-        Then, to make the conjunct zero, we need the adjoint boundary conditions to be
+        Then, to make the remaining part zero, we need the adjoint boundary conditions to be
         \begin{align*}
             \B[v] &= \mat{v(b) \\ v'(b)} = \mat{0 \\ 0}
         \end{align*}
@@ -1072,11 +1071,11 @@
 
     In general:
     \begin{align*}
-        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u,v) \Big|_a^b
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u,v^*) \Big|_a^b
     \end{align*}
     Definition of adjoint boundary conditions:
     \begin{align*}
-        \B[u] = \B^*[v] = 0 \Longleftrightarrow J(u,v) \Big|_a^b = 0
+        \B[u] = \B^*[v] = 0 \Longleftrightarrow J(u,v^*) \Big|_a^b = 0
     \end{align*}
     
 \end{frame}
@@ -1086,7 +1085,7 @@
 \item
     In the last example, we saw that we had $ \inprod{\L u}{v} $ equal to $ \inprod{u}{\L^* v} $ plus a leftover term which depended on the boundaries.
 \item
-    This is true more generally: if we don't specify the boundary conditions of $ u $ and $ v $, then we can still \emph{almost} get the adjoint operator equation. We just have a leftover term $ J(u,v) |_a^b $, which depends only on the boundary conditions.
+    This is true more generally: if we don't specify the boundary conditions of $ u $ and $ v $, then we can still \emph{almost} get the adjoint operator equation. We just have a leftover term $ J(u,v^*) |_a^b $, which depends only on the boundary conditions.
     This term is called the conjunct.
 \item
     We define adjoint boundary conditions as those boundary conditions which make the conjunct equal to zero.
@@ -1122,10 +1121,125 @@
     In addition, we define a new function $ H(x,x') $ which is called the adjoint Green's function.
     It obeys the adjoint version of the $ G(x,x') $ equation.
 \item
-    Warning: a lot of textbooks don't distinguish between $ H(x,x') $ and $ G(x,x') $.
-    Quite often, the ``Green's function'' is really the adjoint Green's function.
+    Warning! A lot of textbooks don't distinguish between $ H(x,x') $ and $ G(x,x') $.
+    Sometimes the ``Green's function'' in an expression is really the adjoint Green's function.
 \end{itemize}
 }
+
+\begin{frame}[fragile]
+    \frametitle{Constructing solutions: derivation}
+
+    \begin{align*}
+        \inprod{\L u(x)}{H(x,x')} &= \inprod{u(x)}{\L^* H(x,x')} + J\big(u(x), H^*(x,x')\big) \Big|_a^b
+        \\
+        \inprod{f(x)}{H(x,x')} &= \inprod{u(x)}{\delta(x - x')} + J\big(u(x), H^*(x,x')\big) \Big|_a^b
+        \\
+        \int_a^b f(x) H^*(x,x') \d x &= \int_a^b u(x) \delta(x - x') \d x + J\big(u(x), H^*(x,x')\big) \Big|_a^b
+    \end{align*}
+    \begin{empheq}[box=\widefbox]{align*}
+        u(x') &= \int_a^b f(x) H^*(x,x') \d x - J\big(u(x), H^*(x,x')\big) \Big|_a^b
+    \end{empheq}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        To construct the solution $ u(x) $, we take an inner product of $ \L u(x) $ with $ H(x,x') $, and apply our knowledge of adjoints and conjuncts.
+    \item
+        Then, we use the fact that $ \L u(x) = f(x) $ and $ \L H(x,x') = \delta(x - x') $.
+    \item
+        After evaluating the inner product terms, we arrive at a fairly general formula which looks somewhat like what we had in the introduction.
+        The difference is that it involves the \emph{adjoint} Green's function $ H(x,x') $, and it has an extra conjunct term.
+    \item
+        We'll deal with the conjunct later.
+        For now, let's try to get rid of $ H(x,x') $ and express $ u(x) $ in terms of $ G(x,x') $.
+        To do that, we need a relationship between $ H(x,x') $ and $ G(x,x') $.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Constructing solutions: derivation}
+
+    How are $ G(x,x') $ and $ H(x,x') $ related?
+    \begin{align*}
+        \inprod{\L G(x,x')}{H(x,x'')} &= \inprod{G(x,x')}{\L^* H(x,x'')}
+        \\
+        \inprod{\delta(x - x')}{H(x,x'')} &= \inprod{G(x,x')}{\delta(x - x'')}
+        \\
+        \int_a^b \delta(x - x') H^*(x,x'') \d x &= \int_a^b G(x,x') \delta(x - x'') \d x
+        \\
+        H^*(x',x'') &= G(x'',x')
+    \end{align*}
+    \begin{empheq}[box=\widefbox]{align*}
+        G(x,x') = H^*(x',x)
+    \end{empheq}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        Using the definition of the adjoint problem, we find that there is a simple relationship between $ G(x,x') $ and $ H(x,x') $.
+    %\item
+    %    Note a surprising result of this: if $ G(x,x') $ obeys the boundary conditions with respect to $ x $, then it automatically obeys the \emph{adjoint} boundary conditions with respect to $ x' $. 
+    %    This will be important later.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Constructing solutions: derivation}
+
+    \begin{align*}
+        u(x') &= \int_a^b f(x) H^*(x,x') \d x - J\big(u(x), H^*(x,x')\big) \Big|_a^b
+    \end{align*}
+    and
+    \begin{align*}
+        G(x,x') = H^*(x',x)
+    \end{align*}
+    so
+    \begin{empheq}[box=\widefbox]{align*}
+        u(x) &= \int_{a}^{b} f(x') G(x,x') \d x' - J\big( u(x'), G(x,x') \big) \Big|_{x'=a}^b
+    \end{empheq}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Let's go back to our expression for $ u(x') $ in terms of $ H(x,x') $.
+\item
+    Using our new relationship $ G(x,x') = H^*(x,x') $, we can rewrite this as an expression for $ u(x) $ in terms of $ G(x,x') $.
+    (Note: we switched $ x $ and $ x' $ to make it look a little nicer.)
+\item
+    So this is the more correct version of what we saw in the introduction.
+    If the conjunct happens to be zero, then we get what we had before.
+    If not, we have an extra term that depends only on the boundaries.
+\item
+    In general, the conjunct term deals with the boundary conditions of $ u(x) $.
+    It turns out that the boundary conditions act, in some way, like additional sources.
+    We'll look more closely at this now.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Example: 1D Poisson equation}
+
+    Original problem:
+    \begin{align*}
+        \frac{\d^2 V(x)}{\d x^2} &= - \frac{\rho}{\epsilon_0}; \quad \mat{V(a) \\ V(b)} = \mat{V_a \\ V_b}
+    \end{align*}
+    
+    Green's problem:
+    \begin{align*}
+        \frac{\d^2 G(x,x')}{\d x^2} &= \delta(x - x'); \quad \mat{G(a,x') \\ G(b,x')} = \mat{0 \\ 0}
+    \end{align*}
+    
+    
+\end{frame}
+
+\note{}
+
 
 \begin{frame}[fragile]
     \frametitle{Example with boundary conditions}
@@ -1213,34 +1327,6 @@
         Now we just need to figure out how to construct $ u(x) $ from it.
     \end{itemize}
 }
-
-\begin{frame}[fragile]
-    \frametitle{Example with boundary conditions}
-
-    \begin{align*}
-        \inprod{\L u(x)}{H(x,x')} &= \inprod{u(x)}{\L^* H(x,x')} + J(u, H) \Big|_a^b
-        \\
-        \inprod{f(x)}{H(x,x')} &= \inprod{u(x)}{\delta(x - x')} + J(u, H) \Big|_a^b
-        \\
-        \int_a^b f(x) H^*(x,x') \d x &= \int_a^b u(x) \delta(x - x') \d x + J(u, H) \Big|_a^b
-    \end{align*}
-    \begin{empheq}[box=\widefbox]{align*}
-        u(x') &= \int_a^b f(x) H^*(x,x') \d x - J(u, H) \Big|_a^b
-    \end{empheq}
-    
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        To construct the solution $ u(x) $, we take an inner product of $ \L u(x) $ with $ H(x,x') $, and apply our knowledge of adjoints and conjuncts.
-    \item
-        We arrive at a fairly general formula which looks close to what we expect a Green's function formula to look like, but with an extra conjunct term.
-    \item
-        We'll gain insight into the $ J(u,H) $ term by expanding it for this example.
-    \end{itemize}
-}
-
 \begin{frame}[fragile]
     \frametitle{Example with boundary conditions}
     Expand $ J(u,H) $:
@@ -1283,37 +1369,6 @@
     \end{itemize}
     
 }
-
-\begin{frame}[fragile]
-    \frametitle{Adjoint Green's functions}
-
-    How are $ G(x,x') $ and $ H(x,x') $ related?
-    \begin{align*}
-        \inprod{\L G(x,x')}{H(x,x'')} &= \inprod{G(x,x')}{\L^* H(x,x'')}
-        \\
-        \inprod{\delta(x - x')}{H(x,x'')} &= \inprod{G(x,x')}{\delta(x - x'')}
-        \\
-        \int_a^b \delta(x - x') H^*(x,x'') \d x &= \int_a^b G(x,x') \delta(x - x'') \d x
-        \\
-        H^*(x',x'') &= G(x'',x')
-    \end{align*}
-    \begin{empheq}[box=\widefbox]{align*}
-        G(x,x') = H^*(x',x)
-    \end{empheq}
-    
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        Using the definition of the adjoint problem, we find that there is a simple relationship between $ G(x,x') $ and $ H(x,x') $.
-    \item
-        This is somewhat surprising. 
-        For one thing, it means that if $ G(x,x') $ obeys the boundary conditions with respect to $ x $, then it automatically obeys the \emph{adjoint} boundary conditions with respect to $ x' $. 
-        This is a useful property.
-    \end{itemize}
-}
-
 \begin{frame}[fragile]
     \frametitle{Example with boundary conditions}
      
