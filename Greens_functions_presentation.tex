@@ -3,51 +3,6 @@
 % The theme used for this presentation is matze's mtheme, which can be
 % found at https://github.com/matze/mtheme
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% THINGS TO TALK ABOUT
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%
-% Question: Green's function is NOT unique, so can we really treat it as
-%           THE response to a source?
-%           - Green's function is unique, given specified BC/IC's
-%           - So we could say it's the response to the source, under the
-%             the imposed BC/IC's
-%           - But does this weaken the interpretation of BC/IC's as sources?
-%           - Not really: It's the homogeneous BC's that make the Green's function unique
-%
-%
-% Direct solution
-%   - Discontinuity condition
-%
-% Eigenvalue solution
-%
-% Boundary conditions
-%   - Green's function not arbitrary! Depends on BC/IC's.
-%   - Idea of replacing BC/IC's with equivalent sources (Morse and Feshback)
-%   - Relation to equivalence principle?
-%   - Can also just find any Green's and add homogeneous solutions
-%   - Can also solve adjoint Green's function problem
-%
-% Interpreting the Green's function
-%   - Space-time invariance
-%   - Self-adjointness (IC problems are not self-adjoint!)
-%   - Reciprocity (weird combination of invariance/self-adjointness?)
-%   - Poles are eigenvalues
-%
-% Wave equation causality
-%   - Causal Green's functions comes from initial conditions in time domain
-%   - Equivalent to assuming small loss (a la Harrington)
-%   - Can replace initial conditions with equivalent sources
-%   - Fourier transform actually fails here!
-% 
-% Scattering
-%   - Interesting approximation technique (Born): the field itself is the source
-% Perturbation theory?
-% Huygens principle and the propagator?
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \newif\ifhandout
 \newif\ifextended
 
@@ -75,7 +30,7 @@
 \usepackage[retainorgcmds]{IEEEtrantools}
 \setlength{\IEEEnormaljot}{9pt}
 
-\renewcommand{\d}{\operatorname{d}}
+\renewcommand{\d}{\operatorname{d}\!}
 \renewcommand{\L}{\mathcal{L}}
 \renewcommand{\B}{\mathcal{B}}
 \newcommand{\inprod}[2]{\left\langle {#1}, {#2} \right\rangle}
@@ -96,7 +51,6 @@
 \newcommand{\mygreenbox}[1]{\colorbox{mLightBrown!65}{\hspace{1em}#1\hspace{1em}}}
 \newcommand*\widefbox[1]{\fbox{\hspace{1em}#1\hspace{1em}}}
 
-%\usepackage{sourcesanspro}
 
 %\usepgfplotslibrary{dateplot}
 
@@ -1181,9 +1135,9 @@
     \begin{itemize}
     \item
         Using the definition of the adjoint problem, we find that there is a simple relationship between $ G(x,x') $ and $ H(x,x') $.
-    %\item
-    %    Note a surprising result of this: if $ G(x,x') $ obeys the boundary conditions with respect to $ x $, then it automatically obeys the \emph{adjoint} boundary conditions with respect to $ x' $. 
-    %    This will be important later.
+    \item
+        Note a surprising result of this: if $ G(x,x') $ obeys the boundary conditions with respect to $ x $, then it automatically obeys the \emph{adjoint} boundary conditions with respect to $ x' $. 
+        This will be important later.
     \end{itemize}
 }
 
@@ -1218,7 +1172,7 @@
 \item
     In general, the conjunct term deals with the boundary conditions of $ u(x) $.
     It turns out that the boundary conditions act, in some way, like additional sources.
-    We'll look more closely at this now.
+    We'll look more closely at this now through an example.
 \end{itemize}
 }
 
@@ -1234,322 +1188,295 @@
     \begin{align*}
         \frac{\d^2 G(x,x')}{\d x^2} &= \delta(x - x'); \quad \mat{G(a,x') \\ G(b,x')} = \mat{0 \\ 0}
     \end{align*}
-    
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Let's look at a simple 1D voltage problem.
+\item
+    We have both a charge density $ \rho $ inside the region $ a < x < b $, and we have an applied voltage at the boundaries.
+    Intuitively, both of these will affect the voltage in the region.
+\item
+    In the Green's function problem, we turn the charge density into an impulse function, and we set the applied voltage to zero.
+\end{itemize}
+}
+
+
+\begin{frame}[fragile]
+    \frametitle{Example: 1D Poisson equation}
+
+    Solution:
+    \begin{align*}
+        V(x) &= \int_{a}^{b} - \frac{\rho(x')}{\epsilon_0} G(x,x') \d x' - J\big( V(x'), G(x,x') \big) \Big|_{x'=a}^b
+    \end{align*}
+
+    Take $ \rho = 0 $ for now.
+    \begin{align*}
+        V(x) &= - J\big( V(x'), G(x,x') \big) \Big|_{x'=a}^b
+    \end{align*}
+
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Example: 1D Poisson equation}
+
+    Can show
+    \begin{IEEEeqnarray*}{rCl}
+        \int_a^b \left( \frac{\d^2 u(x)}{\d x^2} \right) v^*(x) \d x &=& \int_a^b u(x) \left( \frac{\d^2 v^*(x)}{\d x^2} \right) \d x +
+        \\ && + \left[ \frac{\d u}{\d x} v^*(x) - u(x) \frac{\d v^*(x)}{\d x} \right]_a^b
+    \end{IEEEeqnarray*}
+
+    So $ \L = \L^* $, $ \B = \B^* $, and
+    \begin{align*}
+        J(u,v^*) &= \frac{\d u(x)}{\d x} v^*(x) - u(x) \frac{\d v^*(x)}{\d x}
+    \end{align*}
     
 \end{frame}
 
 \note{}
 
+\begin{frame}[fragile]
+    \frametitle{Example: 1D Poisson equation}
+
+    \begin{IEEEeqnarray*}{rCl}
+        V(x) &=& - J\big( V(x'), G(x,x') \big) \Big|_{x'=a}^b
+        \\[8pt]
+        V(x) &=& \left[ V(x') \frac{\d G(x,x')}{\d x'} - \frac{\d V(x')}{\d x'} G(x,x') \right]_{x'=a}^b
+        \\[8pt]
+        V(x) &=& V_b \frac{\d G(x,b)}{\d x'} - \frac{\d V(b)}{\d x'} G(x,b) -
+        \\[4pt] && - V_a \frac{\d G(x,a)}{\d x'} + \frac{\d V(a)}{\d x'} G(x,a)
+    \end{IEEEeqnarray*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Problem: we don't know $ \d V / \d x $ at the boundaries.
+    Our solution for the unknown $ V(x) $ includes the unknown $ V(x) $.
+\item
+    But we could solve this if we could show that $ G(x,a) = G(x,b) = 0 $.
+\end{itemize}
+}
 
 \begin{frame}[fragile]
-    \frametitle{Example with boundary conditions}
-
-    Original problem:
-    \begin{align*}
-        \left( \frac{\d^2}{\d x^2} + k^2 \right) u(x) &= f(x); \quad \mat{u(a) \\ u'(a)} = \mat{\alpha \\ \beta}
-    \end{align*}
-
-    Green's problem:
-    \begin{align*}
-        \left( \frac{\d^2}{\d x^2} + k^2 \right) G(x,x') &= \delta(x - x'); \quad \mat{G(a,x') \\ G'(a,x')} = \mat{0 \\ 0}
-    \end{align*}
-
+    \frametitle{Example: 1D Poisson equation}
+    
     Adjoint Green's problem:
     \begin{align*}
-        \left( \frac{\d^2}{\d x^2} + k^2 \right) H(x,x') &= \delta(x - x'); \quad \mat{H(b,x') \\ H'(b,x')} = \mat{0 \\ 0}
+        \frac{\d^2 H(x,x')}{\d x^2} &= \delta(x - x'); \quad \mat{H(a,x') \\ H(b,x')} = \mat{0 \\ 0}
     \end{align*}
-    
+
+    But $ G(x,x') = H^*(x',x) $ so
+    \begin{align*}
+        \frac{\d^2 G^*(x,x')}{\d x^{\prime 2}} &= \delta(x - x'); \quad \mat{G(x,a) \\ G(x,b)} = \mat{0 \\ 0}
+    \end{align*}
+
 \end{frame}
 
 \note{
 \begin{itemize}
 \item
-    We'll show how $ H(x,x') $ is useful with an example.
+    Back to the adjoint Green's equation.
 \item
-    Here we have a driven simple harmonic oscillator with initial conditions.
-    (We'll take $ k $ real for simplicity.)
+    Because of the relationship between $ G(x,x') $ and $ H(x,x') $ we see that $ G^*(x,x') $ obeys the adjoint equation with respect to $ x' $.
 \item
-    From before, we know that the adjoint problem will be the same differential equation, but with final conditions instead of initial conditions.
+    More importantly, we see that $ G^*(x,x') $ (and thus $ G(x,x') $) obeys the adjoint boundary conditions with respect to $ x' $.
+\item
+    So not only do we have $ G(a,x') = G(b,x') = 0 $, we also have $ G(x,a) = G(x,b) = 0 $.
+    This is not a trivial or obvious result (at least to me).
 \end{itemize}
 }
 
 \begin{frame}[fragile]
-    \frametitle{Example with boundary conditions}
-
-    \begin{align*}
-        H(x,x') &= 
-            \begin{cases} 
-                A \cos(k(x - x')) + B \sin(k(x - x')) & \text{for } x < x'
-                \\
-                C \cos(k(x - x')) + D \sin(k(x - x')) & \text{for } x > x'
-            \end{cases}
-    \end{align*}
-    \begin{align*}
-        \text{Final conditions } & \Longrightarrow C = D = 0
-        \\
-        \text{Continuity of function } & \Longrightarrow A = 0
-        \\
-        \text{Discontinuity of derivative } & \Longrightarrow B = \frac{-1}{k}
-    \end{align*}
+    \frametitle{Example: 1D Poisson equation}
     
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        We can solve for $ H(x,x') $ using a similar approach to before.
-    \item
-        Except at $ x = x' $, we write $ H(x,x') $ as a solution to the source-free equation.
-    \item
-        Then we find the coefficients using the boundary conditions and continuity/discontinuity requirements.
-    \end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Example with boundary conditions}
-
-    \begin{align*}
-        H(x,x') &= 
-            \begin{cases} 
-                - k^{-1} \sin(k (x - x')) & \text{for } x < x'
-                \\
-                0 & \text{for } x > x'
-            \end{cases} 
-    \end{align*}
- 
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        So we have our adjoint Green's function.
-    \item
-        Now we just need to figure out how to construct $ u(x) $ from it.
-    \end{itemize}
-}
-\begin{frame}[fragile]
-    \frametitle{Example with boundary conditions}
-    Expand $ J(u,H) $:
-    \begin{align*}
-        u(x') &= \int_a^b f(x) H^*(x,x') \d x - \left[ \frac{\d u(x)}{\d x} H^*(x,x') - u(x) \frac{\d H^*(x,x')}{\d x} \right]_a^b
-    \end{align*}
-
-    Recall:
-    \begin{align*}
-        \B[u] = \mat{u(a) \\ u'(a)} = \mat{\alpha \\ \beta}; \qquad \B^*[H] = \mat{H(b,x') \\ H'(b,x')} = \mat{0 \\ 0}
-    \end{align*}
-    
-    
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        Now let's expand $ J(u,v) $ for our particular example. (We can basically copy it from a previous part of the derivation.)
-    \item
-        We can simplify the conjunct by remembering our boundary conditions.
-    \end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Example with boundary conditions}
-
-    \begin{align*}
-        u(x') &= \int_a^b f(x) H^*(x,x') \d x + \beta H^*(a,x') - \alpha \frac{\d H^*(a,x')}{\d x}
-    \end{align*}
-   
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        We're very close to our final goal. 
-    \item
-        The last thing will be to get rid of $ H(x,x') $ and replace it with $ G(x,x') $.
-    \end{itemize}
-    
-}
-\begin{frame}[fragile]
-    \frametitle{Example with boundary conditions}
-     
-    \begin{align*}
-        H(x,x') &= 
-            \begin{cases} 
-                - k^{-1} \sin(k (x - x')) & \text{for } x < x'
-                \\
-                0 & \text{for } x > x'
-            \end{cases} 
-    \end{align*}
-
-    \begin{align*}
-        G(x,x') &= 
-            \begin{cases} 
-                0 & \text{for } x < x'
-                \\
-                k^{-1} \sin(k (x - x')) & \text{for } x > x'
-            \end{cases} 
-    \end{align*}
-
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        Since we already know the adjoint Green's function $ H(x,x') $, we can use find the Green's function via $ G(x,x') = H^*(x,x') $.
-    \end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Example with boundary conditions}
- 
-    \begin{align*}
-        u(x') &= \int_a^b f(x) H^*(x,x') \d x + \beta H^*(a,x') - \alpha \left. \frac{\d H^*(x,x')}{\d x} \right|_{x=a}
-        \pause
-        \\
-        u(x') &= \int_a^b f(x) G(x',x) \d x + \beta G(x',a) - \alpha \left. \frac{\d G(x',x)}{\d x} \right|_{x=a}
-        \pause
-        \\
-        u(x) &= \int_a^b f(x') G(x,x') \d x' + \beta G(x,a) - \alpha \left.\frac{\d G(x,x')}{\d x'}\right|_{x'=a}
-    \end{align*}
-    
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        With our new knowledge that $ G(x,x') = H^*(x',x) $, we can rewrite the solution $ u(x) $ in terms of $ G(x,x') $.
-    \end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Final solution}
-
-    \begin{empheq}[box=\widefbox]{align*}
-        u(x) &= \int_a^b f(x') G(x,x') \d x' + \beta G(x,a) - \alpha \left.\frac{\d G(x,x')}{\d x'}\right|_{x'=a}
-    \end{empheq}
-    where
-    \begin{align*}
-        G(x,x') &= 
-            \begin{cases} 
-                0 & \text{for } x < x'
-                \\
-                k^{-1} \sin(k (x - x')) & \text{for } x > x'
-            \end{cases} 
-    \end{align*}
-    
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    Finally, we arrive at our solution.
-\item
-    First, note that the final answer does \emph{not} depend on $ H(x,x') $. We didn't actually need to ever calculate $ H(x,x') $ from the adjoint Green's equation, we could have just found $ G(x,x') $ from the (non-adjoint) Green's equation.
-\item
-    However, it would have been very difficult to derive this expression without using $ H(x,x') $ (I couldn't see an easy way).
-    Because of this, a lot of authors stop at the expression for $ u(x') $ in terms of $ H^*(x,x') $, and they just call $ H^*(x,x') $ the ``Green's function.''
-\item
-    By doing the extra work, though, we gain a very nice interpretation for the boundary conditions term.
-\end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Interpretation of boundary conditions}
-    
-    \begin{align*}
-        u(x) &= \int_a^b f(x') G(x,x') \d x' + \beta G(x,a) - \alpha \left.\frac{\d G(x,x')}{\d x'}\right|_{x'=a}
-        \\
-        u(x) &= \int_a^b \Big[ f(x') + \beta \delta(x' - a) - \alpha \delta'(x' - a) \Big] G(x,x') \d x'
-    \end{align*}
-    
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    We note that our expression for $ u(x) $ looks like it did before (integral over $ f(x') G(x,x') $), but now there are extra terms which depend on the boundary conditions.
-\item
-    We come to a key idea: boundary conditions have the same effect on $ u(x) $ as adding little impulse sources at the boundary.
-    The Green's function can deal with both sources $ f(x) $ and non-zero boundary conditions.
-\item
-    Be careful, though: $ G(x,x') $ still depends on the \emph{type} of boundary condition.
-    E.g., we use the same $ G(x,x') $ for all initial value problems ($ u(a), u'(a) $ specified), but we'll need a different $ G(x,x') $ for boundary value problems ($ u(a), u(b) $ specified).
-\end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Summary}
-    \vspace{-24pt}
-    \begin{IEEEeqnarray*}{rClCrCl}
-        \L[u(x)] &=& f(x); &\qquad& \B[u(x)] &=& \alpha
-        \\
-        \L[G(x,x')] &=& \delta(x - x'); &\qquad& \B[G(x,x')] &=& 0
-        \\
-        \L^*[H(x,x')] &=& \delta(x - x'); &\qquad& \B^*[H(x,x')] &=& 0
+    \begin{IEEEeqnarray*}{rCl}
+        V(x) &=& V_b \frac{\d G(x,b)}{\d x'} - \frac{\d V(b)}{\d x'} G(x,b) -
+        \\[4pt] && - V_a \frac{\d G(x,a)}{\d x'} + \frac{\d V(a)}{\d x'} G(x,a)
     \end{IEEEeqnarray*}
+    With $ G(x,a) = G(x,b) = 0 $, we have
+    \begin{empheq}[box=\widefbox]{align*}
+        V(x) &= V_b \frac{\d G(x,b)}{\d x'} - V_a \frac{\d G(x,a)}{\d x'} 
+    \end{empheq}
+    
 
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Example: 1D Poisson equation}
+
+    \begin{align*}
+        V(x) &= V_b \frac{\d G(x,b)}{\d x'} - V_a \frac{\d G(x,a)}{\d x'} 
+    \end{align*}
+    Can be written as
+    \begin{align*}
+        V(x) &= \int_a^b \left[ -V_a \delta'(x' - a) + V_b \delta'(x' - b) \right] G(x,x') \d x'
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Using delta function theory, we see that the non-zero boundary conditions can really be treated like sources.
+\item
+    E.g., the boundary condition at $ x = a $ is like a source $ f(x) = V_a \delta'(x - a) $. 
+\item
+    $ \delta'(x - a) $ denotes the delta function derivative defined by the derivative sifting property
+    \begin{align*}
+        \int \delta'(x - a) f(x) \d x &= -f'(a)
+    \end{align*}
+    
+\end{itemize}
+
+}
+
+\begin{frame}[fragile]
+    \frametitle{Example: 1D Poisson equation}
+    
+    Full solution with $ \rho(x) $:
+    \begin{align*}
+        V(x) &= \int_a^b - \frac{\rho(x')}{\epsilon_0} G(x,x') \d x' + V_b \frac{\d G(x,b)}{\d x'} + V_a \frac{\d G(x,a)}{\d x'}
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Putting back our charge distribution $ \rho(x) $, we get a full solution for any charge distribution and boundary conditions.
+\end{itemize}
+
+}
+
+\begin{frame}[fragile]
+    \frametitle{Constructing solutions}
+
+    \begin{IEEEeqnarray*}{rClCrCl}
+        \text{Given: \quad} \L u(x) = f(x); \quad \B[u(x)] = \alpha
+    \end{IEEEeqnarray*}
     \begin{enumerate}
     \item
-        Find $ G(x,x') $.
-    \item
-        Find $ u(x') $ in terms of $ H(x,x') $:
+        Solve Green's problem:
         \begin{align*}
-            u(x') &= \int_a^b f(x) H^*(x,x') \d x - J(u(x), H(x,x'))\Big|_a^b
+            \L G(x,x') = \delta(x - x'); \quad \B[G(x,x')] = 0
         \end{align*}
     \item
-        Express $ u(x) $ in terms of $ G(x,x')= H^*(x',x) $.
+        Find $ \L^* $, $ \B^* $, and $ J(u,v) $ from $ \inprod{\L u}{v} $.
+    \item
+        Solution is
+        \begin{align*}
+            u(x) &= \int_{a}^{b} f(x') G(x,x') \d x' - J\big( u(x'), G(x,x') \big) \Big|_{x'=a}^b
+        \end{align*}
+    \item
+        Simplify using $ \B^*[G(x,x')] = 0 $ (with respect to $ x' $).
     \end{enumerate}
     
 \end{frame}
 
 \note{
-    \begin{itemize}
-    \item
-        That was a long process, so let's summarize what we did.
-    \item
-        First, we wrote out the original equation, the Green's function equation, and the adjoint Green's function equation. (Take note of the boundary conditions in particular.)
-    \item
-        Next, we solve the Green's function equation for $ G(x,x') $.
-    \item
-        Next, we found that it's much easier to express $ u(x) $ in terms of $ H(x,x') $, because we can use inner products.
-        The only tricky part is finding the conjunct. 
-        (Usually, just requires integration by parts.
-        See Dudley for a general formula for Sturm-Liouville problems.)
-    \item
-        Finally, we replace $ H(x,x') $ with $ G^*(x',x) $ (which we solved for previously), and we have our final expression for $ u(x) $.
-    \end{itemize}
+\begin{itemize}
+\item
+    Now let's look at the general process for solving a boundary value problem with a source.
+\item
+    The first step is to set up the Green's function equation by setting the source to $ \delta(x - x') $ and the boundary conditions to zero.
+    Solve this to find the Green's function.
+\item
+    Next, we find $ \L^* $, $ \B^* $, and $ J(u,v) $ by expanding the inner product $ \inprod{\L u}{v} $ (usually using integration by parts).
+\item
+    Then, we can write down the solution.
+\item
+    Unfortunately, this solution will still include unknown boundary conditions of $ u(x) $.
+    Eliminate these using the fact that $ G(x,x') $ obeys the adjoint boundary conditions with respect to $ x' $.
+\end{itemize}
 }
 
+\note{
+Comments:
+\begin{itemize}
+\item
+    Type of boundary condition is important.
+    In the last example, if we used initial conditions instead of boundary conditions, then the final solution would have been in terms of the known initial conditions $ V(a) $ and $ V'(a) $.
+\item
+    \emph{We can't ignore the adjoint problem}.
+    Though we've eliminated the adjoint Green's function $ H(x,x') $, the adjoint Green's function is still a key part of the solution method.
+    In particular, we need to find $ \B^* $ and $ J(u,v) $.
+\end{itemize}
+}
+
+\note{}
+
 \begin{frame}[fragile]
-    \frametitle{Summary}
-
+    \frametitle{Constructing solutions in 3D}
+ 
     \begin{IEEEeqnarray*}{rClCrCl}
-        \L[u(x)] &=& f(x); &\qquad& \B[u(x)] &=& \alpha
-        \\
-        \L[G(x,x')] &=& \delta(x - x'); &\qquad& \B[G(x,x')] &=& 0
+        \text{Given: \quad} \L u(\vect{r}) = f(\vect{r}); \quad \B[u(\vect{r})] = \alpha
     \end{IEEEeqnarray*}
-
-    \begin{empheq}[box=\widefbox]{align*}
-        u(x) &= \int_{a}^{b} f(x') G(x,x') \d x' - J\big( u(x'), G(x,x') \big) \Big|_{x'=a}^b
-    \end{empheq}
-    Simplify with adjoint boundary conditions!
-    
+    \begin{enumerate}
+    \item
+        Solve Green's problem:
+        \begin{align*}
+            \L G(\vect{r},\vect{r}') = \delta(\vect{r} - \vect{r}'); \quad \B[G(\vect{r},\vect{r}')] = 0
+        \end{align*}
+    \item
+        Find $ \L^* $, $ \B^* $, and $ J(u,v) $ from $ \inprod{\L u}{v} $.
+    \item
+        Solution is
+        \begin{align*}
+            u(\vect{r}) &= \int_{V} f(\vect{r}') G(\vect{r},\vect{r}') \d^3 \vect{r}' - \oint_{\partial V} J\big( u(\vect{r}'), G(\vect{r},\vect{r}') \big) \d s
+        \end{align*}
+    \item
+        Simplify using $ \B^*[G(\vect{r},\vect{r}')] = 0 $ (with respect to $ \vect{r}' $).
+    \end{enumerate}
+       
 \end{frame}
 
 \note{
 \begin{itemize}
 \item
-    We can streamline this process a little bit by removing the intermediate steps involving $ H(x,x') $.
+    Great thing about our approach is that it's easily extended to 3D.
 \item
-    Then, we can simply write down our final solution in terms of the Green's function $ G(x,x') $.
+    Mostly, we just replace $ x $ and $ x' $ with $ \vect{r} $ and $ \vect{r}' $.
 \item
-    However, there are still traces of the adjoint problem.
+    One difference is the conjunct term.
+    If $ V $ is the region of interest, then we have to integrate the conjunct over the surface of $ V $ (denoted $ \partial V $).
 \item
-    First, we cannot find the conjunct $ J(u,v) $ without considering the adjoint problem.
-\item
-    Second, we have to simplify the expression $ J(u,G)|_a^b $ using the adjoint boundary conditions.
-    In particular, use the fact that $ G(x,x') $ obeys the adjoint boundary conditions with respect to $ x' $.
+    We still have the same interpretation, though: the non-zero boundary conditions on the surface act like additional sources.
 \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Constructing solutions in 3D}
+    
+    Finding $ \L^* $, $ \B^* $ and $ J(u,v) $ in 3D:
+    \begin{align*}
+        \inprod{\L u}{v} &= \int_V \left[ \L u(\vect{r}) \right] v^*(\vect{r}) \d^3 \vect{r}
+    \end{align*}
+
+    Green's identity:
+    \begin{align*}
+        \int_V \left( u \nabla^2 v - v \nabla^2 u \right) \d^3 \vect{r} &= \oint_{\partial V} \left( u \vect{\nabla} v - v \vect{\nabla} u \right) \cdot \d \vect{s}
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    To find $ \L^* $, $ \B^* $ and $ J(u,v) $ in 3D, we follow a similar process of expanding the inner product. 
+    (This time the inner product is a volume integral.)
+\item
+    Then we do a 3D version of integration by parts to expand the integral.
+    If we're dealing with an equation involving the Laplacian $ \nabla^2 $ (often the case), then Green's identity comes in handy.
+\end{itemize}
+
 }
 
 \section{Properties of Green's functions}
