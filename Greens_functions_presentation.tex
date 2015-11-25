@@ -1479,153 +1479,36 @@ Comments:
 
 }
 
-\section{Properties of Green's functions}
-\label{sec:properties_of_green_s_functions}
-
-\note{
-    \begin{itemize}
-    \item
-        The Green's function gives us a lot of information about the system we're dealing with.
-    \item
-        Here we'll look at a few of the properties Green's functions can have and what those tell us about our system.
-    \end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Reciprocity}
-
-    If $ \L $ is self-adjoint
-    \begin{align*}
-        \L = \L^* \qquad \text{and} \qquad \B = \B^*
-    \end{align*}
-    then
-    \begin{align*}
-        G(x,x') &= G^*(x',x)
-    \end{align*}
-    
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        For self-adjoint problems, $ G = H $. 
-    \item
-        Using our relationship between $ G $ and $ H $, we quickly see that the Green's function is complex symmetric (Hermitian) for self-adjoint problems.
-    \item
-        Roughly, putting a source at $ x $ and measuring at $ x' $ is the same as putting a source at $ x' $ and measuring at $ x $.
-        This is often called reciprocity (though it's not quite the same as reciprocity from time-harmonic E\&M, because we're using a true inner product rather than the so-called ``reaction inner product'').
-    \item
-        Note that we require \emph{both} $ \L = \L^* $ and $ \B = \B^* $. So this would likely not hold for initial condition problems.
-    \end{itemize}
-}
-
-
-\begin{frame}[fragile]
-    \frametitle{Invariance}
-
-
-    $ \L $ is invariant if 
-    \begin{align*}
-        \L[u(x - \xi)] &= \L[u(x)] \Big|_{x = x - \xi}
-    \end{align*}
-    
-    For example,
-    \begin{IEEEeqnarray*}{rClCl}
-        \L &=& a \frac{\d^2}{\d x^2} + b \frac{\d}{\d x} + c
-    \end{IEEEeqnarray*}
-    is invariant only if $ a $, $ b $, and $ c $ are constants.
-    
-    
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    An operator is invariant if shifting the input just results in a shifted output.
-\item
-    Probably familiar from signal processing: linear \emph{time-invariant} systems.
-    Delaying the input signal leads to the same output signal, just delayed by the same amount.
-\item
-    Invariance is really important in modern physics.
-\item
-    Maxwell's equations in free space are invariant with respect to $ x, y, z, \phi, \theta $.
-    That is, at a fundamental level, the laws of electromagnetism do not change if we move to a different location or look in a different direction.
-\end{itemize}
-
-}
-
-\begin{frame}[fragile]
-    \frametitle{Invariance}
-
-    If $ \L $ is invariant in $ x $, then
-    \begin{align*}
-        \L[G(x,x')] &= \delta(x - x')
-        \\
-        \L[G(x - \xi,x' - \xi)] &= \delta(x - x')
-    \end{align*}
-    \begin{align*}
-        \Longrightarrow G(x,x') = G(x - \xi, x' - \xi)
-    \end{align*}
-    \begin{empheq}[box=\widefbox]{align*}
-        G(x, x') &= G(x - x')
-    \end{empheq}
-    
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    For invariant problems, we can see that shifting both $ x $ and $ x' $ by the same amount $ \xi $ does not affect the Green's function.
-\item
-    Taking $ \xi  = x' $, we see that $ G(x,x') $ is actually only a function of the difference $ (x - x') $.
-\item
-    That is, the response only depends on the \emph{relative} locations of the source and measurement.
-    This fits nicely with our intuitive understanding of invariance.
-\end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Invariance}
-    
-    Convolution:
-    \begin{align*}
-        u(x) &= \int_a^b G(x - x') f(x') \d x' = G(x) * f(x)
-    \end{align*}
-    Frequency domain:
-    \begin{align*}
-        \ft{u}(k) &= \ft{G}(k) \ft{f}(k)
-    \end{align*}
-
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    For invariant systems (with boundary conditions zero), the solution $ u(x) $ is just given as a convolution of the source function $ f(x) $ with the impulse response $ G(x) $.
-\item
-    Taking Fourier transforms, the convolution turns into multiplication. 
-\item
-    Looks familiar from signal processing!
-\end{itemize}
-}
-
-
 \section{Spectral methods}
 \label{sec:spectral_methods}
 
 \note{
 \begin{itemize}
 \item
-    In this section, we'll look at the strong relationship between Green's functions and spectral theory.
+    We spent the last section learning how to construct a final solution from the Green's function.
 \item
-    Essentially, eigenfunction expansion allows us to calculate the Green's function when direct methods don't work.
+    Before that, we learned a simple way to actually calculating the Green's functions.
 \item
-    A basic background in spectral theory can be found in most books covering Green's functions. 
+    Unfortunately, that simple method doesn't always work, especially when dealing with separation of variables in 3D.
 \item
-    Unfortunately, these are rarely rigorous when dealing with continuous sets of eigenvalues.
-    For fully rigorous spectral theory (not for the faint of heart!), see Naylor and Sell's \emph{Linear operator theory in engineering and science} or Kreyszig's \emph{Introductory functional analysis with applications.}
+    In this section, we'll look at another method for constructing Green's functions.
+    In the process, we'll see the close tie between Green's functions and eigenvalues/eigenfunctions.
 \end{itemize}
 }
+
+%\note{
+%\begin{itemize}
+%\item
+%    In this section, we'll look at the strong relationship between Green's functions and spectral theory.
+%\item
+%    Essentially, eigenfunction expansion allows us to calculate the Green's function when direct methods don't work.
+%\item
+%    A basic background in spectral theory can be found in most books covering Green's functions. 
+%\item
+%    Unfortunately, these are rarely rigorous when dealing with continuous sets of eigenvalues.
+%    For fully rigorous spectral theory (not for the faint of heart!), see Naylor and Sell's \emph{Linear operator theory in engineering and science} or Kreyszig's \emph{Introductory functional analysis with applications.}
+%\end{itemize}
+%}
 
 \begin{frame}[fragile]
     \frametitle{Eigenfunction expansion}
@@ -1646,11 +1529,14 @@ Comments:
     \item
         First we'll review a bit of eigenfunction theory, but we'll quickly see how it relates to Green's functions.
     \item
-        Set up a similar problem as before, but we've added a complex parameter $ \lambda $ for later convenience.
+        Set up a problem similar to before, but we've added a complex parameter $ \lambda $ for later convenience.
     \item
-        Also, for this section we'll insist that $ \L $ be fully self-adjoint so that we can take full advantage of spectral theory.
+        For this section we'll insist that $ \L $ be fully self-adjoint so that we can take full advantage of spectral theory.
+        (A brief discussion of the non-self-adjoint case can be found in Morse and Feshbach.)
     \item
-        A brief discussion of the non-self-adjoint case can be found in Morse and Feshbach under ``Non-Hermitian operators: biorthogonal functions''.
+        Technically, we're also assuming here that $ \L $ is a \emph{bounded} linear operator.
+        Unbounded operators have continuous sets of eigenvalues, and the theory behind them is much more delicate.
+        See, e.g., Naylor and Sell's \emph{Linear operator theory in engineering and science} or Kreyszig's \emph{Introductory functional analysis with applications.}
     \end{itemize}
     
 }
@@ -1663,7 +1549,7 @@ Comments:
         \L \phi_n(x) &= \lambda_n \phi_n(x)
     \end{align*}
     
-    With $ \L $ self-adjoint, $ \lambda_n \in \mathbb{R} $ and
+    Since $ \L $ is self-adjoint,
     \begin{align*}
         u(x) &= \sum_n \inprod{u}{\phi_n} \phi_n(x)
         \\
@@ -1675,9 +1561,7 @@ Comments:
 \note{
 \begin{itemize}
 \item
-    Because $ \L $ is self-adjoint, we know that its eigenvalues $ \lambda_n $ are real.
-\item
-    We also know that it has a complete orthonormal set of eigenfunctions $ \phi_n $.
+    Since $ \L $ is self-adjoint, we know that it has a complete orthonormal set of eigenfunctions $ \phi_n $.
 \item
     That is, we can expand any function (in this case $ u(x) $ and $ f(x) $) in terms of $ \phi_n(x) $. (Generalized Fourier series.)
 \end{itemize}
@@ -1904,6 +1788,139 @@ Comments:
 \end{itemize}
 
 }
+
+\ifextended
+\section{Properties of Green's functions}
+\label{sec:properties_of_green_s_functions}
+
+\note{
+    \begin{itemize}
+    \item
+        The Green's function gives us a lot of information about the system we're dealing with.
+    \item
+        Here we'll look at a few of the properties Green's functions can have and what those tell us about our system.
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Reciprocity}
+
+    If $ \L $ is self-adjoint
+    \begin{align*}
+        \L = \L^* \qquad \text{and} \qquad \B = \B^*
+    \end{align*}
+    then
+    \begin{align*}
+        G(x,x') &= G^*(x',x)
+    \end{align*}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        For self-adjoint problems, $ G = H $. 
+    \item
+        Using our relationship between $ G $ and $ H $, we quickly see that the Green's function is complex symmetric (Hermitian) for self-adjoint problems.
+    \item
+        Roughly, putting a source at $ x $ and measuring at $ x' $ is the same as putting a source at $ x' $ and measuring at $ x $.
+        This is often called reciprocity (though it's not quite the same as reciprocity from time-harmonic E\&M, because we're using a true inner product rather than the so-called ``reaction inner product'').
+    \item
+        Note that we require \emph{both} $ \L = \L^* $ and $ \B = \B^* $. So this would likely not hold for initial condition problems.
+    \end{itemize}
+}
+
+
+\begin{frame}[fragile]
+    \frametitle{Invariance}
+
+
+    $ \L $ is invariant if 
+    \begin{align*}
+        \L[u(x - \xi)] &= \L[u(x)] \Big|_{x = x - \xi}
+    \end{align*}
+    
+    For example,
+    \begin{IEEEeqnarray*}{rClCl}
+        \L &=& a \frac{\d^2}{\d x^2} + b \frac{\d}{\d x} + c
+    \end{IEEEeqnarray*}
+    is invariant only if $ a $, $ b $, and $ c $ are constants.
+    
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    An operator is invariant if shifting the input just results in a shifted output.
+\item
+    Probably familiar from signal processing: linear \emph{time-invariant} systems.
+    Delaying the input signal leads to the same output signal, just delayed by the same amount.
+\item
+    Invariance is really important in modern physics.
+\item
+    Maxwell's equations in free space are invariant with respect to $ x, y, z, \phi, \theta $.
+    That is, at a fundamental level, the laws of electromagnetism do not change if we move to a different location or look in a different direction.
+\end{itemize}
+
+}
+
+\begin{frame}[fragile]
+    \frametitle{Invariance}
+
+    If $ \L $ is invariant in $ x $, then
+    \begin{align*}
+        \L[G(x,x')] &= \delta(x - x')
+        \\
+        \L[G(x - \xi,x' - \xi)] &= \delta(x - x')
+    \end{align*}
+    \begin{align*}
+        \Longrightarrow G(x,x') = G(x - \xi, x' - \xi)
+    \end{align*}
+    \begin{empheq}[box=\widefbox]{align*}
+        G(x, x') &= G(x - x')
+    \end{empheq}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    For invariant problems, we can see that shifting both $ x $ and $ x' $ by the same amount $ \xi $ does not affect the Green's function.
+\item
+    Taking $ \xi  = x' $, we see that $ G(x,x') $ is actually only a function of the difference $ (x - x') $.
+\item
+    That is, the response only depends on the \emph{relative} locations of the source and measurement.
+    This fits nicely with our intuitive understanding of invariance.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Invariance}
+    
+    Convolution:
+    \begin{align*}
+        u(x) &= \int_a^b G(x - x') f(x') \d x' = G(x) * f(x)
+    \end{align*}
+    Frequency domain:
+    \begin{align*}
+        \ft{u}(k) &= \ft{G}(k) \ft{f}(k)
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    For invariant systems (with boundary conditions zero), the solution $ u(x) $ is just given as a convolution of the source function $ f(x) $ with the impulse response $ G(x) $.
+\item
+    Taking Fourier transforms, the convolution turns into multiplication. 
+\item
+    Looks familiar from signal processing!
+\end{itemize}
+}
+
+\fi
 
 \ifextended
 \section{The 3D wave equation}
@@ -2358,101 +2375,28 @@ Comments:
 
 \begin{frame}[fragile]
     \frametitle{Takeaways}
-
-    Introduction:
+    
     \begin{itemize}
     \item
-        The Green's function is the impulse response
+        Green's function is the impulse response.
     \item
-        Use it to construct solutions. Ignoring boundary conditions:
-        \begin{align*}
-            u(x) &= \int f(x') G(x,x') \d x'
-        \end{align*}
-    \end{itemize}
-    
-\end{frame}
-
-\note{}
-
-\ifextended
-\begin{frame}[fragile]
-    \frametitle{Takeaways}
-
-    Generalized functions:
-    \begin{itemize}
+        Finding Green's function:
+        \begin{itemize}
+        \item
+            Source-free behaviour for $ x \neq x' $.
+        \item
+            Continuity/discontinuity requirements at $ x = x' $.
+        \end{itemize}
     \item
-        The delta function is an operator, not an actual function.
-    \end{itemize}
-   
-\end{frame}
-
-\note{}
-\fi
-
-\begin{frame}[fragile]
-    \frametitle{Takeaways}
-     
-    Direct solution:
-    \begin{itemize}
+        Constructing solutions:
+        \begin{itemize}
+        \item
+            Systematic method using adjoint equation.
+        \item
+            Non-zero boundary conditions behave like sources.
+        \end{itemize}
     \item
-        $ G(x,x') $ obeys source-free equation for $ x \neq x' $.
-    \item
-        $ G(x,x') $ is continuous at $ x = x' $.
-    \item
-        $ \dfrac{\d G(x,x')}{\d x} $ is discontinuous at $ x = x' $.
-    \end{itemize}
-    
-\end{frame}
-
-\note{}
-
-\begin{frame}[fragile]
-    \frametitle{Takeaways}
-
-    Boundary conditions:
-    \begin{itemize}
-    \item
-        Non-zero boundary conditions act like impulse sources.
-    \item
-        Best way to construct $ u(x) $ from $ G(x,x') $ is to use the adjoint problem.
-    \end{itemize}
-    
-\end{frame}
-
-\note{}
-
-\begin{frame}[fragile]
-    \frametitle{Takeaways}
-    
-    Properties of Green's functions:
-    \begin{itemize}
-    \item
-        Self-adjoint problems: $ G(x,x') = G^*(x',x) $ (reciprocity).
-    \item
-        Invariant problems: $ G(x,x') = G(x - x') $.
-    \end{itemize}
-    
-\end{frame}
-
-\note{}
-
-\begin{frame}[fragile]
-    \frametitle{Takeaways}
-    
-    Spectral methods:
-    \begin{itemize}
-    \item
-        Green's function can be found from eigenfunctions/eigenvalues:
-        \begin{align*}
-            G(x,x') &= \sum_n \frac{\phi_n(x) \phi_n^*(x')}{\lambda_n - \lambda}
-        \end{align*}
-    \item
-        Eigenfunctions/eigenvalues can be found from Green's function.
-    \item
-        Delta function can be written in terms of eigenfunctions:
-        \begin{align*}
-            \delta(x - x') &= \sum_n \phi_n(x) \phi_n^*(x')
-        \end{align*}
+        Green's functions $ \Longleftrightarrow $ eigenvalues/eigenfunctions.
     \end{itemize}
     
 
@@ -2460,50 +2404,10 @@ Comments:
 
 \note{}
 
-\ifextended
 \begin{frame}[fragile]
-    \frametitle{Takeaways}
-    
-    The 3D wave equation:
-    \begin{itemize}
-    \item
-        In general, use adjoint problem to write $ u(\vect{r}, t) $ in terms of $ G(\vect{r}, t; \vect{r}', t') $.
-    \item
-        For free space initial condition problem, solution is the so-called ``retarded potential.''
-    \end{itemize}
-    
-\end{frame}
-
-\note{}
-\fi
-
-\begin{frame}[fragile]
-    \frametitle{Further topics}
-
-    \begin{itemize}
-    \item
-        Sturm-Liouville problems
-    \item
-        Complex contour integration
-    \item
-        3D problems: separation of variables
-    \item
-        Dyadic Green's functions
-    \ifextended
-    \else
-    \item
-        Generalized functions (delta function)
-    \fi
-    \end{itemize}
-    
-\end{frame}
-
-\note{}
-
-\begin{frame}[fragile]
-    \frametitle{Introductory resources}
+    \frametitle{Further reading}
     Balanis (2012), \emph{Advanced engineering electromagnetics}. 
-    Less rigorous, but good for getting the key ideas.
+    Not very rigorous, but decent for getting the key ideas.
 
     Folland (1992), \emph{Fourier analysis and its applications}. 
     Fully rigorous. 
@@ -2520,12 +2424,14 @@ Comments:
 \note{}
 
 \begin{frame}[fragile]
-    \frametitle{Advanced resources}
+    \frametitle{Further reading}
     Collin (1990), \emph{Field theory of guided waves}. 
-    Huge chapter on Green's functions. Emphasis on dyadics.
+    Huge chapter on Green's functions. 
+    Emphasis on dyadics.
 
     Morse and Feshback, \emph{Methods of theoretical physics}.
-    Another big, detailed reference. Great resource for deeper insight and understanding.
+    Another big, detailed reference. 
+    Great resource for deeper insight and understanding.
 
     Warnick (1996), ``Electromagnetic Green functions using differential forms.''
     For the differential forms inclined.
