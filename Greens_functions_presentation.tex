@@ -7,7 +7,7 @@
 \newif\ifextended
 
 \handoutfalse
-\handouttrue
+%\handouttrue
 
 \extendedfalse
 %\extendedtrue
@@ -114,8 +114,8 @@
 
 }
 
-\section{Introduction}
-\label{sec:introduction}
+\section{Basic idea}
+\label{sec:basic_idea}
 
 \note{
 \begin{itemize}
@@ -641,6 +641,7 @@
         \frac{\d^2 G(x,x')}{\d x^2} - k^2 G(x,x') &= \delta(x - x')
     \end{align*}
 
+    \pause
     Continuity of the Green's function:
     \begin{align*}
         \lim_{\epsilon \to 0} \left[ G(x'+\epsilon, x') - G(x' - \epsilon, x') \right] = 0
@@ -668,6 +669,8 @@
         \alt<2->{\int_{x'-\epsilon}^{x'+\epsilon} \left[ \frac{\d^2 G(x, x')}{\d x^2} - k^2 G(x,x') \right] \d x &= \int_{x'-\epsilon}^{x'+\epsilon} \delta(x - x') \d x}{\frac{\d^2 G(x, x')}{\d x^2} - k^2 G(x,x') = \delta(x - x')}
     \end{align*}
 
+    \pause
+    \pause
     Discontinuity condition:
     \begin{align*}
         \lim_{\epsilon \to 0} \left[ \left. \frac{\d G}{\d x}\right|_{x = x' + \epsilon} - \left. \frac{\d G}{\d x} \right|_{x = x' - \epsilon} \right] &= 1
@@ -803,6 +806,19 @@
 
 \section{Constructing the solution}
 \label{sec:constructing_the_solution}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Constructing the solution}
+
+    \begin{align*}
+        u(x) &= \int G(x,x') f(x') \d x'
+    \end{align*}
+    
+    Can we prove/generalize this?
+    
+\end{frame}
 
 \note{
 \begin{itemize}
@@ -1359,12 +1375,14 @@
 \begin{frame}[fragile]
     \frametitle{Constructing solutions}
 
-    \begin{IEEEeqnarray*}{rClCrCl}
-        \text{Given: \quad} \L u(x) = f(x); \quad \B[u(x)] = \alpha
-    \end{IEEEeqnarray*}
     \begin{enumerate}
     \item
-        Solve Green's problem:
+        Given
+        \begin{align*}
+            \L u(x) = f(x); \quad \B[u(x)] = \alpha
+        \end{align*}
+    \item
+        Solve Green's problem
         \begin{align*}
             \L G(x,x') = \delta(x - x'); \quad \B[G(x,x')] = 0
         \end{align*}
@@ -1416,12 +1434,14 @@ Comments:
 \begin{frame}[fragile]
     \frametitle{Constructing solutions in 3D}
  
-    \begin{IEEEeqnarray*}{rClCrCl}
-        \text{Given: \quad} \L u(\vect{r}) = f(\vect{r}); \quad \B[u(\vect{r})] = \alpha
-    \end{IEEEeqnarray*}
     \begin{enumerate}
     \item
-        Solve Green's problem:
+        Given
+        \begin{align*}
+            \L u(\vect{r}) = f(\vect{r}); \quad \B[u(\vect{r})] = \alpha
+        \end{align*}
+    \item
+        Solve Green's problem
         \begin{align*}
             \L G(\vect{r},\vect{r}') = \delta(\vect{r} - \vect{r}'); \quad \B[G(\vect{r},\vect{r}')] = 0
         \end{align*}
@@ -1460,7 +1480,7 @@ Comments:
         \inprod{\L u}{v} &= \int_V \left[ \L u(\vect{r}) \right] v^*(\vect{r}) \d^3 \vect{r}
     \end{align*}
 
-    Green's identity:
+    Green's second identity:
     \begin{align*}
         \int_V \left( u \nabla^2 v - v \nabla^2 u \right) \d^3 \vect{r} &= \oint_{\partial V} \left( u \vect{\nabla} v - v \vect{\nabla} u \right) \cdot \d \vect{s}
     \end{align*}
@@ -1474,7 +1494,8 @@ Comments:
     (This time the inner product is a volume integral.)
 \item
     Then we do a 3D version of integration by parts to expand the integral.
-    If we're dealing with an equation involving the Laplacian $ \nabla^2 $ (often the case), then Green's identity comes in handy.
+\item
+    For the Laplacian operator $ \nabla^2 $ (often what we deal with), Green's second identity gives the integration by parts rule.
 \end{itemize}
 
 }
@@ -1627,8 +1648,6 @@ Comments:
         \\
         u(x) &= \sum_n \left( \int_a^b \frac{f(x') \phi^*_n(x')}{\lambda_n - \lambda} \d x' \right) \phi_n(x)
         \\
-        u(x) &= \int_a^b \left( \sum_n \frac{f(x) \phi^*_n(x')}{\lambda_n - \lambda} \phi_n(x) \right) \d x'
-        \\
         u(x) &= \int_a^b \left( \alert{\sum_n \frac{\phi_n(x) \phi^*_n(x')}{\lambda_n - \lambda} } \right) f(x') \d x'
     \end{align*}
     
@@ -1659,7 +1678,7 @@ Comments:
 \note{
     \begin{itemize}
     \item
-        It turns out that we actually can read off this weird sum as the Green's function.
+        This sum really is the Green's function.
     \item
         So, if we know the eigenvalues and eigenfunctions of $ \L $, we can immediately construct the Green's function as an infinite series.
     \item
