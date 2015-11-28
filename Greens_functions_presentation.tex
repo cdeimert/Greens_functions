@@ -7,7 +7,7 @@
 \newif\ifextended
 
 \handoutfalse
-%\handouttrue
+\handouttrue
 
 \extendedfalse
 %\extendedtrue
@@ -34,6 +34,7 @@
 \renewcommand{\L}{\mathcal{L}}
 \renewcommand{\B}{\mathcal{B}}
 \newcommand{\inprod}[2]{\left\langle {#1}, {#2} \right\rangle}
+\newcommand{\conj}[1]{\overline{#1}}
 
 \usepackage{graphicx}
 \usepackage{booktabs}
@@ -61,6 +62,7 @@
 \renewcommand{\L}{\mathcal{L}}
 \newcommand{\ft}[1]{\tilde{#1}}
 \newcommand{\rinprod}[2]{\left\langle {#1}, {#2} \right\rangle_r}
+\newcommand{\pinprod}[2]{\left\langle {#1}, {#2} \right\rangle_p}
 
 \useinnertheme{circles}
 
@@ -218,11 +220,6 @@
         y(t) &= \int_{-\infty}^{\infty} x(t') \alert{h(t - t')} \d t'
     \end{align*}
 
-    %E.g., for an RL-circuit:
-    %\begin{align*}
-    %    G(t,t') &= h(t - t') = u(t - t') e^{-\alpha (t - t')}
-    %\end{align*}
-    
 \end{frame}
 
 \note{
@@ -816,7 +813,7 @@
         u(x) &= \int G(x,x') f(x') \d x'
     \end{align*}
     
-    Can we prove/generalize this?
+    \begin{center}Can we prove/generalize this?\end{center}
     
 \end{frame}
 
@@ -838,60 +835,81 @@
 \begin{frame}[fragile]
     \frametitle{Adjoint operators}
 
-    \begin{IEEEeqnarray*}{rCrClCrCl}
-        \text{Original:} & \qquad & \L [u(x)] &=& f(x); &\qquad& \B [u(x)] &=& 0
-        \\
-        \text{Adjoint:} & \qquad & \L^* [v(x)] &=& f(x); &\qquad& \B^* [v(x)] &=& 0
-    \end{IEEEeqnarray*}
-    
-    Defining property:
+    Inner product:
     \begin{align*}
-        \inprod{\L u}{v} = \inprod{u}{\L^* v} \qquad \text{where } \inprod{u}{v} = \int_{a}^{b} u(x) v^*(x) \d x
+        \inprod{u}{v} &= \int_a^b u(x) \conj{v}(x) \d x
     \end{align*}
     
+    Adjoint operator $ \L^* $:
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v}
+    \end{align*}
+   
+
 \end{frame}
 
 \note{
-    \begin{itemize}
-    \item
-        Underpinning our approach is the concept of an adjoint problem.
-    \item
-        Suppose we have an original problem defined by operator $ \L $ and boundary conditions $ \B $.
-    \item
-        Then, $ \L^* $ is the adjoint operator and $ \B^* $ are the adjoint boundary conditions if $ \inprod{\L u}{v} = \inprod{u}{\L^* v} $ for all $ u, v $.
-    \item
-        Here $ \inprod{u}{v} $ is the inner product as defined on the slide. ($ v^*(x) $ is the complex conjugate of $ v(x) $.)
-    \end{itemize}
+\begin{itemize}
+\item
+    Underpinning our approach is the idea of an adjoint operator.
+\item
+    Start with an inner product (for 1D problems, usually the one shown).
+    Note that $ \conj{v} $ is the complex conjugate of $ v $.
+\item
+    If $ \L $ is a linear operator, then its adjoint $ \L^* $ is defined as the operator which satisfies
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v}
+        \\
+        \Longrightarrow \quad \int_a^b (\L u) v^* \d x &= \int_a^b u \conj{(\L^* v)} \d x
+    \end{align*}
+\end{itemize}
 }
 
-\note{
-    Linear algebra notes:
-    \begin{itemize}
-    \item
-        The boundary conditions are important because they specify the domains of $ \L $ and $ \L^* $. (I.e., $ \L $ operates on the Hilbert space of functions $ u(x) $ which satisfy $ \B[u] = 0 $.)
-    \item
-        So if $ \B \neq \B^* $, then $ \L $ and $ \L^* $ are operators on different Hilbert spaces.
-    \item
-        If both $ \L = \L^* $ and $ \B = \B^* $, we say that $ \L $ is self-adjoint.
-    \item
-        If $ \L = \L^* $ but $ \B \neq \B^* $, we say that $ \L $ is \emph{formally} self-adjoint.
-    \end{itemize}
-}
+\begin{frame}[fragile]
+    \frametitle{Adjoint boundary conditions}
+    
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} \longrightarrow \text{Only for certain $ u, v $ !}
+    \end{align*}
+
+    Adjoint boundary conditions:
+    \begin{align*}
+        \B_i[u] &= 0; \qquad \B_i^*[v] = 0
+    \end{align*}
+    
+    Otherwise
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + \underbrace{J(u,\conj{v})}_{\text{Conjunct}} \Big|_a^b
+    \end{align*}
+    
+
+\end{frame}
 
 \note{
+\begin{itemize}
+\item
+    The adjoint is only truly the adjoint (i.e., $ \inprod{\L u}{v} = \inprod{u}{\L^* v} $) for certain functions $ u $ and $ v $.
+    (Mathematically, we need to specify the \emph{domains} of $ \L $ and $ \L^* $ because these are usually unbounded operators.)
+\item
+    This is where boundary conditions come in. 
+    Specifically, if $ u $ obeys some boundary conditions $ \B_i[u] = 0 $, then $ v $ has to obey some adjoint boundary conditions $ \B_i^*[v] = 0 $.
+\item
+    Note on notation: $ \B_i[u] = 0 $ means that some linear combination of $ u $ and its derivatives are set equal to zero at the boundaries.
+\item
+    If $ \B_i[u] = 0 $ or $ \B_i^*[v] = 0 $ are not satisfied, then the adjoint equation almost holds, but we get an extra term $ J(u,v^*) $ called the \emph{conjunct}.
+\end{itemize}
+
 }
 
 \begin{frame}[fragile]
     \frametitle{Adjoint operators: example}
     \begin{align*}
-        \L[u(x)] &= \left[ \frac{\d^2}{\d x^2} + k^2 \right] u(x)
-        \\
-        \B[u(x)] &= \mat{u(a) \\ u(b)} = \mat{0 \\ 0}
+        \L u(x) &= \left[ \frac{\d^2}{\d x^2} + k^2 \right] u(x)
     \end{align*}
 
-    Want $ \L^* $ and $ \B^* $ so that
+    Want $ \L^* $ so that
     \begin{align*}
-        \inprod{\L u}{v} &= \inprod{u}{\L^* v}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u, \conj{v})\Big|_a^b
     \end{align*}
 
 \end{frame}
@@ -901,7 +919,7 @@
     \item
         Let's look at an example: the 1D simple harmonic oscillator.
     \item
-        We'll use boundary conditions so that $ u(a) = u(b) = 0 $.
+        Let's try to find $ \L^* $ without worrying about boundary conditions for now.
     \end{itemize}
 }
 
@@ -909,15 +927,12 @@
     \frametitle{Adjoint operators: example}
     
     \begin{align*}
-        \inprod{\L u}{v} &= \int_a^b \left[ u''(x) + k^2 u(x) \right] v^*(x) \d x
+        \inprod{\L u}{v} &= \int_a^b \left[ u'' + k^2 u \right] \conj{v} \d x
         \\
-        \inprod{\L u}{v} &= \int_a^b u(x) \left[ v^{\prime\prime}(x) + (k^2)^* v(x) \right]^* \d x + 
-        \\& \quad + \left[ u'(x) v^*(x)  - u(x) v^{\prime *}(x) \right]_{a}^{b}
+        \inprod{\L u}{v} &= \int_a^b \left[ -u' \conj{v}' + k^2 u \conj{v} \right] \d x + \left[ u' \conj{v} \right]_a^b
+        \\
+        \inprod{\L u}{v} &= \int_a^b u \left[ \conj{v}^{\prime\prime} + k^2 \conj{v} \right] \d x + \left[ u' \conj{v}  - u \conj{v}' \right]_{a}^{b}
     \end{align*}
-%    We have $ \inprod{\L u}{v} = \inprod{u}{\L v} + [\text{stuff}] $
-%    \begin{align*}
-%        \L^* v(x) &= \left[ \frac{\d^2}{\d x^2} + (k^2)^* \right] v(x)
-%    \end{align*}
     
 
 \end{frame}
@@ -935,17 +950,18 @@
     \frametitle{Adjoint operators: example}
 
     \begin{align*}
-        \inprod{\L u}{v} &= \int_a^b u(x) \left[ v^{\prime\prime}(x) + (k^2)^* v(x) \right]^* \d x + 
-        \\& \quad + \left[ u'(x) v^*(x)  - u(x) v^{\prime *}(x) \right]_{a}^{b}
+        \inprod{\L u}{v} &= \int_a^b u \left[ \conj{v}^{\prime\prime} + k^2 \conj{v} \right] \d x + \left[ u' \conj{v}  - u \conj{v}' \right]_{a}^{b}
     \end{align*}
-
-    If we take
+    
+    Looks like
     \begin{align*}
-        \L^* &= \frac{\d^2}{\d x^2} + (k^2)^*
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u, \conj{v})\Big|_a^b
     \end{align*}
-    then we have
+    with
     \begin{align*}
-        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + \left[ u'(x) v^*(x)  - u(x) v^{*\prime}(x) \right]_{a}^{b}
+        \L^* &= \frac{\d^2}{\d x^2} + \conj{k^2}
+        \\[4pt]
+        J(u,\conj{v}) &= u' \conj{v}  - u \conj{v}'
     \end{align*}
     
 \end{frame}
@@ -953,99 +969,28 @@
 \note{
 \begin{itemize}
 \item
-    The remaining integral term looks like
-    \begin{align*}
-        \int_a^b u(x) \left[ \L^* v(x) \right]^* \d x 
-    \end{align*}
+    After integration by parts, we can read off the adjoint operator and the conjunct.
 \item
-    If we define $ \L^* $ this way, we get closer to our goal.
-    We just need to make the last part zero.
+    So in this case, the adjoint operator is the almost the same as the original operator, but there's an extra complex conjugate.
+    If $ k $ is real, then $ \L = \L^* $.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
     \frametitle{Adjoint operators: example}
-    
+
+    For
     \begin{align*}
-        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + \left[ u'(x) v^*(x)  - u(x) v^{*\prime}(x) \right]_{a}^{b}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v}
     \end{align*}
-
-    Since $ u(a) = u(b) = 0 $,
+    must have
     \begin{align*}
-        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + u'(a) v^*(a) - u'(b) v^*(b)
-    \end{align*}
-
-    So, pick
-    \begin{align*}
-        v(a) = v(b) = 0
-    \end{align*}
-    
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        We almost have the required $ \inprod{\L u}{v} = \inprod{u}{\L^* v} $, but we need the part on the right to be zero.
-    \item
-        From the original problem, we have
-        \begin{align*}
-            \B[u] &= \mat{u(a) \\ u(b)} = \mat{0 \\ 0}
-        \end{align*}
-    \item
-        To make the last part zero, we need the adjoint boundary conditions to be
-        \begin{align*}
-            \B^*[v] &= \mat{v(a) \\ v(b)} = \mat{0 \\ 0}
-        \end{align*}
-    \item
-        So in this case, $ \B = \B^* $.
-    \end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Adjoint operators: example}
-     
-    What if $ u(a) = u'(a) = 0 $ (initial conditions)?
-    \begin{align*}
-        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + \left[ u'(x) v^*(x)  - u(x) v^{*\prime}(x) \right]_{a}^{b}
+        J(u,\conj{v})\Big|_a^b &= 0
         \\
-        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + u'(b) v^*(b)  - u(b) v^{\prime *}(b)
+        \left[u' \conj{v}  - u \conj{v}'\right]_a^b &= 0
     \end{align*}
-    We must have \emph{final} conditions for $ v $:
     \begin{align*}
-        v(b) = v'(b) = 0
-    \end{align*}
-
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        What if we use the same operator $ \L $, but we switch from a boundary value problem to an initial condition problem?
-        That is,
-        \begin{align*}
-            \B[u] &= \mat{u(a) \\ u'(a)} = \mat{0 \\ 0}
-        \end{align*}
-    \item
-        Then, to make the remaining part zero, we need the adjoint boundary conditions to be
-        \begin{align*}
-            \B[v] &= \mat{v(b) \\ v'(b)} = \mat{0 \\ 0}
-        \end{align*}
-    \item
-        For an initial condition problem, the adjoint problem is a \emph{final} condition problem!
-        $ \B \neq \B^* $. 
-    \end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Adjoint operators}
-
-    In general:
-    \begin{align*}
-        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u,v^*) \Big|_a^b
-    \end{align*}
-    Definition of adjoint boundary conditions:
-    \begin{align*}
-        \B[u] = \B^*[v] = 0 \Longleftrightarrow J(u,v^*) \Big|_a^b = 0
+        u'(b) \conj{v}(b) - u(b) \conj{v}'(b) - u'(a) \conj{v}(a) + u(a) \conj{v}'(a) = 0
     \end{align*}
     
 \end{frame}
@@ -1053,29 +998,149 @@
 \note{
 \begin{itemize}
 \item
-    In the last example, we saw that we had $ \inprod{\L u}{v} $ equal to $ \inprod{u}{\L^* v} $ plus a leftover term which depended on the boundaries.
+    Now let's look at adjoint boundary conditions.
 \item
-    This is true more generally: if we don't specify the boundary conditions of $ u $ and $ v $, then we can still \emph{almost} get the adjoint operator equation. We just have a leftover term $ J(u,v^*) |_a^b $, which depends only on the boundary conditions.
-    This term is called the conjunct.
+    For $ \L^* $ to be a true adjoint, we need the conjunct to be zero.
 \item
-    We define adjoint boundary conditions as those boundary conditions which make the conjunct equal to zero.
+    Let's expand the conjunct for this particular example.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
-    \frametitle{Adjoint Green's functions}
+    \frametitle{Adjoint operators: example}
+
+    \begin{align*}
+        u'(b) \conj{v}(b) - u(b) \conj{v}'(b) - u'(a) \conj{v}(a) + u(a) \conj{v}'(a) = 0
+    \end{align*}
+
+    Boundary conditions:
+    \begin{align*}
+        \begin{array}{c}
+        \B_1[u] = u(a) = 0
+        \\
+        \B_2[u] = u(b) = 0
+        \end{array}
+        \Longrightarrow
+        \begin{array}{c}
+        \B^*_1[v] = v(a) = 0
+        \\
+        \B^*_2[v] = v(b) = 0
+        \end{array}
+    \end{align*}
+
+    \begin{align*}
+        \B_i &= \B_i^*
+    \end{align*}
+    
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Suppose we have the simple boundary conditions $ u(a) = u(b) = 0 $.
+\item
+    Then, to make the conjunct zero, we need $ \conj{v}(a) = \conj{v}(b) = 0 $ or $ v(a) = v(b) = 0 $.
+\item
+    So in this case, the adjoint boundary conditions on $ v $ are the same as the boundary conditions on $ u $.
+\item
+    Remember what these boundary conditions mean.
+    $ \L^* $ is the true adjoint when $ \L $ operates on functions $ u(x) $ which are zero at $ x = a,b $ and $ \L^* $ operates on functions $ v(x) $ which are zero at $ x = a,b $.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Adjoint operators: example}
+
+    \begin{align*}
+        u'(b) \conj{v}(b) - u(b) \conj{v}'(b) - u'(a) \conj{v}(a) + u(a) \conj{v}'(a) = 0
+    \end{align*}
+
+    Initial conditions:
+    \begin{align*}
+        \begin{array}{c}
+        \B_1[u] = u(a) = 0
+        \\
+        \B_2[u] = u'(a) = 0
+        \end{array}
+        \Longrightarrow
+        \begin{array}{c}
+        \B^*_1[v] = v(b) = 0
+        \\
+        \B^*_2[v] = v'(b) = 0
+        \end{array}
+    \end{align*}
+
+    \begin{align*}
+        \B_i &\neq \B_i^*
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    What if we have initial conditions instead? $ u(a) = u'(a) = 0 $.
+\item
+    Then, to make the conjunct zero, we need $ v(b) = v'(b) = 0 $.
+\item
+    So, for initial conditions, the adjoint boundary conditions are \emph{final} conditions.
+    $ \B_i \neq \B_i^* $.
+\end{itemize}
+}
+
+
+\begin{frame}[fragile]
+    \frametitle{Adjoint operators: summary}
+
+    Adjoint operator:
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v}
+    \end{align*}
+    Adjoint boundary conditions:
+    \begin{align*}
+        \begin{array}{c} \B_i[u] = 0 \\ \B^*_i[v] = 0 \end{array} \Longrightarrow J(u,\conj{v})\Big|_a^b = 0
+    \end{align*}
+    Otherwise:
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u,\conj{v}) \Big|_a^b
+    \end{align*}
+    
+    
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    The adjoint operator satisfies $ \inprod{\L u}{v} = \inprod{u}{\L^* v} $.
+\item
+    This only works for certain $ u,v $, though.
+    Specifically, it works when $ u $ obeys boundary conditions and $ v $ obeys adjoint boundary conditions.
+\item
+    If $ u,v $ do not satisfy these boundary conditions, then $ \L^* $ is not truly the adjoint anymore.
+    However, it still nearly obeys the adjoint equation; there's just a leftover conjunct term which depends on the boundary values of $ u, v $ and their derivatives.
+\item
+    This conjunct term messes up a lot of things from linear algebra (e.g. self-adjoint operators having a complete basis of eigenvectors).
+    But for our purposes, it will end up being useful.
+\end{itemize}
+
+}
+
+\begin{frame}[fragile]
+    \frametitle{The adjoint Green's function}
  
     Original problem:
     \begin{IEEEeqnarray*}{rClCrCl}
-        \L [u(x)] &=& f(x); &\qquad& \B [u(x)] &=& \alpha 
+        \L u(x) &=& f(x); &\qquad& \B_i [u(x)] &=& \alpha_i
     \end{IEEEeqnarray*}
     Green's problem:
     \begin{IEEEeqnarray*}{rClCrCl}
-        \L [G(x,x')] &=& \delta(x - x'); &\qquad& \B [G(x,x')] &=& 0
+        \L G(x,x') &=& \delta(x - x'); &\qquad& \B_i [G(x,x')] &=& 0
     \end{IEEEeqnarray*}
     Adjoint Green's problem:
     \begin{IEEEeqnarray*}{rClCrCl}
-        \L^* [H(x,x')] &=& \delta(x - x'); &\qquad& \B^* [H(x,x')] &=& 0
+        \L^* H(x,x') &=& \delta(x - x'); &\qquad& \B_i^* [H(x,x')] &=& 0
     \end{IEEEeqnarray*}
     
 \end{frame}
@@ -1085,7 +1150,7 @@
 \item
     Now we'll be able to deal with boundary conditions properly.
 \item
-    We define $ G(x,x') $ to obey the same equation as $ u(x) $, but with $ f(x) \to \delta(x - x') $ and $ \alpha \to 0 $.
+    We define $ G(x,x') $ to obey the same equation as $ u(x) $, but with $ f(x) \to \delta(x - x') $ and $ \alpha_i \to 0 $.
     As before, $ G(x,x') $ is the impulse response.
 \item
     In addition, we define a new function $ H(x,x') $ which is called the adjoint Green's function.
@@ -1100,14 +1165,14 @@
     \frametitle{Constructing solutions: derivation}
 
     \begin{align*}
-        \inprod{\L u(x)}{H(x,x')} &= \inprod{u(x)}{\L^* H(x,x')} + J\big(u(x), H^*(x,x')\big) \Big|_a^b
+        \inprod{\L u(x)}{H(x,x')} &= \inprod{u(x)}{\L^* H(x,x')} + J\big(u(x), \conj{H}(x,x')\big) \Big|_a^b
         \\
-        \inprod{f(x)}{H(x,x')} &= \inprod{u(x)}{\delta(x - x')} + J\big(u(x), H^*(x,x')\big) \Big|_a^b
+        \inprod{f(x)}{H(x,x')} &= \inprod{u(x)}{\delta(x - x')} + J\big(u(x), \conj{H}(x,x')\big) \Big|_a^b
         \\
-        \int_a^b f(x) H^*(x,x') \d x &= \int_a^b u(x) \delta(x - x') \d x + J\big(u(x), H^*(x,x')\big) \Big|_a^b
+        \int_a^b f(x) H^*(x,x') \d x &= \int_a^b u(x) \delta(x - x') \d x + J\big(u(x), \conj{H}(x,x')\big) \Big|_a^b
     \end{align*}
     \begin{empheq}[box=\widefbox]{align*}
-        u(x') &= \int_a^b f(x) H^*(x,x') \d x - J\big(u(x), H^*(x,x')\big) \Big|_a^b
+        u(x') &= \int_a^b f(x) \conj{H}(x,x') \d x - J\big(u(x), \conj{H}(x,x')\big) \Big|_a^b
     \end{empheq}
     
 \end{frame}
@@ -1137,12 +1202,12 @@
         \\
         \inprod{\delta(x - x')}{H(x,x'')} &= \inprod{G(x,x')}{\delta(x - x'')}
         \\
-        \int_a^b \delta(x - x') H^*(x,x'') \d x &= \int_a^b G(x,x') \delta(x - x'') \d x
+        \int_a^b \delta(x - x') \conj{H}(x,x'') \d x &= \int_a^b G(x,x') \delta(x - x'') \d x
         \\
-        H^*(x',x'') &= G(x'',x')
+        \conj{H}(x',x'') &= G(x'',x')
     \end{align*}
     \begin{empheq}[box=\widefbox]{align*}
-        G(x,x') = H^*(x',x)
+        G(x,x') = \conj{H}(x',x)
     \end{empheq}
     
 \end{frame}
@@ -1161,11 +1226,11 @@
     \frametitle{Constructing solutions: derivation}
 
     \begin{align*}
-        u(x') &= \int_a^b f(x) H^*(x,x') \d x - J\big(u(x), H^*(x,x')\big) \Big|_a^b
+        u(x') &= \int_a^b f(x) \conj{H}(x,x') \d x - J\big(u(x), \conj{H}(x,x')\big) \Big|_a^b
     \end{align*}
     and
     \begin{align*}
-        G(x,x') = H^*(x',x)
+        G(x,x') = \conj{H}(x',x)
     \end{align*}
     so
     \begin{empheq}[box=\widefbox]{align*}
@@ -1179,7 +1244,7 @@
 \item
     Let's go back to our expression for $ u(x') $ in terms of $ H(x,x') $.
 \item
-    Using our new relationship $ G(x,x') = H^*(x,x') $, we can rewrite this as an expression for $ u(x) $ in terms of $ G(x,x') $.
+    Using our new relationship $ G(x,x') = \conj{H}(x,x') $, we can rewrite this as an expression for $ u(x) $ in terms of $ G(x,x') $.
     (Note: we switched $ x $ and $ x' $ to make it look a little nicer.)
 \item
     So this is the more correct version of what we saw in the introduction.
@@ -1197,12 +1262,12 @@
 
     Original problem:
     \begin{align*}
-        \frac{\d^2 V(x)}{\d x^2} &= - \frac{\rho}{\epsilon_0}; \quad \mat{V(a) \\ V(b)} = \mat{V_a \\ V_b}
+        \frac{\d^2 V(x)}{\d x^2} &= - \frac{\rho(x)}{\epsilon_0}; \quad \begin{array}{c} V(a) = V_a \\ V(b) = V_b \end{array}
     \end{align*}
     
     Green's problem:
     \begin{align*}
-        \frac{\d^2 G(x,x')}{\d x^2} &= \delta(x - x'); \quad \mat{G(a,x') \\ G(b,x')} = \mat{0 \\ 0}
+        \frac{\d^2 G(x,x')}{\d x^2} &= \delta(x - x'); \quad \begin{array}{c} G(a,x') = 0 \\ G(b,x') = 0 \end{array}
     \end{align*}
 
 \end{frame}
@@ -1228,32 +1293,53 @@
         V(x) &= \int_{a}^{b} - \frac{\rho(x')}{\epsilon_0} G(x,x') \d x' - J\big( V(x'), G(x,x') \big) \Big|_{x'=a}^b
     \end{align*}
 
-    Take $ \rho = 0 $ for now.
+    Take $ \rho(x) = 0 $ for now.
     \begin{align*}
         V(x) &= - J\big( V(x'), G(x,x') \big) \Big|_{x'=a}^b
     \end{align*}
 
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    From our recent results, we can write down the solution for $ V(x) $ in terms of the Green's function.
+\item
+    Take $ \rho = 0 $ so that we can focus on the boundary conditions for now.
+\end{itemize}
+
+}
 
 \begin{frame}[fragile]
     \frametitle{Example: 1D Poisson equation}
 
     Can show
-    \begin{IEEEeqnarray*}{rCl}
-        \int_a^b \left( \frac{\d^2 u(x)}{\d x^2} \right) v^*(x) \d x &=& \int_a^b u(x) \left( \frac{\d^2 v^*(x)}{\d x^2} \right) \d x +
-        \\ && + \left[ \frac{\d u}{\d x} v^*(x) - u(x) \frac{\d v^*(x)}{\d x} \right]_a^b
-    \end{IEEEeqnarray*}
-
-    So $ \L = \L^* $, $ \B = \B^* $, and
     \begin{align*}
-        J(u,v^*) &= \frac{\d u(x)}{\d x} v^*(x) - u(x) \frac{\d v^*(x)}{\d x}
+        \inprod{\L u}{v} &= \int_a^b u'' \conj{v} \d x = \int_a^b u \conj{v}'' \d x + \left[ u' \conj{v} - u \conj{v}' \right]_a^b
+    \end{align*}
+    
+    Comparing with
+    \begin{align*}
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u,v^*) \big|_a^b
+    \end{align*}
+    we see
+    \begin{align*}
+        \L^* &= \frac{\d^2}{\d x^2} = \L
+        \\[4pt]
+        J(u,\conj{v}) &= u' \conj{v} - u \conj{v}'
     \end{align*}
     
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    To write the solution more explicitly, we need to find the conjunct of the operator $ \L = \d^2 / \d x^2 $.
+\item
+    As before, use integration by parts and compare with the expected formula.
+\end{itemize}
+
+}
 
 \begin{frame}[fragile]
     \frametitle{Example: 1D Poisson equation}
@@ -1272,24 +1358,31 @@
 \note{
 \begin{itemize}
 \item
-    Problem: we don't know $ \d V / \d x $ at the boundaries.
-    Our solution for the unknown $ V(x) $ includes the unknown $ V(x) $.
+    Now that we know the conjunct, we can write the solution for $ V(x) $ more explicitly.
 \item
-    But we could solve this if we could show that $ G(x,a) = G(x,b) = 0 $.
+    Problem: we don't know $ \d V / \d x $ at the boundaries.
+\item
+    The adjoint problem saves us, because we can show that $ G(x,b) = G(x,a) = 0 $.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
     \frametitle{Example: 1D Poisson equation}
+
+    Green's problem:
+    \begin{align*}
+        \frac{\d^2 G(x,x')}{\d x^2} &= \delta(x - x'); \quad \begin{array}{c} G(a,x') = 0 \\ G(b,x') = 0 \end{array}
+    \end{align*}
+    
     
     Adjoint Green's problem:
     \begin{align*}
-        \frac{\d^2 H(x,x')}{\d x^2} &= \delta(x - x'); \quad \mat{H(a,x') \\ H(b,x')} = \mat{0 \\ 0}
+        \frac{\d^2 H(x,x')}{\d x^2} &= \delta(x - x'); \quad \begin{array}{c} H(a,x') = 0 \\ H(b,x') = 0 \end{array}
     \end{align*}
 
-    But $ G(x,x') = H^*(x',x) $ so
+    But $ G(x,x') = \conj{H}(x',x) $ so
     \begin{align*}
-        \frac{\d^2 G^*(x,x')}{\d x^{\prime 2}} &= \delta(x - x'); \quad \mat{G(x,a) \\ G(x,b)} = \mat{0 \\ 0}
+        \frac{\d^2 \conj{G}(x,x')}{\d x^{\prime 2}} &= \delta(x - x'); \quad \begin{array}{c} G(x,a) = 0 \\ G(x,b) = 0 \end{array}
     \end{align*}
 
 \end{frame}
@@ -1301,7 +1394,7 @@
 \item
     Because of the relationship between $ G(x,x') $ and $ H(x,x') $ we see that $ G^*(x,x') $ obeys the adjoint equation with respect to $ x' $.
 \item
-    More importantly, we see that $ G^*(x,x') $ (and thus $ G(x,x') $) obeys the adjoint boundary conditions with respect to $ x' $.
+    More importantly, we see that $ \conj{G}(x,x') $ (and thus $ G(x,x') $) obeys the adjoint boundary conditions with respect to $ x' $.
 \item
     So not only do we have $ G(a,x') = G(b,x') = 0 $, we also have $ G(x,a) = G(x,b) = 0 $.
     This is not a trivial or obvious result (at least to me).
@@ -1323,8 +1416,20 @@
 
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Using the fact that $ G(x,x') $ obeys the adjoint boundary conditions with respect to $ x' $, we can eliminate the unknown values and simplify our result.
+\item
+    Now we have an explicit solution for $ V(x) $ given any boundary conditions $ V(a) = V_a $ and $ V(b) = V_b $.
+\item
+    Further, we see that the solution only depends on the Green's function.
+    It's as if the non-zero boundary conditions $ V_a, V_b $ act like additional sources whose response is given by the Green's function.
+\end{itemize}
 
+}
+
+\ifextended
 \begin{frame}[fragile]
     \frametitle{Example: 1D Poisson equation}
 
@@ -1353,13 +1458,14 @@
 \end{itemize}
 
 }
+\fi
 
 \begin{frame}[fragile]
     \frametitle{Example: 1D Poisson equation}
     
     Full solution with $ \rho(x) $:
     \begin{align*}
-        V(x) &= \int_a^b - \frac{\rho(x')}{\epsilon_0} G(x,x') \d x' + V_b \frac{\d G(x,b)}{\d x'} + V_a \frac{\d G(x,a)}{\d x'}
+        \Aboxed{V(x) = \int_a^b - \frac{\rho(x')}{\epsilon_0} G(x,x') \d x' + V_b \frac{\d G(x,b)}{\d x'} - V_a \frac{\d G(x,a)}{\d x'}}
     \end{align*}
 
 \end{frame}
@@ -1368,26 +1474,29 @@
 \begin{itemize}
 \item
     Putting back our charge distribution $ \rho(x) $, we get a full solution for any charge distribution and boundary conditions.
+\item
+    The first part gives the voltage produced by the charge distribution $ \rho(x) $.
+    The last two parts give the voltage produced by the boundary conditions $ V_a, V_b $.
+\item
+    The response to \emph{both} of these sources of voltage is given by the Green's function!
 \end{itemize}
 
 }
 
 \begin{frame}[fragile]
-    \frametitle{Constructing solutions}
-
+    \frametitle{Solving problems with Green's functions}
+    \begin{align*}
+        \text{Given:} \quad \L u(x) = f(x); \quad \B_i[u(x)] = \alpha_i
+    \end{align*}
+    \vspace{-12pt}
     \begin{enumerate}
-    \item
-        Given
-        \begin{align*}
-            \L u(x) = f(x); \quad \B[u(x)] = \alpha
-        \end{align*}
     \item
         Solve Green's problem
         \begin{align*}
-            \L G(x,x') = \delta(x - x'); \quad \B[G(x,x')] = 0
+            \L G(x,x') = \delta(x - x'); \quad \B_i[G(x,x')] = 0
         \end{align*}
     \item
-        Find $ \L^* $, $ \B^* $, and $ J(u,v) $ from $ \inprod{\L u}{v} $.
+        Find $ \L^* $, $ \B_i^* $, and $ J(u,\conj{v}) $ from $ \inprod{\L u}{v} $.
     \item
         Solution is
         \begin{align*}
@@ -1400,57 +1509,40 @@
 \end{frame}
 
 \note{
-\begin{itemize}
+Now let's look at the general process for solving a boundary value problem with a source.
+\begin{enumerate}
 \item
-    Now let's look at the general process for solving a boundary value problem with a source.
-\item
-    The first step is to set up the Green's function equation by setting the source to $ \delta(x - x') $ and the boundary conditions to zero.
+    Set up the Green's function equation by setting the source to $ \delta(x - x') $ and the boundary conditions to zero.
     Solve this to find the Green's function.
 \item
-    Next, we find $ \L^* $, $ \B^* $, and $ J(u,v) $ by expanding the inner product $ \inprod{\L u}{v} $ (usually using integration by parts).
+    Find $ \L^* $, $ \B_i^* $, and $ J(u,\conj{v}) $ by expanding the inner product $ \inprod{\L u}{v} $ (usually using integration by parts).
 \item
-    Then, we can write down the solution.
+    Write down the solution.
 \item
-    Unfortunately, this solution will still include unknown boundary conditions of $ u(x) $.
+    Unknown boundary values of $ u(x) $ may appear in the conjunct term.
     Eliminate these using the fact that $ G(x,x') $ obeys the adjoint boundary conditions with respect to $ x' $.
-\end{itemize}
+\end{enumerate}
 }
-
-\note{
-Comments:
-\begin{itemize}
-\item
-    Type of boundary condition is important.
-    In the last example, if we used initial conditions instead of boundary conditions, then the final solution would have been in terms of the known initial conditions $ V(a) $ and $ V'(a) $.
-\item
-    \emph{We can't ignore the adjoint problem}.
-    Though we've eliminated the adjoint Green's function $ H(x,x') $, the adjoint Green's function is still a key part of the solution method.
-    In particular, we need to find $ \B^* $ and $ J(u,v) $.
-\end{itemize}
-}
-
-\note{}
 
 \begin{frame}[fragile]
-    \frametitle{Constructing solutions in 3D}
+    \frametitle{Solving 3D problems with Green's functions}
  
+    \begin{align*}
+        \text{Given:} \quad \L u(\vect{r}) = f(\vect{r}); \quad \B_i[u(\vect{r})] = \alpha_i
+    \end{align*}
+    \vspace{-12pt}
     \begin{enumerate}
-    \item
-        Given
-        \begin{align*}
-            \L u(\vect{r}) = f(\vect{r}); \quad \B[u(\vect{r})] = \alpha
-        \end{align*}
     \item
         Solve Green's problem
         \begin{align*}
-            \L G(\vect{r},\vect{r}') = \delta(\vect{r} - \vect{r}'); \quad \B[G(\vect{r},\vect{r}')] = 0
+            \L G(\vect{r},\vect{r}') = \delta(\vect{r} - \vect{r}'); \quad \B_i[G(\vect{r},\vect{r}')] = 0
         \end{align*}
     \item
-        Find $ \L^* $, $ \B^* $, and $ J(u,v) $ from $ \inprod{\L u}{v} $.
+        Find $ \L^* $, $ \B^* $, and $ J(u,\conj{v}) $ from $ \inprod{\L u}{v} $.
     \item
         Solution is
         \begin{align*}
-            u(\vect{r}) &= \int_{V} f(\vect{r}') G(\vect{r},\vect{r}') \d^3 \vect{r}' - \oint_{\partial V} J\big( u(\vect{r}'), G(\vect{r},\vect{r}') \big) \d s
+            u(\vect{r}) &= \int_{V} f(\vect{r}') G(\vect{r},\vect{r}') \d^3 \vect{r}' - \oint_{\partial V} \vect{J}\big( u(\vect{r}'), G(\vect{r},\vect{r}') \big) \cdot \d \vect{s}
         \end{align*}
     \item
         Simplify using $ \B^*[G(\vect{r},\vect{r}')] = 0 $ (with respect to $ \vect{r}' $).
@@ -1461,28 +1553,83 @@ Comments:
 \note{
 \begin{itemize}
 \item
-    Great thing about our approach is that it's easily extended to 3D.
+    Great thing about our approach is that it's easily extended to 3D. 
 \item
-    Mostly, we just replace $ x $ and $ x' $ with $ \vect{r} $ and $ \vect{r}' $.
+    Inner product is now a volume integral over the region of interest ($ V $).
+    Have to use 3D versions of integration by parts (e.g., Green's identities) to find $ \L^* $, $ J(u,\conj{v}) $ and $ \B_i^* $.
 \item
-    One difference is the conjunct term.
-    If $ V $ is the region of interest, then we have to integrate the conjunct over the surface of $ V $ (denoted $ \partial V $).
+    The conjunct is now vector-valued, and it must be integrated over the surface of $ V $ (denoted $ \partial V $).
 \item
-    We still have the same interpretation, though: the non-zero boundary conditions on the surface act like additional sources.
+    Still have the same interpretation though.
+    The first (volume) integral is the contribution from the source $ f(\vect{r}) $.
+    The second (surface) integral is the contribution from the non-zero boundary conditions.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
-    \frametitle{Constructing solutions in 3D}
+    \frametitle{Constructing the solution}
+    Comments:
+    \begin{itemize}
+    \item
+        Calculating Green's functions is not trivial.
+    \item
+        Adjoint approach is difficult, but offers clarity.
+    \end{itemize}
     
-    Finding $ \L^* $, $ \B^* $ and $ J(u,v) $ in 3D:
-    \begin{align*}
-        \inprod{\L u}{v} &= \int_V \left[ \L u(\vect{r}) \right] v^*(\vect{r}) \d^3 \vect{r}
-    \end{align*}
+\end{frame}
 
-    Green's second identity:
+\note{
+\begin{itemize}
+\item
+    Step 1 of our approach (calculate the Green's function) can be difficult: especially in 3D.
+    Learning these techniques is time-consuming, but we now have a solid foundation with which to understand them.
+\item
+    Our approach was not the easiest, but note the critical role played by the adjoint, both in the derivation and the final solution method.
+\item
+    Though some authors don't talk about adjoints, they still use these ideas.
+    E.g., often the ``Green's function'' used in 3D problems is actually the \emph{adjoint} Green's function. (Can be confusing!)
+\end{itemize}
+}
+
+\section{Special properties}
+\label{sec:special_properties}
+
+\note{
+\begin{itemize}
+\item
+    For certain types of problems, the Green's function will have special properties.
+\item
+    Put another way, the Green's function contains a lot of information about the problem we're trying to solve.
+\item
+    This section briefly explores some examples of this (without derivations).
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Self-adjointness}
+
+    If $ \L = \L^* $ and $ \B_i = \B_i^* $, then
     \begin{align*}
-        \int_V \left( u \nabla^2 v - v \nabla^2 u \right) \d^3 \vect{r} &= \oint_{\partial V} \left( u \vect{\nabla} v - v \vect{\nabla} u \right) \cdot \d \vect{s}
+        G(x,x') &= \conj{G}(x',x)
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    If a problem is self-adjoint, then the adjoint Green's function $ H(x,x') $ is the same as the Green's function $ G(x,x') $.
+\item
+    Then, using a result from before, we find that $ G(x,x') $ has a certain symmetry when switching $ x $ and $ x' $.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Reciprocity}
+    
+    Reciprocity in the frequency-domain:
+    \begin{align*}
+        G(\vect{r}, \vect{r}') &= G(\vect{r}', \vect{r})
     \end{align*}
 
 \end{frame}
@@ -1490,16 +1637,132 @@ Comments:
 \note{
 \begin{itemize}
 \item
-    To find $ \L^* $, $ \B^* $ and $ J(u,v) $ in 3D, we follow a similar process of expanding the inner product. 
-    (This time the inner product is a volume integral.)
+    The notion of reciprocity in electromagnetism can be tied to this property of the Green's function.
+    In the frequency-domain, the Green's function is symmetric under interchange of $ \vect{r}, \vect{r}' $ (no complex conjugate!).
+    See Collin for the connection to reciprocity electromagnetism using dyadic Green's functions.
 \item
-    Then we do a 3D version of integration by parts to expand the integral.
+    More generally, frequency-domain reciprocity is related to the pseudo-inner product
+    \begin{align*}
+        \pinprod{u}{v} &= \iiint u(\vect{r}) v(\vect{r}) \d^3 \vect{r}
+    \end{align*}
+    and operators which are ``self-adjoint'' under it:
+    \begin{align*}
+        \pinprod{\L u}{v} &= \pinprod{u}{\L v}
+    \end{align*}
+    
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Reciprocity}
+
+    \vspace{14pt}
+    Reciprocity in the time-domain:
+    \begin{align*}
+        G(\vect{r}, t; \vect{r}', -t') &= G(\vect{r}', t'; \vect{r}, -t)
+    \end{align*}
+    \vspace{-26pt}
+    \begin{figure}
+        \centering
+    \includegraphics[width=0.9\textwidth]{Reciprocity.pdf}
+    \end{figure}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
 \item
-    For the Laplacian operator $ \nabla^2 $ (often what we deal with), Green's second identity gives the integration by parts rule.
+    In the time-domain, the Green's function is almost symmetric, but we have to add a minus sign to the time variables.
+    This is because of causality (see Morse and Feshbach).
+\item
+    Think of $ G(\vect{r}, t; \vect{r}', t') $ as having an impulse at $ (\vect{r}', t') $ and measuring it at $ (\vect{r}, t) $.
+    Then reciprocity shows that interchanging sources and measurements leads to identical results.
+\item
+    Mathematically, time-domain reciprocity related to the pseudo-inner product
+    \begin{align*}
+        \pinprod{u}{v} &= \int \iiint u(\vect{r}, t) v(\vect{r}, -t) \d^3 \vect{r} \d t
+    \end{align*}
+    and operators which are ``self-adjoint'' under it:
+    \begin{align*}
+        \pinprod{\L u}{v} &= \pinprod{u}{\L v}
+    \end{align*}
+    
 \end{itemize}
 
 }
 
+\begin{frame}[fragile]
+    \frametitle{Causality}
+
+    Causality:
+    \begin{align*}
+        G(t,t') = 0 \quad \text{for} \quad t < t'
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    For causal systems, the impulse response (Green's function) can't appear before the impulse itself.
+    So the Green's function of a causal system must be zero for $ t < t' $.
+\item
+    Compare this Green's function with the Green's function for a self-adjoint system: they are incompatible.
+    We cannot have a causal system which is also self-adjoint in time.
+    (This is why we had to add a minus sign in the time-domain reciprocity relation.)
+\item
+    An interesting discussion of causality and Green's functions is found in the book chapter ``Causation in classical mechanics'' by Sheldon Smith.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Symmetry and invariance}
+    
+    Time-invariance:
+    \begin{align*}
+        G(t,t') &= G(t - t')
+    \end{align*}
+
+    Spatial-invariance:
+    \begin{align*}
+        G(\vect{r},\vect{r}') &= G(\vect{r} - \vect{r}')
+    \end{align*}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    A time-invariant system is one whose behaviour doesn't change over time.
+    That is, if we delay our input, we'll get the exact same output, just delayed by an equal amount.
+\item
+    In that case, can show that the Green's function only depends on the difference between $ t $ and $ t' $.
+\item
+    Shouldn't be a surprise from linear time-invariant (LTI) system theory, where the impulse response is usually written as $ h(t - t') $.
+\item
+    A similar thing applies to systems whose behaviour doesn't change from place to place.
+\item
+    Example: the free space wave-equation is space-time invariant, so both of these properties can be used.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Eigenfunctions}
+
+    \begin{align*}
+        (\L - \lambda) G(x,x') &= \delta(x - x')
+    \end{align*}
+
+    \begin{align*}
+        G(x,x') &= \sum_n \frac{\phi_n(x) \phi_n^*(x)}{\lambda_n - \lambda}
+    \end{align*}
+    
+    
+\end{frame}
+
+\note{}
+
+\ifextended
 \section{Spectral methods}
 \label{sec:spectral_methods}
 
@@ -1807,6 +2070,7 @@ Comments:
 \end{itemize}
 
 }
+\fi
 
 \ifextended
 \section{Properties of Green's functions}
@@ -2435,8 +2699,8 @@ Comments:
     Dudley (1994), \emph{Mathematical foundations for electromagnetic theory}.
     Great introduction to 1D Green's functions: deals with subtleties that others ignore.
 
-    Byron and Fuller (1992), \emph{Mathematics of classical and quantum physics}.
-    Interesting alternative approach.
+    Gerlach (2010), \emph{Linear mathematics in infinite dimensions}.
+    Nice set of online course notes for quick reference.
     
 \end{frame}
 
@@ -2451,6 +2715,9 @@ Comments:
     Morse and Feshback, \emph{Methods of theoretical physics}.
     Another big, detailed reference. 
     Great resource for deeper insight and understanding.
+
+    Byron and Fuller (1992), \emph{Mathematics of classical and quantum physics}.
+    Interesting alternative approach.
 
     Warnick (1996), ``Electromagnetic Green functions using differential forms.''
     For the differential forms inclined.
