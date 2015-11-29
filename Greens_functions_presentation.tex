@@ -1598,7 +1598,8 @@ Now let's look at the general process for solving a boundary value problem with 
 \begin{itemize}
 \item
     The behaviour of the Green's function is shaped by the type of problem we're trying to solve.
-    In this function we'll look at some properties Green's function under certain special circumstances.
+\item
+    In this section, we'll see how a lot of properties of problems are tied to properties of the Green's function.
 \end{itemize}
 }
 
@@ -1615,9 +1616,10 @@ Now let's look at the general process for solving a boundary value problem with 
 \note{
 \begin{itemize}
 \item
-    If a problem is self-adjoint, then the adjoint Green's function $ H(x,x') $ is the same as the Green's function $ G(x,x') $.
+    Self-adjointness is equivalent to conjugate symmetry of the Green's function.
 \item
-    Then, using a result from before, we find that $ G(x,x') $ has a certain symmetry when switching $ x $ and $ x' $.
+    If a problem is self-adjoint, then the adjoint Green's function $ H(x,x') $ is the same as the Green's function $ G(x,x') $.
+    Then, using a result from before, we find that $ G(x,x') = \conj{G}(x,x') $.
 \end{itemize}
 }
 
@@ -1635,10 +1637,12 @@ Now let's look at the general process for solving a boundary value problem with 
 \begin{itemize}
 \item
     The notion of reciprocity in electromagnetism can be tied to this property of the Green's function.
-    In the frequency-domain, the Green's function is symmetric under interchange of $ \vect{r}, \vect{r}' $ (no complex conjugate!).
-    See Collin for the connection to reciprocity electromagnetism using dyadic Green's functions.
 \item
-    More generally, frequency-domain reciprocity is related to the pseudo-inner product
+    In the frequency-domain, the Green's function is symmetric under interchange of $ \vect{r}, \vect{r}' $ (no complex conjugate!).
+    It can be shown that this is equivalent to reciprocity.
+    (See Collin for a more thorough discussion using dyadic Green's functions.)
+\item
+    Mathematically, frequency-domain reciprocity is related to the pseudo-inner product
     \begin{align*}
         \pinprod{u}{v} &= \iiint u(\vect{r}) v(\vect{r}) \d^3 \vect{r}
     \end{align*}
@@ -1669,7 +1673,7 @@ Now let's look at the general process for solving a boundary value problem with 
 \note{
 \begin{itemize}
 \item
-    In the time-domain, the Green's function is almost symmetric, but we have to add a minus sign to the time variables.
+    In the time-domain, the Green's function is symmetric, but with an added minus sign on the time variables.
     This is because of causality (see Morse and Feshbach).
 \item
     Think of $ G(\vect{r}, t; \vect{r}', t') $ as having an impulse at $ (\vect{r}', t') $ and measuring it at $ (\vect{r}, t) $.
@@ -1693,22 +1697,31 @@ Now let's look at the general process for solving a boundary value problem with 
 
     Causality:
     \begin{align*}
-        G(t,t') = 0 \quad \text{for} \quad t < t'
+        G(\vect{r}, t; \vect{r}', t') = 0 \quad \text{for } t < t'
     \end{align*}
 
+    Special relativity:
+    \begin{align*}
+        G(\vect{r}, t; \vect{r}', t') = 0 \quad \text{for } \left| \vect{r} - \vect{r}' \right| > c (t - t')
+    \end{align*}
+    
 \end{frame}
 
 \note{
 \begin{itemize}
 \item
-    For causal systems, the impulse response (Green's function) can't appear before the impulse itself.
-    So the Green's function of a causal system must be zero for $ t < t' $.
+    The Green's function can tell us if a system is causal or not.
 \item
-    Compare this Green's function with the Green's function for a self-adjoint system: they are incompatible.
-    We cannot have a causal system which is also self-adjoint in time.
-    (This is why we had to add a minus sign in the time-domain reciprocity relation.)
+    Causality means that an effect cannot precede a cause, so the impulse response (Green's function) cannot appear before the impulse itself.
+    I.e., the Green's function has to be zero for $ t < t' $.
 \item
-    An interesting discussion of causality and Green's functions is found in the book chapter ``Causation in classical mechanics'' by Sheldon Smith.
+    In special relativity, causality means that information cannot propagate faster than light.
+    There is a corresponding restriction on the Green's function.
+\item
+    Compare these causal Green's function with the Green's function for a self-adjoint problem: they are incompatible.
+    So we cannot have a causal system which is also self-adjoint in time.
+%\item
+    %Note: an interesting discussion of causality and Green's functions is found in the book chapter ``Causation in classical mechanics'' by Sheldon Smith.
 \end{itemize}
 }
 
@@ -1739,7 +1752,7 @@ Now let's look at the general process for solving a boundary value problem with 
 \item
     A similar thing applies to systems whose behaviour doesn't change from place to place.
 \item
-    Example: can use these properties to find the Green's function of the free space wave equation more easily.
+    These properties can make it easier to find the Green's function (e.g., the free-space wave equation).
 \end{itemize}
 }
 
