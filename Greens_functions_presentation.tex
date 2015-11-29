@@ -1597,11 +1597,8 @@ Now let's look at the general process for solving a boundary value problem with 
 \note{
 \begin{itemize}
 \item
-    For certain types of problems, the Green's function will have special properties.
-\item
-    Put another way, the Green's function contains a lot of information about the problem we're trying to solve.
-\item
-    This section briefly explores some examples of this (without derivations).
+    The behaviour of the Green's function is shaped by the type of problem we're trying to solve.
+    In this function we'll look at some properties Green's function under certain special circumstances.
 \end{itemize}
 }
 
@@ -1742,25 +1739,95 @@ Now let's look at the general process for solving a boundary value problem with 
 \item
     A similar thing applies to systems whose behaviour doesn't change from place to place.
 \item
-    Example: the free space wave-equation is space-time invariant, so both of these properties can be used.
+    Example: can use these properties to find the Green's function of the free space wave equation more easily.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
-    \frametitle{Eigenfunctions}
+    \frametitle{Spectral theory}
 
     \begin{align*}
-        (\L - \lambda) G(x,x') &= \delta(x - x')
+        (\L - \lambda) u(x) &= f(x); \quad \B[u] = 0
+    \end{align*}
+
+    If $ \L = \L^* $ and $ \B = \B^* $ then
+    \begin{align*}
+        u(x) &= \sum_n \frac{\inprod{f}{\phi_n}}{\lambda_n - \lambda} \phi_n(x)
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    For a self-adjoint problem, we can write out the solution as a sum of eigenfunctions of $ \L $, where $ \L \phi_n(x) = \lambda_n \phi_n(x) $.
+\item
+    With some work (not shown), we can directly write out the solution in terms of $ f(x) $ as a generalized Fourier series.
+    $ \inprod{f}{\phi_n} $ are the projections of $ f $ onto the normalized eigenfunction basis.
+\item
+    (Technically, we're also assuming here that $ \L $ is a \emph{bounded} linear operator.
+    Unbounded operators have continuous sets of eigenvalues, and the theory behind them is more delicate.
+    See, e.g., Naylor and Sell's \emph{Linear operator theory in engineering and science} or Kreyszig's \emph{Introductory functional analysis with applications.})
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Spectral theory}
+
+    \begin{align*}
+        u(x) &= \int_a^b \left( \sum_n \frac{\phi_n(x) \phi^*_n(x')}{\lambda_n - \lambda} \right) f(x') \d x'
     \end{align*}
 
     \begin{align*}
         G(x,x') &= \sum_n \frac{\phi_n(x) \phi_n^*(x)}{\lambda_n - \lambda}
     \end{align*}
     
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    We can rewrite the last solution, and read off the Green's function.
+\item
+    So we can write down the Green's function directly if we know the eigenfunctions/eigenvalues!
+\item
+    It's not the nicest form because we have to sum an infinite series.
+    Finding a closed-form version like we did before would be preferable, but in 3D separation of variable problems, we won't usually have a choice.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Spectral theory}
+    
+    Green's function of $ (\L - \lambda) $:
+    \begin{align*}
+        G(x,x';\lambda) &= \sum_n \frac{\phi_n(x) \phi_n^*(x)}{\lambda_n - \lambda}
+    \end{align*}
+
+    \begin{align*}
+        \lambda_n & \longrightarrow \text{ Poles of } G(x,x';\lambda)
+        \\
+        \phi_n(x) \phi^*_n(x') & \longrightarrow \text{ Residues of } G(x,x';\lambda)
+    \end{align*}
+    
     
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    We can also get the eigenvalues/eigenfunctions from the Green's function!
+\item
+    Specifically, we need to know the Green's function of $ \L - \lambda $ for $ \lambda \in \mathbb{C} $.
+\item
+    The eigenvalues are simply the poles of $ G(x, x'; \lambda) $ with respect to $ \lambda $.
+\item
+    The eigenfunctions $ \phi_n(x) $ are more difficult, but if there are no repeated eigenvalues, then they can be found from the residues of $ G(x,x';\lambda) $ at $ \lambda = \lambda_n $.
+\item
+    Important point is that the Green's function can tell us a lot about spectral quantities.
+\end{itemize}
+
+}
 
 \ifextended
 \section{Spectral methods}
@@ -2679,6 +2746,8 @@ Now let's look at the general process for solving a boundary value problem with 
             Non-zero boundary conditions behave like sources.
         \end{itemize}
     \item
+        Lots of information in the Green's function.
+    \item
         Green's functions $ \Longleftrightarrow $ eigenvalues/eigenfunctions.
     \end{itemize}
     
@@ -2689,19 +2758,20 @@ Now let's look at the general process for solving a boundary value problem with 
 
 \begin{frame}[fragile]
     \frametitle{Further reading}
-    Balanis (2012), \emph{Advanced engineering electromagnetics}. 
-    Not very rigorous, but decent for getting the key ideas.
-
-    Folland (1992), \emph{Fourier analysis and its applications}. 
-    Fully rigorous. 
-    Chapter on generalized functions is particularly nice.
 
     Dudley (1994), \emph{Mathematical foundations for electromagnetic theory}.
     Great introduction to 1D Green's functions: deals with subtleties that others ignore.
 
     Gerlach (2010), \emph{Linear mathematics in infinite dimensions}.
     Nice set of online course notes for quick reference.
-    
+ 
+    Balanis (2012), \emph{Advanced engineering electromagnetics}. 
+    Not very rigorous, but decent for getting the key ideas.
+
+    Morse and Feshback, \emph{Methods of theoretical physics}.
+    Big, detailed reference. 
+    Great resource for deeper insight and understanding.
+  
 \end{frame}
 
 \note{}
@@ -2712,9 +2782,9 @@ Now let's look at the general process for solving a boundary value problem with 
     Huge chapter on Green's functions. 
     Emphasis on dyadics.
 
-    Morse and Feshback, \emph{Methods of theoretical physics}.
-    Another big, detailed reference. 
-    Great resource for deeper insight and understanding.
+    Folland (1992), \emph{Fourier analysis and its applications}. 
+    Rigorous math book. 
+    Chapter on generalized functions is particularly nice.
 
     Byron and Fuller (1992), \emph{Mathematics of classical and quantum physics}.
     Interesting alternative approach.
