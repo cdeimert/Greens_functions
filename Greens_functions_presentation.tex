@@ -7,7 +7,7 @@
 \newif\ifextended
 
 \handoutfalse
-\handouttrue
+%\handouttrue
 
 \extendedfalse
 %\extendedtrue
@@ -85,11 +85,9 @@
     \item
         Basic idea of Green's functions is simple, but there is a huge amount of theory for actually calculating and using them.
     \item
-        For a short presentation, we can either cover a lot of material incompletely, or a small amount of material thoroughly.
-        The second is chosen here, because I think it leads to a clearer understanding of Green's functions as a whole.
-        Of course, the downside is that we'll miss out on a lot of interesting topics and applications.
+        We won't be able to cover much here, but we'll try to focus on building a solid foundation and understanding of Green's functions.
     \item
-        Suggested further reading provided at the end.
+        Suggested further reading is provided at the end.
     \end{itemize}
 }
 
@@ -108,8 +106,6 @@
     How to use the Green's function to solve a problem with boundary conditions. (Biggest section!)
 \item
     Useful properties of Green's functions for special types of problems.
-\item
-    Relationship between Green's functions and eigenvalues/eigenfunctions.
 \item
     Summary and suggested further reading.
 \end{enumerate}
@@ -147,11 +143,11 @@
 \note{
 \begin{itemize}
 \item
-    Most EM problems are described by linear (differential) equations with some source/driving function $ f(x) $.
+    Most electromagnetics problems are described by linear (differential) equations with some source/driving function $ f(x) $.
 \item
-    The Green's function is the solution when the source $ f(x) $ is an impulse located at $ x' $.
+    The Green's function is the solution when the source $ f(x) $ is set equal to an impulse (delta function) located at $ x' $.
 \item
-    Can think of it as a generalization of the impulse response from signal processing.
+    Can think of it as a generalization of the familiar impulse response from signal processing.
 \end{itemize}
 }
 
@@ -208,14 +204,14 @@
     This formula actually only works under certain assumptions about the boundary conditions.
 \item
     We'll deal with the more general approach later.
-    For now, this gets the key idea across.
+    For now, we'll use this simple version to get the key idea across.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
     \frametitle{Familiar Green's functions}
 
-    Impulse response of an LTI system:
+    Impulse response of a linear time-invariant system:
     \begin{align*}
         y(t) &= \int_{-\infty}^{\infty} x(t') \alert{h(t - t')} \d t'
     \end{align*}
@@ -229,10 +225,10 @@
 \item
     Impulse response $ h(t - t') $ from linear system theory is an example of a Green's function.
     \begin{align*}
-        G(t,t') & = h(t - t')
+        G(t,t')  = h(t - t')
     \end{align*}
 \item
-    Usually find $ h(t - t') $ using Fourier transform of the transfer function.
+    Output $ y(t) $ is given by convolution of the impulse $ h(t) $ with the input $ x(t) $.
 \end{itemize}
 }
 
@@ -255,6 +251,8 @@
         \begin{align*}
             G(\vect{r}, \vect{r}') &= \frac{1}{4 \pi \epsilon_0 \left| \vect{r} - \vect{r}' \right|}
         \end{align*}
+    \item
+        The Green's function is the potential created by a point (impulse) charge.
     \end{itemize}
 }
 
@@ -277,6 +275,8 @@
         \begin{align*}
             G(\vect{r}, \vect{r}') &= \frac{e^{-jk \left| \vect{r} - \vect{r}' \right|}}{4 \pi \left| \vect{r} - \vect{r}' \right|}
         \end{align*}
+    \item
+        The Green's function is the potential created by a point (impulse) current.
     \end{itemize}
 }
 
@@ -286,7 +286,7 @@
     Green's functions let us:
     \begin{itemize}
     \item
-        Derive these expressions.
+        Derive and understand these expressions.
     \item
         Generalize to other problems and boundary conditions.
     \end{itemize}
@@ -296,264 +296,13 @@
 \note{
 \begin{itemize}
 \item
-    With Green's function theory, we learn how to derive the above expressions. (Though we won't have time to do the 3D ones here.)
+    With Green's function theory, we learn how to derive the above expressions and understand them a little more rigorously. (Though we won't have time to derive the 3D ones here.)
 \item
-    More importantly, Green's function theory allows us to deal with different boundary conditions.
+    In addition, Green's function theory allows us to deal with different boundary conditions.
     The solutions to the Poisson and Helmholtz equations above assume free space (boundaries at infinity).
     Green's functions would allow us to, e.g., find the response to a current source inside a specific waveguide.
 \end{itemize}
 }
-
-\ifextended
-\section{Generalized functions}
-\label{sec:generalized_functions}
-
-\note{
-    \begin{itemize}
-    \item
-        Delta functions play a key role in Green's functions (and electrical engineering in general), but tend to lead to hand-waving.
-    \item
-        Worth seeing how they can be rigorously defined before moving on.
-    \item
-        Machinery for this is Schwartz's theory of distributions (generalized functions).
-    \item
-        See Folland (1992), \emph{Fourier analysis and its applications}, Chapter 9 for more.
-    \end{itemize}
-    
-}
-
-\begin{frame}[fragile]
-    \frametitle{Typical delta function definition}
-    
-    Typical ``definition'' of $ \delta(x - x_0) $:
-    \begin{align*}
-        \delta(x-x_0) &= 0 \quad \text{for} \quad x \neq x_0
-    \end{align*}
-    \begin{align*}
-        \int_{-\infty}^{\infty} \delta(x-x_0) &= 1
-    \end{align*}
-    
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    Often see definitions like this one.
-\item
-    Often said to imply that $ \delta(x - x_0) = \infty $ at $ x = x_0 $.
-\item
-    Might be okay intuitively, but very imprecise mathematically.
-\item
-    There is no true function which satisfies both of these requirements!
-\end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Generalized functions}
-    
-    $ f(x) $ defines a linear operator $ \phi(x) $ via
-    \begin{align*}
-        f[\phi] &= \int_{-\infty}^{\infty} f(x) \phi(x) \d x
-    \end{align*}
-    
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    Let's see if we can generalize the idea of a ``function'' so that it includes delta functions.
-\item
-    Given a function $ f(x) $, we can use it to define a linear operator (a functional, to be exact) on other functions $ \phi(x) $.
-\item
-    $ f[\cdot] $ is a linear operator. It takes a function $ \phi(x) $ and returns the number
-    \begin{align*}
-        f[\phi] &= \int_{-\infty}^{\infty} f(x) \phi(x) \d x
-    \end{align*}
-\item
-    If we ensure that $ \phi(x) $ is very well-behaved, then every function $ f(x) $ defines an operator in this way.
-\end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Generalized functions}
-
-    If we have $ f[\phi] $, but no $ f(x) $, then $ f $ is a generalized function.
-    
-    \textbf{Symbolically}, we write
-    \begin{align*}
-        f[\phi] &\stackrel{s}{=} \int_{-\infty}^{\infty} f(x) \phi(x) \d x
-    \end{align*}
-    
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        It's possible to have an operator $ f[\phi] $, but we can't find an $ f(x) $ to implement it via an integral.
-    \item
-        Then $ f(x) $ is a generalized function. It is not a function in its own right, but it is defined purely by its action on other functions $ f[\phi] $.
-    \item
-        We still symbolically write
-        \begin{align*}
-            f[\phi] &\stackrel{s}{=} \int_{-\infty}^{\infty} f(x) \phi(x) \d x
-        \end{align*}
-        but this just suggestive notation. 
-        It is not actually an integral unless $ f(x) $ is a ``proper'' function!
-    \end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Defining the delta function}
-
-    $ \delta(x-x_0) $ is a generalized function defined by the sifting property
-    \begin{align*}
-        \delta_{x_0}[\phi] &= \phi(x_0) \stackrel{s}{=} \int_{-\infty}^{\infty} \delta(x - x_0) \phi(x) \d x
-    \end{align*}
-    
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    We can define a simple linear operator via the sifting property $ \delta_{x_0}[\phi] = \phi(x_0) $.
-\item
-    There is no actual function $ \delta(x - x_0) $ which gives
-    \begin{align*}
-        \int_{-\infty}^{\infty} \delta(x - x_0) \phi(x) \d x &= \phi(x_0)
-    \end{align*}
-    so $ \delta(x - x_0) $ is a generalized function and the above integral is purely symbolic.
-\end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Delta function derivatives}
-    
-    We can define derivatives too:
-    \begin{align*}
-        \delta^{(n)}_{x_0}[\phi] &= (-1)^n \phi^{(n)}(x_0) \stackrel{s}{=} \int_{-\infty}^{\infty} \delta^{(n)}(x - x_0) \phi(x) \d x
-    \end{align*}
-
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    Generalized function theory lets us make sense of the derivatives of the delta function too.
-\item
-    $ \delta_{x_0}^{(n)} $ is just an operator that picks out the value of the $ n $th derivative of $ \phi(x) $ at the point $ x_0 $.
-\end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Delta function limits}
-    
-    \begin{align*}
-        \lim_{\epsilon \to 0} f_\epsilon(x) &= \delta(x)
-    \end{align*}
-    if and only if
-    \begin{align*}
-        \lim_{\epsilon \to 0} f_\epsilon[\phi] = \lim_{\epsilon \to 0} \int_{-\infty}^{\infty} f_\epsilon(x) \phi(x) \d x &= \phi(0)
-    \end{align*}
-    
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    Often useful to show that some set of actual functions $ f_\epsilon(x) $ ``approach'' the delta function in a limit.
-\item
-    To do this, we need to show that the sifting property is obeyed in the limit.
-\end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Delta function limits}
-    Limit of Gaussian functions:
-    \begin{align*}
-        \delta(x) &= \lim_{\epsilon \to 0} \frac{1}{\sqrt{2 \pi} \epsilon} e^{- x^2/ 2 \epsilon^2}
-    \end{align*}
-    Limit of Lorentzian functions:
-    \begin{align*}
-        \delta(x) &= \lim_{\epsilon \to 0} \frac{1}{\pi} \frac{\epsilon}{t^2 + \epsilon^2}
-    \end{align*}
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    Two examples of delta function limits.
-\item
-    Confirms our intuition of the delta function as a limit of sharply-peaked functions.
-\item
-    In fact, basically any limit of sharply-peaked functions of area 1 will work: see Folland (Theorem 9.2).
-\end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Delta function limits}
-    A more interesting example:
-    \begin{align*}
-        \frac{1}{2 \pi} \int_{-\infty}^{\infty} e^{j x t} \d t &= \delta(x)
-    \end{align*}
-    because
-    \begin{align*}
-        \lim_{\epsilon \to 0} \frac{1}{2 \pi} \int_{-\infty}^{\infty} e^{-\epsilon^2 t^2} e^{j x t} \d t = \delta(x)
-    \end{align*}
-
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        Example of a common, but unintuitive expression for the Delta function.
-    \item
-        Can show that it's true by expressing it as a delta function limit. (If you want to go through it, use Theorem 9.2 from Folland.)
-    \end{itemize}
-    
-}
-
-\begin{frame}[fragile]
-    \frametitle{What does this mean for Green's functions?}
-    
-    \begin{align*}
-        \L G(x, x') &= \delta(x - x')
-    \end{align*}
-    actually means
-    \begin{align*}
-        \left( \L G \right)[\phi]  &= \phi(x') \stackrel{s}{=} \int_{-\infty}^\infty \left( \L G(x, x')\right) \phi(x) \d x
-    \end{align*}
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    Technically, the Green's function is a generalized function such that $ \L G $ is the delta function (it has the sifting property).
-\item
-    In practise, we'll keep using the less-precise way; just remember that there is a more correct way.
-\end{itemize}
-
-}
-
-\begin{frame}[fragile]
-    \frametitle{Takeaway}
-    
-    \begin{center}
-        If in doubt, think of $ \delta(x - x_0) $ as an operator, not a function!
-    \end{center}
-
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    In practise, thinking of $ \delta(x - x_0) $ as a function is usually fine.
-    (We'll even do that for the rest of this presentation.)
-\item
-    But if anything starts to seem fishy, it's good to remember that $ \delta(x - x_0) $ is actually an operator, and not a function.
-\end{itemize}
-    
-}
-\fi
 
 \section{Finding the Green's function}
 \label{sec:finding_the_green_s_function}
@@ -561,6 +310,8 @@
 \begin{itemize}
 \item
     In this section, we'll look at one of the simplest methods for actually solving the Green's function problem.
+\item
+    Often called the \emph{direct method}.
 \end{itemize}
 }
 
@@ -773,20 +524,19 @@
 \item
     Caution: remember the fine print from before. 
     This solution only works with certain assumptions about boundary conditions.
+    (More on this to come!)
 \end{itemize}
 }
 
 \begin{frame}[fragile]
     \frametitle{General approach}
 
-    Second-order problems:
+    Direct solution:
     \begin{itemize}
     \item
         $ G(x,x') $ obeys source-free equation for $ x \neq x' $.
     \item
-        $ G(x,x') $ is continuous at $ x = x' $.
-    \item
-        Derivative of $ G(x,x') $ is discontinuous at $ x = x' $.
+        $ G(x,x') $ and its derivatives are continuous or discontinuous at $ x = x' $.
     \end{itemize}
     
 \end{frame}
@@ -794,10 +544,16 @@
 \note{
     \begin{itemize}
     \item
-        This approach works quite well for solving 1D Green's function problems.
+        Write down the source-free solution for $ x \neq x' $: usually has a few unknown coefficients.
     \item
-        For problems of other orders, will have a different combination of continuity/discontinuity requirements at $ x = x' $.
-        E.g., $ G(x,x') $ will be discontinuous for a first order problem.
+        Examine the equation to find continuity/discontinuity requirements for $ G(x,x') $ and its derivatives.
+        (Most books on Green's functions provide these requirements for general Sturm-Liouville problems.)
+    \item
+        This approach is great if it works.
+        Unfortunately, it doesn't always work (especially in 3D problems).
+    \item
+        We'll briefly look at an alternative solution method later using eigenvalues and eigenfunctions, but this still just scratches the surface. 
+        See the references provided at the end.
     \end{itemize}
 }
 
@@ -826,7 +582,7 @@
     Here, we'll look at how to properly construct a solution from the Green's function when boundary conditions are involved.
 \item
     Our approach is quite challenging compared to a lot of books on the subject. 
-    The advantage is that we'll deal with a lot of subtleties that can otherwise lead to confusion.
+    The advantage is that we'll deal with some subtleties that can otherwise lead to confusion.
 \item
     For approaches similar to the one in this section, see Dudley, Morse and Feshbach, or Gerlach.
 \end{itemize}
@@ -862,6 +618,8 @@
         \\
         \Longrightarrow \quad \int_a^b (\L u) v^* \d x &= \int_a^b u \conj{(\L^* v)} \d x
     \end{align*}
+\item
+    Roughly, $ \L^* $ is what appears if we try to move $ \L $ into the other slot of the inner product. 
 \end{itemize}
 }
 
@@ -889,14 +647,14 @@
 \begin{itemize}
 \item
     The adjoint is only truly the adjoint (i.e., $ \inprod{\L u}{v} = \inprod{u}{\L^* v} $) for certain functions $ u $ and $ v $.
-    (Mathematically, we need to specify the \emph{domains} of $ \L $ and $ \L^* $ because these are usually unbounded operators.)
+    (Mathematically, when $ \L $ and $ \L^* $ are unbounded operators, they do not necessarily share the same \emph{domain}, and we need to consider that.)
 \item
     This is where boundary conditions come in. 
     Specifically, if $ u $ obeys some boundary conditions $ \B_i[u] = 0 $, then $ v $ has to obey some adjoint boundary conditions $ \B_i^*[v] = 0 $.
 \item
     Note on notation: $ \B_i[u] = 0 $ means that some linear combination of $ u $ and its derivatives are set equal to zero at the boundaries.
 \item
-    If $ \B_i[u] = 0 $ or $ \B_i^*[v] = 0 $ are not satisfied, then the adjoint equation almost holds, but we get an extra term $ J(u,v^*) $ called the \emph{conjunct}.
+    If $ \B_i[u] = 0 $ and $ \B_i^*[v] = 0 $ are not satisfied, then the adjoint equation almost holds, but we get an extra term $ J(u,v^*) $ called the \emph{conjunct}. It's only evaluated at the boundaries.
 \end{itemize}
 
 }
@@ -920,6 +678,7 @@
         Let's look at an example: the 1D simple harmonic oscillator.
     \item
         Let's try to find $ \L^* $ without worrying about boundary conditions for now.
+        (So we expect the conjunct to appear.)
     \end{itemize}
 }
 
@@ -1121,8 +880,8 @@
     If $ u,v $ do not satisfy these boundary conditions, then $ \L^* $ is not truly the adjoint anymore.
     However, it still nearly obeys the adjoint equation; there's just a leftover conjunct term which depends on the boundary values of $ u, v $ and their derivatives.
 \item
-    This conjunct term messes up a lot of things from linear algebra (e.g. self-adjoint operators having a complete basis of eigenvectors).
-    But for our purposes, it will end up being useful.
+    For a lot of things (e.g., using eigenfunction bases) we need this conjunct to be zero.
+    But for Green's functions, it will end up being indispensible.
 \end{itemize}
 
 }
@@ -1217,8 +976,12 @@
     \item
         Using the definition of the adjoint problem, we find that there is a simple relationship between $ G(x,x') $ and $ H(x,x') $.
     \item
-        Note a surprising result of this: if $ G(x,x') $ obeys the boundary conditions with respect to $ x $, then it automatically obeys the \emph{adjoint} boundary conditions with respect to $ x' $. 
-        This will be important later.
+        Note, in the last example, we had to include the conjunct because $ \B[u] \neq 0 $.
+        The boundary conditions and adjoint boundary conditions have to be set to zero to eliminate the conjunct.
+        In this case, $ \B[G] = 0 $ and $ \B[H] = 0 $, so the conjunct is eliminated.
+    \item
+        Also note a surprising result of this: if $ G(x,x') $ obeys the boundary conditions with respect to $ x $, then it automatically obeys the \emph{adjoint} boundary conditions with respect to $ x' $. 
+        We'll come back to this idea later.
     \end{itemize}
 }
 
@@ -1228,11 +991,11 @@
     \begin{align*}
         u(x') &= \int_a^b f(x) \conj{H}(x,x') \d x - J\big(u(x), \conj{H}(x,x')\big) \Big|_a^b
     \end{align*}
-    and
+    \begin{center}and\end{center}
     \begin{align*}
         G(x,x') = \conj{H}(x',x)
     \end{align*}
-    so
+    \begin{center}so\end{center}
     \begin{empheq}[box=\widefbox]{align*}
         u(x) &= \int_{a}^{b} f(x') G(x,x') \d x' - J\big( u(x'), G(x,x') \big) \Big|_{x'=a}^b
     \end{empheq}
@@ -1429,37 +1192,6 @@
 
 }
 
-\ifextended
-\begin{frame}[fragile]
-    \frametitle{Example: 1D Poisson equation}
-
-    \begin{align*}
-        V(x) &= V_b \frac{\d G(x,b)}{\d x'} - V_a \frac{\d G(x,a)}{\d x'} 
-    \end{align*}
-    Can be written as
-    \begin{align*}
-        V(x) &= \int_a^b \left[ -V_a \delta'(x' - a) + V_b \delta'(x' - b) \right] G(x,x') \d x'
-    \end{align*}
-
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    Using delta function theory, we see that the non-zero boundary conditions can really be treated like sources.
-\item
-    E.g., the boundary condition at $ x = a $ is like a source $ f(x) = V_a \delta'(x - a) $. 
-\item
-    $ \delta'(x - a) $ denotes the delta function derivative defined by the derivative sifting property
-    \begin{align*}
-        \int \delta'(x - a) f(x) \d x &= -f'(a)
-    \end{align*}
-    
-\end{itemize}
-
-}
-\fi
-
 \begin{frame}[fragile]
     \frametitle{Example: 1D Poisson equation}
     
@@ -1479,6 +1211,12 @@
     The last two parts give the voltage produced by the boundary conditions $ V_a, V_b $.
 \item
     The response to \emph{both} of these sources of voltage is given by the Green's function!
+\item
+    For those familiar with the derivative of the delta function, this can be written in an even more suggestive form:
+    \begin{align*}
+        V(x) &= \int_a^b \left[ - \frac{\rho(x)}{\epsilon_0} - V_b \delta'(x' - b) + V_a \delta'(x' - a) \right] G(x,x') \d x'
+    \end{align*}
+    
 \end{itemize}
 
 }
@@ -1519,8 +1257,8 @@ Now let's look at the general process for solving a boundary value problem with 
 \item
     Write down the solution.
 \item
-    Unknown boundary values of $ u(x) $ may appear in the conjunct term.
-    Eliminate these using the fact that $ G(x,x') $ obeys the adjoint boundary conditions with respect to $ x' $.
+    Unknown boundary values of $ u(x) $ will appear in the conjunct term.
+    Eliminate them using the fact that $ G(x,x') $ obeys the adjoint boundary conditions with respect to $ x' $.
 \end{enumerate}
 }
 
@@ -1721,7 +1459,6 @@ Now let's look at the general process for solving a boundary value problem with 
     Compare these causal Green's function with the Green's function for a self-adjoint problem: they are incompatible.
     So we cannot have a causal system which is also self-adjoint in time.
 %\item
-    %Note: an interesting discussion of causality and Green's functions is found in the book chapter ``Causation in classical mechanics'' by Sheldon Smith.
 \end{itemize}
 }
 
@@ -1747,12 +1484,14 @@ Now let's look at the general process for solving a boundary value problem with 
     That is, if we delay our input, we'll get the exact same output, just delayed by an equal amount.
 \item
     In that case, can show that the Green's function only depends on the difference between $ t $ and $ t' $.
+    (See Gerlach.)
 \item
-    Shouldn't be a surprise from linear time-invariant (LTI) system theory, where the impulse response is usually written as $ h(t - t') $.
+    Recall: in linear time-invariant (LTI) systems, the impulse response is written as $ h(t - t') $: this is why!
 \item
     A similar thing applies to systems whose behaviour doesn't change from place to place.
 \item
     These properties can make it easier to find the Green's function (e.g., the free-space wave equation).
+    Also, solution is just given by convolution $ u(t) = G(t) * f(t) $.
 \end{itemize}
 }
 
@@ -1842,37 +1581,115 @@ Now let's look at the general process for solving a boundary value problem with 
 
 }
 
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Takeaways}
+    
+    \begin{itemize}
+    \item
+        Green's function is the impulse response.
+    \item
+        Finding Green's function:
+        \begin{itemize}
+        \item
+            Source-free behaviour for $ x \neq x' $.
+        \item
+            Continuity/discontinuity requirements at $ x = x' $.
+        \end{itemize}
+    \item
+        Constructing solutions:
+        \begin{itemize}
+        \item
+            Systematic method using adjoint equation.
+        \item
+            Non-zero boundary conditions behave like sources.
+        \end{itemize}
+    \item
+        Lots of information in the Green's function.
+    \item
+        Green's functions $ \Longleftrightarrow $ eigenvalues/eigenfunctions.
+    \end{itemize}
+    
+
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Further reading}
+
+    Dudley (1994), \emph{Mathematical foundations for electromagnetic theory}.
+    Great introduction to 1D Green's functions: deals with subtleties that others ignore.
+
+    Gerlach (2010), \emph{Linear mathematics in infinite dimensions}.
+    Nice set of online course notes for quick reference.
+ 
+    Balanis (2012), \emph{Advanced engineering electromagnetics}. 
+    Not very rigorous, but decent for getting the key ideas.
+
+    Morse and Feshback, \emph{Methods of theoretical physics}.
+    Big, detailed reference. 
+    Great resource for deeper insight and understanding.
+  
+\end{frame}
+
+\note{}
+
+\begin{frame}[fragile]
+    \frametitle{Further reading}
+    Collin (1990), \emph{Field theory of guided waves}. 
+    Huge chapter on Green's functions. 
+    Emphasis on dyadics.
+
+    Folland (1992), \emph{Fourier analysis and its applications}. 
+    Rigorous math book. 
+    Chapter on generalized functions is particularly nice.
+
+    Byron and Fuller (1992), \emph{Mathematics of classical and quantum physics}.
+    Interesting alternative approach.
+
+    Warnick (1996), ``Electromagnetic Green functions using differential forms.''
+    For the differential forms inclined.
+
+\end{frame}    
+
+\note{}
+
 \ifextended
-\section{Spectral methods}
+\section{Bonus sections!}
+\note{
+\begin{itemize}
+\item
+    These bonus slides were removed from the original presentation, which was far too long.
+\item
+    The wave-equation derivation is somewhat unique, piecing together different ideas from different places.
+    One weakness with many derivations is that they discard the ``anti-causal'' Green's function in a seemingly arbitrary way.
+    In this derivation, causality automatically follows because initial conditions are used.
+\item
+    The generalized function section is interesting because it shows how to rigorously deal with the delta function. 
+    We use the delta function so frequently, yet we rarely see a proper definition.
+\end{itemize}
+
+}
+
+\section*{Spectral methods}
 \label{sec:spectral_methods}
 
 \note{
 \begin{itemize}
 \item
-    We spent the last section learning how to construct a final solution from the Green's function.
+    In this section, we'll look at the strong relationship between Green's functions and spectral theory.
 \item
-    Before that, we learned a simple way to actually calculating the Green's functions.
+    Essentially, eigenfunction expansion allows us to calculate the Green's function when direct methods don't work.
 \item
-    Unfortunately, that simple method doesn't always work, especially when dealing with separation of variables in 3D.
-\item
-    In this section, we'll look at another method for constructing Green's functions.
-    In the process, we'll see the close tie between Green's functions and eigenvalues/eigenfunctions.
+    A basic background in spectral theory can be found in most books covering Green's functions. 
 \end{itemize}
 }
-
-%\note{
-%\begin{itemize}
-%\item
-%    In this section, we'll look at the strong relationship between Green's functions and spectral theory.
-%\item
-%    Essentially, eigenfunction expansion allows us to calculate the Green's function when direct methods don't work.
-%\item
-%    A basic background in spectral theory can be found in most books covering Green's functions. 
-%\item
-%    Unfortunately, these are rarely rigorous when dealing with continuous sets of eigenvalues.
-%    For fully rigorous spectral theory (not for the faint of heart!), see Naylor and Sell's \emph{Linear operator theory in engineering and science} or Kreyszig's \emph{Introductory functional analysis with applications.}
-%\end{itemize}
-%}
 
 \begin{frame}[fragile]
     \frametitle{Eigenfunction expansion}
@@ -2150,155 +1967,18 @@ Now let's look at the general process for solving a boundary value problem with 
 \end{itemize}
 
 }
-\fi
 
-\ifextended
-\section{Properties of Green's functions}
-\label{sec:properties_of_green_s_functions}
-
-\note{
-    \begin{itemize}
-    \item
-        The Green's function gives us a lot of information about the system we're dealing with.
-    \item
-        Here we'll look at a few of the properties Green's functions can have and what those tell us about our system.
-    \end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Reciprocity}
-
-    If $ \L $ is self-adjoint
-    \begin{align*}
-        \L = \L^* \qquad \text{and} \qquad \B = \B^*
-    \end{align*}
-    then
-    \begin{align*}
-        G(x,x') &= G^*(x',x)
-    \end{align*}
-    
-\end{frame}
-
-\note{
-    \begin{itemize}
-    \item
-        For self-adjoint problems, $ G = H $. 
-    \item
-        Using our relationship between $ G $ and $ H $, we quickly see that the Green's function is complex symmetric (Hermitian) for self-adjoint problems.
-    \item
-        Roughly, putting a source at $ x $ and measuring at $ x' $ is the same as putting a source at $ x' $ and measuring at $ x $.
-        This is often called reciprocity (though it's not quite the same as reciprocity from time-harmonic E\&M, because we're using a true inner product rather than the so-called ``reaction inner product'').
-    \item
-        Note that we require \emph{both} $ \L = \L^* $ and $ \B = \B^* $. So this would likely not hold for initial condition problems.
-    \end{itemize}
-}
-
-
-\begin{frame}[fragile]
-    \frametitle{Invariance}
-
-
-    $ \L $ is invariant if 
-    \begin{align*}
-        \L[u(x - \xi)] &= \L[u(x)] \Big|_{x = x - \xi}
-    \end{align*}
-    
-    For example,
-    \begin{IEEEeqnarray*}{rClCl}
-        \L &=& a \frac{\d^2}{\d x^2} + b \frac{\d}{\d x} + c
-    \end{IEEEeqnarray*}
-    is invariant only if $ a $, $ b $, and $ c $ are constants.
-    
-    
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    An operator is invariant if shifting the input just results in a shifted output.
-\item
-    Probably familiar from signal processing: linear \emph{time-invariant} systems.
-    Delaying the input signal leads to the same output signal, just delayed by the same amount.
-\item
-    Invariance is really important in modern physics.
-\item
-    Maxwell's equations in free space are invariant with respect to $ x, y, z, \phi, \theta $.
-    That is, at a fundamental level, the laws of electromagnetism do not change if we move to a different location or look in a different direction.
-\end{itemize}
-
-}
-
-\begin{frame}[fragile]
-    \frametitle{Invariance}
-
-    If $ \L $ is invariant in $ x $, then
-    \begin{align*}
-        \L[G(x,x')] &= \delta(x - x')
-        \\
-        \L[G(x - \xi,x' - \xi)] &= \delta(x - x')
-    \end{align*}
-    \begin{align*}
-        \Longrightarrow G(x,x') = G(x - \xi, x' - \xi)
-    \end{align*}
-    \begin{empheq}[box=\widefbox]{align*}
-        G(x, x') &= G(x - x')
-    \end{empheq}
-    
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    For invariant problems, we can see that shifting both $ x $ and $ x' $ by the same amount $ \xi $ does not affect the Green's function.
-\item
-    Taking $ \xi  = x' $, we see that $ G(x,x') $ is actually only a function of the difference $ (x - x') $.
-\item
-    That is, the response only depends on the \emph{relative} locations of the source and measurement.
-    This fits nicely with our intuitive understanding of invariance.
-\end{itemize}
-}
-
-\begin{frame}[fragile]
-    \frametitle{Invariance}
-    
-    Convolution:
-    \begin{align*}
-        u(x) &= \int_a^b G(x - x') f(x') \d x' = G(x) * f(x)
-    \end{align*}
-    Frequency domain:
-    \begin{align*}
-        \ft{u}(k) &= \ft{G}(k) \ft{f}(k)
-    \end{align*}
-
-\end{frame}
-
-\note{
-\begin{itemize}
-\item
-    For invariant systems (with boundary conditions zero), the solution $ u(x) $ is just given as a convolution of the source function $ f(x) $ with the impulse response $ G(x) $.
-\item
-    Taking Fourier transforms, the convolution turns into multiplication. 
-\item
-    Looks familiar from signal processing!
-\end{itemize}
-}
-
-\fi
-
-\ifextended
-\section{The 3D wave equation}
+\section*{3D wave equation}
 \label{sec:3d_wave_equation}
 
 \note{
 \begin{itemize}
 \item
-    Unfortunately we don't have time to really get into 3D problems.
+    To get a taste of 3D problems, let's look at the 3D scalar wave equation in a vacuum.
 \item
-    However, just to get a taste of it, we'll look at the 3D scalar wave equation in a vacuum.
+    We'll use the time-domain because it's something that's less-frequently covered in electrical engineering books.
 \item
-    I chose time-domain because it's something that's less-frequently covered in electrical engineering books.
-\item
-    The time domain also gives insight to some delicate issues in the frequency domain.
+    The time domain also gives insight to some delicate issues of causality which are less clear in the frequency domain.
 \end{itemize}
 
 }
@@ -2339,7 +2019,7 @@ Now let's look at the general process for solving a boundary value problem with 
     \end{align*}
     where
     \begin{align*}
-        \inprod{u}{v} = \int_{t_i}^{t_f} \int_V u(\vect{r}, t) v^*(\vect{r}, t) \d^3 \vect{r} \d t
+        \inprod{u}{v} = \int_{t_i}^{t_f} \int_V u(\vect{r}, t) \conj{v}(\vect{r}, t) \d^3 \vect{r} \d t
     \end{align*}
     
 \end{frame}
@@ -2361,16 +2041,16 @@ Now let's look at the general process for solving a boundary value problem with 
 
     \vspace{-24pt}
     \begin{align*}
-        \inprod{\L u}{v} &= \int_{t_i}^{t_f} \int_V \left( \nabla^2 u - \frac{1}{c^2} \frac{\partial^2 u}{\partial t^2} \right) v^* \d^3 \vect{r} \d t
+        \inprod{\L u}{v} &= \int_{t_i}^{t_f} \int_V \left( \nabla^2 u - \frac{1}{c^2} \frac{\partial^2 u}{\partial t^2} \right) \conj{v} \d^3 \vect{r} \d t
     \end{align*}
     
     Use Green's identity
     \begin{align*}
-        \int_V \left( v^* \nabla^2 u - u \nabla^2 v^* \right) &= \oint_{\partial V} \left( v^* \frac{\partial u}{\partial n} - u \frac{\partial v^*}{\partial n} \right) \d S
+        \int_V \left( \conj{v} \nabla^2 u - u \nabla^2 \conj{v} \right) &= \oint_{\partial V} \left( \conj{v} \frac{\partial u}{\partial n} - u \frac{\partial \conj{v}}{\partial n} \right) \d S
     \end{align*}
     and integration by parts
     \begin{align*}
-        \int_{t_i}^{t_f} \left( \frac{\partial^2 u}{\partial t^2} v^* - u \frac{\partial^2 v^*}{\partial t^2} \right) \d t &= \left[ v^* \frac{\partial u}{\partial t} - u \frac{\partial v^*}{\partial t} \right]_{t_i}^{t_f}
+        \int_{t_i}^{t_f} \left( \frac{\partial^2 u}{\partial t^2} \conj{v} - u \frac{\partial^2 \conj{v}}{\partial t^2} \right) \d t &= \left[ \conj{v} \frac{\partial u}{\partial t} - u \frac{\partial \conj{v}}{\partial t} \right]_{t_i}^{t_f}
     \end{align*}
 \end{frame}
 
@@ -2382,7 +2062,7 @@ Now let's look at the general process for solving a boundary value problem with 
     Green's identity is essentially a 3D version of the integration by parts that we used in the 1D case.
     Note that $ V $ is a volume and $ \partial V $ is the boundary of that volume.
 \item
-    We use Green's identity to deal with the spatial derivative part $ v^* \nabla^2 u $.
+    We use Green's identity to deal with the spatial derivative part $ \conj{v} \nabla^2 u $.
 \item
     We use 1D integration by parts to deal with the time derivative part.
 \end{itemize}
@@ -2394,9 +2074,9 @@ Now let's look at the general process for solving a boundary value problem with 
 
     Result:
     \begin{IEEEeqnarray*}{rCl}
-        \int_{t_i}^{t_f} \int_V \left( \L u \right) v^* \d^3 \vect{r} \d t &=& \int_{t_i}^{t_f} \int_V u \left( \L v \right)^* \d^3 \vect{r} \d t + 
-        \\ && + \int_{t_i}^{t_f} \oint_{\partial V} \left( v^* \frac{\partial u}{\partial n} - u \frac{\partial v^*}{\partial n} \right) \d S \d t - 
-        \\ && - \frac{1}{c^2} \left[ \int_{V} \left( v^* \frac{\partial u}{\partial t} - u \frac{\partial v^*}{\partial t} \right) \d V \right]_{t_i}^{t_f}
+        \int_{t_i}^{t_f} \int_V \left( \L u \right) \conj{v} \d^3 \vect{r} \d t &=& \int_{t_i}^{t_f} \int_V u \left( \L v \right)^* \d^3 \vect{r} \d t + 
+        \\ && + \int_{t_i}^{t_f} \oint_{\partial V} \left( \conj{v} \frac{\partial u}{\partial n} - u \frac{\partial \conj{v}}{\partial n} \right) \d S \d t - 
+        \\ && - \frac{1}{c^2} \left[ \int_{V} \left( \conj{v} \frac{\partial u}{\partial t} - u \frac{\partial \conj{v}}{\partial t} \right) \d V \right]_{t_i}^{t_f}
     \end{IEEEeqnarray*}
     
 \end{frame}
@@ -2428,40 +2108,19 @@ Now let's look at the general process for solving a boundary value problem with 
     \begin{align*}
         \L G(\vect{r}, t; \vect{r}', t') &= \delta^3(\vect{r} - \vect{r}') \delta(t - t'); \quad \B[G] = 0
     \end{align*}
-    Adjoint Green's problem:
-    \begin{align*}
-        \L H(\vect{r}, t; \vect{r}', t') &= \delta^3(\vect{r} - \vect{r}') \delta(t - t'); \quad \B^*[H] = 0
-    \end{align*}
     
 \end{frame}
 
 \note{
 \begin{itemize}
 \item
-    As in the 1D case, we set up three problems.
-\item
-    For the lossless wave equation $ \L = \L^* $, so the only difference between the $ G $ and $ H $ equations is the boundary conditions.
+    Set up the Green's function problem.
 \end{itemize}
 }
 
 \begin{frame}[fragile]
     \frametitle{Solution to the wave equation}
 
-    \vspace{-24pt}
-    \begin{IEEEeqnarray*}{rCl}
-        u(\vect{r}', t') &=& \int_{t_i}^{t_f} \int_V f(\vect{r}, t) H^*(\vect{r}, t; \vect{r}', t') \d^3 \vect{r} \d t + 
-        \\ && - \int_{t_i}^{t_f} \oint_{\partial V} \left( H^* \frac{\partial u}{\partial n} - u \frac{\partial H^*}{\partial n} \right) \d S \d t - 
-        \\ && + \frac{1}{c^2} \left[ \int_{V} \left( H^* \frac{\partial u}{\partial t} - u \frac{\partial H^*}{\partial t} \right) \d V \right]_{t_i}^{t_f}
-    \end{IEEEeqnarray*}
-    
-\end{frame}
-
-\note{}
-
-\begin{frame}[fragile]
-    \frametitle{Solution to the wave equation}
-
-    This time, $ G(\vect{r}, t; \vect{r}', t') = H^*(\vect{r}', t'; \vect{r}, t) $ so
     \begin{IEEEeqnarray*}{rCl}
         u(\vect{r}, t) &=& \int_{t_i}^{t_f} \int_{V'} f(\vect{r}', t') G(\vect{r}, t; \vect{r}', t') \d^3 \vect{r}' \d t' + 
         \\ && - \int_{t_i}^{t_f} \oint_{\partial V'} \left( G \frac{\partial u}{\partial n'} - u \frac{\partial G}{\partial n'} \right) \d S' \d t' - 
@@ -2473,7 +2132,7 @@ Now let's look at the general process for solving a boundary value problem with 
 \note{
 \begin{itemize}
 \item
-    Not very pretty, but we have a full solution for $ u(\vect{r}, t) $ in terms of the Green's function.
+    Write down the solution using the conjunct. (Can derive this using inner products, similar to what we did in 1D).
 \item
     The first integral gives the effect of the source term $ f(\vect{r}, t) $.
 \item
@@ -2565,13 +2224,25 @@ Now let's look at the general process for solving a boundary value problem with 
     
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Apply the spatial Fourier transform:
+    \begin{align*}
+        \ft{G}(\vect{k}, \tau) &= \iiint_{\mathbb{R}^3} G(\vect{R}, \tau) e^{- j \vect{k} \cdot \vect{R} } \d^3 \vect{R}
+    \end{align*}
+\item
+    This reduces it to a 1D initial condition problem in time.
+\item
+    Solve this using the fact that $ \ft{G}(\vect{k},\tau) $ obeys the source-free equation except at $ \tau = 0 $.
+\end{itemize}
+
+}
 
 \begin{frame}[fragile]
     \frametitle{Finding the Green's function}
 
     
-    \vspace{-16pt}
     \begin{align*}
         \ft{G}(\vect{k},\tau) &= 
         \begin{cases}
@@ -2601,7 +2272,16 @@ Now let's look at the general process for solving a boundary value problem with 
 
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Apply initial conditions and continuity requirements to find the coefficients.
+\item
+    To apply initial conditions: $ \ft{G}(\vect{k}, \tau) $ and its derivative must be zero when $ t = 0 $ or $ \tau = -c t' $.
+    Remember that that we are only seeking a solution for $ t > 0 $, and so $ t' > 0 $.
+\end{itemize}
+
+}
 
 \begin{frame}[fragile]
     \frametitle{Finding the Green's function}
@@ -2620,7 +2300,18 @@ Now let's look at the general process for solving a boundary value problem with 
     
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    To recover the Green's function from $ \ft{G}(\vect{k}, \tau) $, apply an inverse Fourier transform.
+    (Only really need to do it for $ \tau > 0 $: just remember that $ G = 0 $ for $ \tau < 0 $.)
+\item
+    Use spherical coordinates in $ \vect{k} $-space to evaluate the integral.
+    Define $ k = \left| \vect{k} \right| $.
+    Define $ \theta $ as the angle between $ \vect{k} $ and $ \vect{R} $ so that $ \vect{k} \cdot \vect{R} = k R \cos(\theta) $.
+    Define $ \phi $ as the remaining angle required to complete the coordinate system.
+\end{itemize}
+}
 
 \begin{frame}[fragile]
     \frametitle{Finding the Green's function}
@@ -2637,7 +2328,12 @@ Now let's look at the general process for solving a boundary value problem with 
     
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Do the $ \theta $ and $ \phi $ integrals.
+\end{itemize}
+}
 
 \begin{frame}[fragile]
     \frametitle{Finding the Green's function}
@@ -2654,7 +2350,15 @@ Now let's look at the general process for solving a boundary value problem with 
     
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Note that $ \sin(k\tau) \sin(k R) $ is even with respect to $ k $.
+    So we can divide by 2 and take the integral over $ - \infty < k < \infty $.
+\item
+    Then, write out the complex exponentials.
+\end{itemize}
+}
 
 \begin{frame}[fragile]
     \frametitle{Finding the Green's function}
@@ -2671,7 +2375,20 @@ Now let's look at the general process for solving a boundary value problem with 
     
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Use the identity
+    \begin{align*}
+        \int_{-\infty}^{\infty} e^{j k \xi} \d k &= 2 \pi \delta (\xi)
+    \end{align*}
+\item
+    Note that $ \tau > 0 $ (otherwise $ G = 0 $, from before) and $ R = \left| \vect{r} - \vect{r}' \right| > 0 $.
+    So $ \delta(\tau + R) = 0 $.
+\item
+    Reducing, we obtain the Green's function for $ \tau > 0 $.
+\end{itemize}
+}
 
 \begin{frame}[fragile]
     \frametitle{Green's function for the wave equation}
@@ -2689,7 +2406,23 @@ Now let's look at the general process for solving a boundary value problem with 
     
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Plug back in expressions for $ \tau $ and $ R $: we obtain the full Green's function for the wave equation.
+\item
+    Assuming the boundary/initial conditions are zero, the conjunct terms cancel.
+\item
+    We are left with an integral formula for $ u(\vect{r}, t) $.
+\item
+    Note that, because of the delta function, the integral over time disappears.
+    We are left with the so-called ``retarded'' expression for $ u(\vect{r}, t) $.
+\item
+    Essentially, when measuring a response at $ (\vect{r}, t) $, we only ``see'' the source as it appeared at $ t - |\vect{r} - \vect{r}'|/c $.
+    I.e., there is a speed of light delay in the propagation of information!
+\end{itemize}
+
+}
 
 \begin{frame}[fragile]
     \frametitle{Vector potential: initial condition problem}
@@ -2710,7 +2443,17 @@ Now let's look at the general process for solving a boundary value problem with 
     
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Concrete example is the vector potential, which obeys the wave equation with the current density $ \vect{J} $ as its source. (In the Lorentz gauge.)
+\item
+    Note, the time-dependent vector potential is the same as the static vector potential, but the source is just evaluated with a speed-of-light delay!
+\item
+    Taking a Fourier transform, we get the expression from Harrington.
+\end{itemize}
+
+}
 
 \begin{frame}[fragile]
     \frametitle{Vector potential: final value problem}
@@ -2723,90 +2466,273 @@ Now let's look at the general process for solving a boundary value problem with 
     \begin{align*}
         \vect{A}(\vect{r}, t) &= \int_{\mathbb{R}^3} \frac{\vect{J}\left(\vect{r}, t + \frac{|\vect{r} - \vect{r}'|}{c}\right)}{4 \pi |\vect{r} - \vect{r}'|} \d^3 \vect{r'}
     \end{align*}
-
-    Violation of causality?
-    
+ 
+    \begin{align*}
+        \ft{\vect{A}}(\vect{r}, \omega) &= \int_{\mathbb{R}^3} \ft{\vect{J}}\left(\vect{r}, \omega \right) \frac{e^{+ j \frac{\omega}{c} | \vect{r} - \vect{r}' |}}{4 \pi |\vect{r} - \vect{r}'|} \d^3 \vect{r'}
+    \end{align*}
+       
 \end{frame}
 
-\note{}
-\fi
+\note{
+\begin{itemize}
+\item
+    For final conditions problems, we get something weird: we get an ``advanced potential'' where the field $ \vect{A} $ depends on the source $ \vect{J} $ at some time in the future. 
+\item
+    So it seems that causality is tied to our use of initial conditions (rather than final conditions) in time.
+\item
+    This is also related to uniqueness breaking down for lossless time-harmonic fields.
+    Harrington fixes this by defining ``lossless'' as the limit of low loss (not very satisfactory, since the lossless case is more fundamental).
+    Alternatively, we can fix uniqueness by insisting that we have \emph{initial} conditions in the time domain.
+\item
+    For more, see the book chapter ``Causation in classical mechanics'' by Sheldon Smith.
+\end{itemize}
+}
 
-\section{Conclusion}
-\label{sec:conclusion}
+\section*{Generalized functions}
+\label{sec:generalized_functions}
 
-\note{}
-
-\begin{frame}[fragile]
-    \frametitle{Takeaways}
-    
+\note{
     \begin{itemize}
     \item
-        Green's function is the impulse response.
+        Delta functions play a key role in Green's functions (and electrical engineering in general), but tend to lead to hand-waving.
     \item
-        Finding Green's function:
-        \begin{itemize}
-        \item
-            Source-free behaviour for $ x \neq x' $.
-        \item
-            Continuity/discontinuity requirements at $ x = x' $.
-        \end{itemize}
+        Worth seeing how they can be rigorously defined before moving on.
     \item
-        Constructing solutions:
-        \begin{itemize}
-        \item
-            Systematic method using adjoint equation.
-        \item
-            Non-zero boundary conditions behave like sources.
-        \end{itemize}
+        Machinery for this is Schwartz's theory of distributions (generalized functions).
     \item
-        Lots of information in the Green's function.
-    \item
-        Green's functions $ \Longleftrightarrow $ eigenvalues/eigenfunctions.
+        See Folland (1992), \emph{Fourier analysis and its applications}, Chapter 9 for more.
     \end{itemize}
     
+}
+
+\begin{frame}[fragile]
+    \frametitle{Typical delta function definition}
+    
+    Typical ``definition'' of $ \delta(x - x_0) $:
+    \begin{align*}
+        \delta(x-x_0) &= 0 \quad \text{for} \quad x \neq x_0
+    \end{align*}
+    \begin{align*}
+        \int_{-\infty}^{\infty} \delta(x-x_0) &= 1
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Often see definitions like this one.
+\item
+    Often said to imply that $ \delta(x - x_0) = \infty $ at $ x = x_0 $.
+\item
+    Might be okay intuitively, but very imprecise mathematically.
+\item
+    There is no true function which satisfies both of these requirements!
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Generalized functions}
+    
+    $ f(x) $ defines a linear operator $ \phi(x) $ via
+    \begin{align*}
+        f[\phi] &= \int_{-\infty}^{\infty} f(x) \phi(x) \d x
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Let's see if we can generalize the idea of a ``function'' so that it includes delta functions.
+\item
+    Given a function $ f(x) $, we can use it to define a linear operator (a functional, to be exact) on other functions $ \phi(x) $.
+\item
+    $ f[\cdot] $ is a linear operator. It takes a function $ \phi(x) $ and returns the number
+    \begin{align*}
+        f[\phi] &= \int_{-\infty}^{\infty} f(x) \phi(x) \d x
+    \end{align*}
+\item
+    If we ensure that $ \phi(x) $ is very well-behaved, then every function $ f(x) $ defines an operator in this way.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Generalized functions}
+
+    If we have $ f[\phi] $, but no $ f(x) $, then $ f $ is a generalized function.
+    
+    \textbf{Symbolically}, we write
+    \begin{align*}
+        f[\phi] &\stackrel{s}{=} \int_{-\infty}^{\infty} f(x) \phi(x) \d x
+    \end{align*}
+    
+\end{frame}
+
+\note{
+    \begin{itemize}
+    \item
+        It's possible to have an operator $ f[\phi] $, but we can't find an $ f(x) $ to implement it via an integral.
+    \item
+        Then $ f(x) $ is a generalized function. It is not a function in its own right, but it is defined purely by its action on other functions $ f[\phi] $.
+    \item
+        We still symbolically write
+        \begin{align*}
+            f[\phi] &\stackrel{s}{=} \int_{-\infty}^{\infty} f(x) \phi(x) \d x
+        \end{align*}
+        but this just suggestive notation. 
+        It is not actually an integral unless $ f(x) $ is a ``proper'' function!
+    \end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Defining the delta function}
+
+    $ \delta(x-x_0) $ is a generalized function defined by the sifting property
+    \begin{align*}
+        \delta_{x_0}[\phi] &= \phi(x_0) \stackrel{s}{=} \int_{-\infty}^{\infty} \delta(x - x_0) \phi(x) \d x
+    \end{align*}
+    
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    We can define a simple linear operator via the sifting property $ \delta_{x_0}[\phi] = \phi(x_0) $.
+\item
+    There is no actual function $ \delta(x - x_0) $ which gives
+    \begin{align*}
+        \int_{-\infty}^{\infty} \delta(x - x_0) \phi(x) \d x &= \phi(x_0)
+    \end{align*}
+    so $ \delta(x - x_0) $ is a generalized function and the above integral is purely symbolic.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+    \frametitle{Delta function derivatives}
+    
+    We can define derivatives too:
+    \begin{align*}
+        \delta^{(n)}_{x_0}[\phi] &= (-1)^n \phi^{(n)}(x_0) \stackrel{s}{=} \int_{-\infty}^{\infty} \delta^{(n)}(x - x_0) \phi(x) \d x
+    \end{align*}
 
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Generalized function theory lets us make sense of the derivatives of the delta function too.
+\item
+    $ \delta_{x_0}^{(n)} $ is just an operator that picks out the value of the $ n $th derivative of $ \phi(x) $ at the point $ x_0 $.
+\end{itemize}
+}
 
 \begin{frame}[fragile]
-    \frametitle{Further reading}
-
-    Dudley (1994), \emph{Mathematical foundations for electromagnetic theory}.
-    Great introduction to 1D Green's functions: deals with subtleties that others ignore.
-
-    Gerlach (2010), \emph{Linear mathematics in infinite dimensions}.
-    Nice set of online course notes for quick reference.
- 
-    Balanis (2012), \emph{Advanced engineering electromagnetics}. 
-    Not very rigorous, but decent for getting the key ideas.
-
-    Morse and Feshback, \emph{Methods of theoretical physics}.
-    Big, detailed reference. 
-    Great resource for deeper insight and understanding.
-  
+    \frametitle{Delta function limits}
+    
+    \begin{align*}
+        \lim_{\epsilon \to 0} f_\epsilon(x) &= \delta(x)
+    \end{align*}
+    if and only if
+    \begin{align*}
+        \lim_{\epsilon \to 0} f_\epsilon[\phi] = \lim_{\epsilon \to 0} \int_{-\infty}^{\infty} f_\epsilon(x) \phi(x) \d x &= \phi(0)
+    \end{align*}
+    
 \end{frame}
 
-\note{}
+\note{
+\begin{itemize}
+\item
+    Often useful to show that some set of actual functions $ f_\epsilon(x) $ ``approach'' the delta function in a limit.
+\item
+    To do this, we need to show that the sifting property is obeyed in the limit.
+\end{itemize}
+}
 
 \begin{frame}[fragile]
-    \frametitle{Further reading}
-    Collin (1990), \emph{Field theory of guided waves}. 
-    Huge chapter on Green's functions. 
-    Emphasis on dyadics.
+    \frametitle{Delta function limits}
+    Limit of Gaussian functions:
+    \begin{align*}
+        \delta(x) &= \lim_{\epsilon \to 0} \frac{1}{\sqrt{2 \pi} \epsilon} e^{- x^2/ 2 \epsilon^2}
+    \end{align*}
+    Limit of Lorentzian functions:
+    \begin{align*}
+        \delta(x) &= \lim_{\epsilon \to 0} \frac{1}{\pi} \frac{\epsilon}{t^2 + \epsilon^2}
+    \end{align*}
+\end{frame}
 
-    Folland (1992), \emph{Fourier analysis and its applications}. 
-    Rigorous math book. 
-    Chapter on generalized functions is particularly nice.
+\note{
+\begin{itemize}
+\item
+    Two examples of delta function limits.
+\item
+    Confirms our intuition of the delta function as a limit of sharply-peaked functions.
+\item
+    In fact, basically any limit of sharply-peaked functions of area 1 will work: see Folland (Theorem 9.2).
+\end{itemize}
+}
 
-    Byron and Fuller (1992), \emph{Mathematics of classical and quantum physics}.
-    Interesting alternative approach.
+\begin{frame}[fragile]
+    \frametitle{Delta function limits}
+    A more interesting example:
+    \begin{align*}
+        \frac{1}{2 \pi} \int_{-\infty}^{\infty} e^{j x t} \d t &= \delta(x)
+    \end{align*}
+    because
+    \begin{align*}
+        \lim_{\epsilon \to 0} \frac{1}{2 \pi} \int_{-\infty}^{\infty} e^{-\epsilon^2 t^2} e^{j x t} \d t = \delta(x)
+    \end{align*}
 
-    Warnick (1996), ``Electromagnetic Green functions using differential forms.''
-    For the differential forms inclined.
+\end{frame}
 
-\end{frame}    
+\note{
+    \begin{itemize}
+    \item
+        Example of a common, but unintuitive expression for the Delta function.
+    \item
+        Can show that it's true by expressing it as a delta function limit. (If you want to go through it, use Theorem 9.2 from Folland.)
+    \end{itemize}
+    
+}
 
-\note{}
+\begin{frame}[fragile]
+    \frametitle{What does this mean for Green's functions?}
+    
+    \begin{align*}
+        \L G(x, x') &= \delta(x - x')
+    \end{align*}
+    actually means
+    \begin{align*}
+        \left( \L G \right)[\phi]  &= \phi(x') \stackrel{s}{=} \int_{-\infty}^\infty \left( \L G(x, x')\right) \phi(x) \d x
+    \end{align*}
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    Technically, the Green's function is a generalized function such that $ \L G $ is the delta function (it has the sifting property).
+\end{itemize}
+
+}
+
+\begin{frame}[fragile]
+    \frametitle{Takeaway}
+    
+    \begin{center}
+        If in doubt, think of $ \delta(x - x_0) $ as an operator!
+    \end{center}
+
+\end{frame}
+
+\note{
+\begin{itemize}
+\item
+    In practise, thinking of $ \delta(x - x_0) $ as a function is usually fine.
+\item
+    But if anything starts to seem fishy, it's good to remember that $ \delta(x - x_0) $ is actually an operator $ \delta_{x_0}[\phi] $, and not a function.
+\end{itemize}
+    
+}
+\fi
 
 \end{document}
