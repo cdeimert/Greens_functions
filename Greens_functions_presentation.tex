@@ -1083,7 +1083,7 @@
     
     Comparing with
     \begin{align*}
-        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u,v^*) \big|_a^b
+        \inprod{\L u}{v} &= \inprod{u}{\L^* v} + J(u,\conj{v}) \big|_a^b
     \end{align*}
     we see
     \begin{align*}
@@ -2074,7 +2074,7 @@ Now let's look at the general process for solving a boundary value problem with 
 
     Result:
     \begin{IEEEeqnarray*}{rCl}
-        \int_{t_i}^{t_f} \int_V \left( \L u \right) \conj{v} \d^3 \vect{r} \d t &=& \int_{t_i}^{t_f} \int_V u \left( \L v \right)^* \d^3 \vect{r} \d t + 
+        \int_{t_i}^{t_f} \int_V \left( \L u \right) \conj{v} \d^3 \vect{r} \d t &=& \int_{t_i}^{t_f} \int_V u \conj{\left( \L v \right)} \d^3 \vect{r} \d t + 
         \\ && + \int_{t_i}^{t_f} \oint_{\partial V} \left( \conj{v} \frac{\partial u}{\partial n} - u \frac{\partial \conj{v}}{\partial n} \right) \d S \d t - 
         \\ && - \frac{1}{c^2} \left[ \int_{V} \left( \conj{v} \frac{\partial u}{\partial t} - u \frac{\partial \conj{v}}{\partial t} \right) \d V \right]_{t_i}^{t_f}
     \end{IEEEeqnarray*}
